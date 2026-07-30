@@ -1,0 +1,104 @@
+name: Static analysis
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+concurrency:
+  group: Static ${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      # Composer
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache composer files
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.4-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.4
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run phpstan
+        run: vendor/bin/phpstan analyse
+
+  code-style:
+    name: Code style (Pint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      # Composer
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache composer files
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.4-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.4
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Check code style
+        run: vendor/bin/pint --test
+
+  assets:
+    name: Build assets (Vite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Install JS dependencies
+        run: npm install --no-audit --no-fund
+
+      # Nothing else in CI builds the assets, so a production-only failure such
+      # as a selector the minifier rejects would otherwise reach main unnoticed.
+      - name: Build assets
+        run: npm run build
