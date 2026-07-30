@@ -90,15 +90,13 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v6
 
-      - name: Setup node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '22'
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install JS dependencies
-        run: npm install --no-audit --no-fund
+        run: bun install
 
       # Nothing else in CI builds the assets, so a production-only failure such
       # as a selector the minifier rejects would otherwise reach main unnoticed.
       - name: Build assets
-        run: npm run build
+        run: bun run build
