@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Jobs;
 
 use App\Enums\EmailType;
-use App\Interfaces\HasEnvelope;
 use App\Jobs\SendEmail;
 use App\Models\Company;
 use App\Models\EmailSent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
@@ -21,24 +17,8 @@ use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Resend\Email;
 use Resend\Service\Email as EmailService;
+use Tests\Fixtures\Mail\NewLoginDetected;
 use Tests\TestCase;
-
-class NewLoginDetected extends Mailable implements HasEnvelope
-{
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'A new login on your OfficeLife account',
-        );
-    }
-
-    public function content(): Content
-    {
-        return new Content(
-            htmlString: '<p>Someone just signed in. <a href="https://officelife.test">Was this you?</a></p>',
-        );
-    }
-}
 
 class SendEmailTest extends TestCase
 {

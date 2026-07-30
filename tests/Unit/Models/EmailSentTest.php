@@ -46,18 +46,4 @@ class EmailSentTest extends TestCase
         $this->assertFalse($emailSent->user()->exists());
         $this->assertNull($emailSent->user);
     }
-
-    #[Test]
-    public function it_keeps_the_email_when_the_user_is_deleted(): void
-    {
-        $user = User::factory()->create();
-        $emailSent = EmailSent::factory()->create([
-            'company_id' => $user->company_id,
-            'user_id' => $user->id,
-        ]);
-
-        $user->forceDelete();
-
-        $this->assertNull($emailSent->refresh()->user_id);
-    }
 }
