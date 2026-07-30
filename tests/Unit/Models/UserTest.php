@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,27 @@ class UserTest extends TestCase
 
         $this->assertTrue($user->company()->exists());
         $this->assertEquals('Dunder Mifflin', $user->company->name);
+    }
+
+    #[Test]
+    public function it_belongs_to_an_employee(): void
+    {
+        $employee = Employee::factory()->create(['first_name' => 'Michael', 'last_name' => 'Scott']);
+        $user = User::factory()->create([
+            'company_id' => $employee->company_id,
+            'employee_id' => $employee->id,
+        ]);
+
+        $this->assertTrue($user->employee()->exists());
+        $this->assertEquals('Michael Scott', $user->employee->name);
+    }
+
+    #[Test]
+    public function it_belongs_to_no_employee_when_the_account_gives_access_to_nobody_working_there(): void
+    {
+        $user = User::factory()->create(['employee_id' => null]);
+
+        $this->assertNull($user->employee);
     }
 
     #[Test]
