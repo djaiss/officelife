@@ -114,6 +114,28 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        /*
+        | Connection used by the test suite. phpunit.xml pins DB_CONNECTION to
+        | "testing", so the DB_TEST_* variables are what drive tests locally,
+        | and an in memory sqlite database is used when none are set. The CI
+        | workflow sets DB_CONNECTION itself, which takes precedence over
+        | phpunit.xml and makes the tests run on the connections above.
+        */
+        'testing' => [
+            'driver' => env('DB_TEST_DRIVER', 'sqlite'),
+            'database' => env('DB_TEST_DATABASE', ':memory:'),
+            'host' => env('DB_TEST_HOST', '127.0.0.1'),
+            'port' => env('DB_TEST_PORT', '3306'),
+            'username' => env('DB_TEST_USERNAME', 'root'),
+            'password' => env('DB_TEST_PASSWORD', ''),
+            'charset' => env('DB_TEST_DRIVER') === 'pgsql' ? 'utf8' : 'utf8mb4',
+            'collation' => env('DB_TEST_DRIVER') === 'pgsql' ? '' : 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
     ],
 
     /*
