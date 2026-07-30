@@ -9,8 +9,8 @@ description: Use when creating or editing database migrations in the project.
 
 - When adding foreign keys, you MUST NOT use the `constrained()` method.
 - You MUST comment a field by using `->comment('...')` to explain what the field is for.
-- Until we are in production (we have at least until end of 2026 for this), you MUST alter existing migrations instead of creating new ones when adding or changing fields. This is to avoid having too many migrations and to keep the database structure clean. Once we are in production, you can create new migrations for changes.
-- Unless stated, you MUST include timestamps fields in every migration.
+- Until we are in production (we have at least until end of 2026 for this), you MUST alter existing migrations instead of creating new ones when adding or changing fields. This is to avoid having too many migrations and to keep the database structure clean. Once we are in production, you MAY create new migrations for changes.
+- Unless stated otherwise, you MUST include timestamps fields in every migration.
 
 ❌ Don't
 ```php

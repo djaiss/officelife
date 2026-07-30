@@ -9,19 +9,21 @@ This skill keeps Laravel translation files consistent and complete.
 
 ## Key conventions
 
-This project uses **translations keys** in JSON files.
+This project uses **translation keys** in JSON files.
 
 ## When to use this Skill
 
-- New UI text or translation keys were introduced
-- Modules, pages, or components added new strings
-- PHP translation files contain empty or missing values
-- Locale files are out of sync with the codebase
-- A supported language is added or removed
+You MUST use this skill when:
+
+- New UI text or translation keys were introduced.
+- Modules, pages, or components added new strings.
+- Translation files contain empty or missing values.
+- Locale files are out of sync with the codebase.
+- A supported language is added or removed.
 
 ## Voice and tense per locale for logs
 
-When we are translating logs, match the convention for each language:
+When translating logs, you MUST match the convention for each language:
 
 | Locale | Convention | Example |
 |---|---|---|
@@ -33,27 +35,27 @@ When we are translating logs, match the convention for each language:
 
 ### Step 1: Regenerate locale files
 
-1. Run the locale generation command:
+1. You MUST run the locale generation command:
    ```bash
    composer kollek:locale
    ```
-2. Confirm the command completes successfully before making any edits.
+2. You MUST confirm the command completes successfully before making any edits.
 
 ### Step 2: Identify missing or empty translations
 
-- For each new entry in the `en.json` file, check all other locale files of the project and fix any missing or empty translations.
-- **Do not remove keys** unless they are confirmed unused.
-- **For empty or invalid values** — replace with an appropriate human-readable translation.
-- **Preserve placeholders exactly** — do not alter tokens like `:name`, `:count`, `:seconds`, `{value}`.
-- **Preserve embedded HTML or Markdown** — structure must be identical across locales.
-- **Consistency rules:**
-   - Same tense and tone as surrounding keys
-   - Same terminology used elsewhere in the locale file
-   - No informal register unless the file already uses it
+- For each new entry in the `en.json` file, you MUST check all the other locale files of the project and fix any missing or empty translation.
+- You MUST NOT remove keys unless they are confirmed unused.
+- You MUST replace empty or invalid values with an appropriate human-readable translation.
+- You MUST preserve placeholders exactly, and you MUST NOT alter tokens like `:name`, `:count`, `:seconds`, `{value}`.
+- You MUST preserve embedded HTML or Markdown: the structure MUST be identical across locales.
+- You MUST keep translations consistent:
+   - Same tense and tone as the surrounding keys.
+   - Same terminology used elsewhere in the locale file.
+   - No informal register, unless the file already uses it.
 
 ### Step 3: Quality checks
 
-1. No empty strings, null values, or `TODO` placeholders remain.
-2. If a translation is uncertain, prefer literal and conservative wording.
-3. Maintain existing key order unless the project explicitly requires sorting.
-4. Run `bash scripts/check-translations.sh` after translation changes; it checks all PHP short-key language files and fails on empty strings.
+1. No empty string, null value, or `TODO` placeholder MUST remain.
+2. When a translation is uncertain, you SHOULD prefer literal and conservative wording.
+3. You MUST maintain the existing key order, unless the project explicitly requires sorting.
+4. You MUST run `bash scripts/check-translations.sh` after translation changes. It checks all PHP short-key language files and fails on empty strings.
