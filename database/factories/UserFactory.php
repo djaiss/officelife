@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -12,34 +15,57 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    protected $model = User::class;
+
     /**
      * The current password being used by the factory.
      */
-    protected static ?string $password;
+    private static string $password;
 
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'company_id' => Company::factory(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password_hash' => self::$password ??= Hash::make('password'),
+            'is_active' => true,
+            'locale' => 'en',
             'remember_token' => Str::random(10),
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Indicate that the email address of the user is not verified.
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user signs in through an SSO provider.
+     */
+    public function singleSignOn(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'password_hash' => null,
+            'sso_provider' => 'google',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is suspended.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_active' => false,
         ]);
     }
 }

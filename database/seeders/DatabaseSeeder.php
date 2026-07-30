@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
+use App\Actions\CreateCompany;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +18,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $company = new CreateCompany(
+            name: 'Dunder Mifflin',
+            email: 'michael.scott@dundermifflin.com',
+            password: 'password',
+        )->execute();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->count(5)->create([
+            'company_id' => $company->id,
         ]);
     }
 }
