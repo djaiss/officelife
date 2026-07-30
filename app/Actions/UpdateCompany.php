@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\SizeRangeEnum;
+use App\Enums\UserActionEnum;
 use App\Enums\WorkModeEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,8 +38,19 @@ class UpdateCompany
         $this->validate();
         $this->sanitize();
         $this->update();
+        $this->log();
 
         return $this->company;
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->company,
+            user: $this->user,
+            action: UserActionEnum::CompanyUpdate,
+            parameters: ['name' => $this->name],
+        )->onQueue('low');
     }
 
     private function validate(): void

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\DestroyUser;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -19,6 +22,8 @@ class DestroyUserTest extends TestCase
     #[Test]
     public function it_destroys_a_user_of_the_company(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create();
         $owner = User::factory()->create(['company_id' => $company->id]);
         $company->owner_user_id = $owner->id;
@@ -32,6 +37,15 @@ class DestroyUserTest extends TestCase
         )->execute();
 
         $this->assertSoftDeleted($member);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserDeletion
+                && $job->company->id === $company->id
+                && $job->user->id === $owner->id
+                && $job->parameters === ['email' => $member->email],
+        );
     }
 
     #[Test]

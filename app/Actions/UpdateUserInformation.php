@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -26,8 +28,19 @@ class UpdateUserInformation
         $this->validate();
         $this->sanitize();
         $this->update();
+        $this->log();
 
         return $this->user;
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->author->company,
+            user: $this->author,
+            action: UserActionEnum::UserInformationUpdate,
+            parameters: ['email' => $this->email],
+        )->onQueue('low');
     }
 
     private function validate(): void

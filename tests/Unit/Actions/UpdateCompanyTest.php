@@ -6,11 +6,14 @@ namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateCompany;
 use App\Enums\SizeRangeEnum;
+use App\Enums\UserActionEnum;
 use App\Enums\WorkModeEnum;
+use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -21,6 +24,8 @@ class UpdateCompanyTest extends TestCase
     #[Test]
     public function it_updates_the_company(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
         $user = User::factory()->create(['company_id' => $company->id]);
 
@@ -52,11 +57,22 @@ class UpdateCompanyTest extends TestCase
         $this->assertEquals('fr_FR', $company->locale);
         $this->assertEquals('EUR', $company->currency);
         $this->assertEquals('accounting@dundermifflin.com', $company->billing_email);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::CompanyUpdate
+                && $job->company->id === $company->id
+                && $job->user->id === $user->id
+                && $job->parameters === ['name' => 'Dunder Mifflin Paper Company'],
+        );
     }
 
     #[Test]
     public function it_does_not_change_the_slug(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create(['slug' => 'dunder-mifflin']);
         $user = User::factory()->create(['company_id' => $company->id]);
 

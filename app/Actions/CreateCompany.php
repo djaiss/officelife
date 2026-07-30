@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\PlanEnum;
+use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +39,19 @@ class CreateCompany
             $this->attachOwner();
         });
 
+        $this->log();
+
         return $this->company;
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->company,
+            user: $this->owner,
+            action: UserActionEnum::CompanyCreation,
+            parameters: ['name' => $this->company->name],
+        )->onQueue('low');
     }
 
     private function sanitize(): void
