@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -23,8 +25,18 @@ class UpdateUserPassword
     {
         $this->validate();
         $this->update();
+        $this->log();
 
         return $this->user;
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->user->company,
+            user: $this->user,
+            action: UserActionEnum::UserPasswordUpdate,
+        )->onQueue('low');
     }
 
     private function validate(): void

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateUserInformation;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -19,6 +22,8 @@ class UpdateUserInformationTest extends TestCase
     #[Test]
     public function it_updates_the_user_themselves(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create();
         $user = User::factory()->create([
             'company_id' => $company->id,
@@ -38,11 +43,21 @@ class UpdateUserInformationTest extends TestCase
 
         $this->assertEquals('jim.halpert@athlead.com', $user->email);
         $this->assertEquals('fr_FR', $user->locale);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserInformationUpdate
+                && $job->company->id === $company->id
+                && $job->user->id === $user->id,
+        );
     }
 
     #[Test]
     public function it_lets_the_owner_update_another_user(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create();
         $owner = User::factory()->create(['company_id' => $company->id]);
         $company->owner_user_id = $owner->id;
@@ -65,6 +80,8 @@ class UpdateUserInformationTest extends TestCase
     #[Test]
     public function it_resets_the_email_verification_when_the_email_changes(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create();
         $user = User::factory()->create([
             'company_id' => $company->id,
@@ -84,6 +101,8 @@ class UpdateUserInformationTest extends TestCase
     #[Test]
     public function it_keeps_the_email_verification_when_the_email_does_not_change(): void
     {
+        Queue::fake();
+
         $company = Company::factory()->create();
         $user = User::factory()->create([
             'company_id' => $company->id,

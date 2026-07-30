@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -22,6 +24,17 @@ class DestroyUser
     {
         $this->validate();
         $this->destroy();
+        $this->log();
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->author->company,
+            user: $this->author,
+            action: UserActionEnum::UserDeletion,
+            parameters: ['email' => $this->user->email],
+        )->onQueue('low');
     }
 
     private function validate(): void
