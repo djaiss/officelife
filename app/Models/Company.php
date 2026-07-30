@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Company
@@ -36,17 +35,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $billing_email
  * @property Carbon|null $trial_ends_at
  * @property int|null $owner_user_id
- * @property array<string, mixed>|null $settings
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
  */
 class Company extends Model
 {
     /** @use HasFactory<CompanyFactory> */
     use HasFactory;
-
-    use SoftDeletes;
 
     protected $table = 'companies';
 
@@ -73,7 +68,6 @@ class Company extends Model
         'billing_email',
         'trial_ends_at',
         'owner_user_id',
-        'settings',
     ];
 
     /**
@@ -90,7 +84,6 @@ class Company extends Model
             'founded_at' => 'date',
             'trial_ends_at' => 'datetime',
             'is_self_hosted' => 'boolean',
-            'settings' => 'array',
         ];
     }
 

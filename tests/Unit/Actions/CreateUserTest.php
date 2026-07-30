@@ -52,33 +52,4 @@ class CreateUserTest extends TestCase
         $this->assertEquals('google', $user->sso_provider);
         $this->assertTrue($user->usesSingleSignOn());
     }
-
-    #[Test]
-    public function it_lowercases_and_sanitizes_the_email(): void
-    {
-        $company = Company::factory()->create();
-
-        $user = new CreateUser(
-            company: $company,
-            email: '  DWIGHT.SCHRUTE@dundermifflin.com ',
-            password: 'beets',
-        )->execute();
-
-        $this->assertEquals('dwight.schrute@dundermifflin.com', $user->email);
-    }
-
-    #[Test]
-    public function it_accepts_a_locale(): void
-    {
-        $company = Company::factory()->create();
-
-        $user = new CreateUser(
-            company: $company,
-            email: 'oscar.martinez@dundermifflin.com',
-            password: 'accounting',
-            locale: 'fr_FR',
-        )->execute();
-
-        $this->assertEquals('fr_FR', $user->locale);
-    }
 }

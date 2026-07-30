@@ -86,7 +86,7 @@ class CreateCompany
         $slug = $base;
         $suffix = 1;
 
-        while (Company::withTrashed()->where('slug', $slug)->exists()) {
+        while (Company::query()->where('slug', $slug)->exists()) {
             $suffix++;
             $slug = $base.'-'.$suffix;
         }

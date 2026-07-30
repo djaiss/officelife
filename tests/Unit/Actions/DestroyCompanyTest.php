@@ -29,7 +29,7 @@ class DestroyCompanyTest extends TestCase
             company: $company,
         )->execute();
 
-        $this->assertSoftDeleted($company);
+        $this->assertModelMissing($company);
     }
 
     #[Test]

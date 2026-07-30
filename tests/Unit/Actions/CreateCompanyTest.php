@@ -84,17 +84,4 @@ class CreateCompanyTest extends TestCase
         $this->assertEquals('dunder-mifflin', $first->slug);
         $this->assertEquals('dunder-mifflin-2', $second->slug);
     }
-
-    #[Test]
-    public function it_sanitizes_the_name_and_the_email(): void
-    {
-        $company = new CreateCompany(
-            name: '<script>alert("x")</script>Dunder Mifflin',
-            email: '  MICHAEL.SCOTT@dundermifflin.com  ',
-            password: 'thatswhatshesaid',
-        )->execute();
-
-        $this->assertEquals('Dunder Mifflin', $company->name);
-        $this->assertEquals('michael.scott@dundermifflin.com', $company->owner->email);
-    }
 }

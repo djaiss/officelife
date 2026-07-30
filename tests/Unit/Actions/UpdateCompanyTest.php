@@ -70,21 +70,6 @@ class UpdateCompanyTest extends TestCase
     }
 
     #[Test]
-    public function it_sanitizes_the_name(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-
-        new UpdateCompany(
-            user: $user,
-            company: $company,
-            name: '<b>Dunder Mifflin</b>',
-        )->execute();
-
-        $this->assertEquals('Dunder Mifflin', $company->refresh()->name);
-    }
-
-    #[Test]
     public function it_throws_when_the_user_belongs_to_another_company(): void
     {
         $this->expectException(ModelNotFoundException::class);

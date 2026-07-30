@@ -29,9 +29,7 @@ return new class extends Migration
             $table->string('billing_email')->nullable()->comment('email address the invoices are sent to');
             $table->datetime('trial_ends_at')->nullable()->comment('when the trial ends');
             $table->unsignedBigInteger('owner_user_id')->nullable()->comment('user who owns the company, set right after the first user is created');
-            $table->json('settings')->nullable()->comment('enabled modules and preferences of the company');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
