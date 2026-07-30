@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Helpers\TextSanitizer;
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,6 +24,7 @@ class CreateUser
         private readonly ?string $password = null,
         private ?string $ssoProvider = null,
         private readonly ?string $locale = null,
+        private readonly ?Employee $employee = null,
     ) {}
 
     public function execute(): User
@@ -43,8 +45,9 @@ class CreateUser
     {
         $this->user = User::query()->create([
             'company_id' => $this->company->id,
+            'employee_id' => $this->employee?->id,
             'email' => $this->email,
-            'password_hash' => $this->password === null ? null : Hash::make($this->password),
+            'password' => $this->password === null ? null : Hash::make($this->password),
             'sso_provider' => $this->ssoProvider,
             'is_active' => true,
             'locale' => $this->locale,

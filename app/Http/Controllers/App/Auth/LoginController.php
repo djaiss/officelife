@@ -1,0 +1,128 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\App\Auth;
+
+use App\Enums\EmailType;
+use App\Http\Controllers\Controller;
+use App\Jobs\CheckLastLogin;
+use App\Jobs\SendEmail;
+use App\Mail\LoginFailed;
+use App\Models\User;
+use App\Rules\Turnstile;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+
+class LoginController extends Controller
+{
+    public function create(): View
+    {
+        return view('app.auth.login');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $rules = [
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
+        ];
+
+        if (config('turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new Turnstile];
+        }
+
+        $request->validate($rules);
+
+        $this->ensureIsNotRateLimited($request);
+
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey($request));
+
+            $user = User::query()->where('email', $request->input('email'))->first();
+
+            if ($user && ! $user->usesSingleSignOn()) {
+                SendEmail::dispatch(
+                    mailable: new LoginFailed,
+                    company: $user->company,
+                    emailType: EmailType::LoginFailed,
+                    user: $user,
+                )->onQueue('high');
+            }
+
+            throw ValidationException::withMessages([
+                'email' => trans('These credentials do not match our records.'),
+            ]);
+        }
+
+        // A suspended user is signed out again straight away. The account still
+        // exists and its password is still valid, which is the whole point of a
+        // suspension, so the check cannot live in the credentials.
+        if (! $request->user()->is_active) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => trans('This account has been suspended.'),
+            ]);
+        }
+
+        if ($request->user()->usesTwoFactorAuthentication()) {
+            $userId = $request->user()->id;
+            Auth::logout();
+            session(['2fa:user:id' => $userId]);
+
+            return to_route('2fa.challenge.create');
+        }
+
+        RateLimiter::clear($this->throttleKey($request));
+
+        CheckLastLogin::dispatch(
+            user: $request->user(),
+            ip: $request->ip(),
+        )->onQueue('low');
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard.index', absolute: false));
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
+    private function ensureIsNotRateLimited(Request $request): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
+            return;
+        }
+
+        event(new Lockout($request));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey($request));
+
+        throw ValidationException::withMessages([
+            'email' => trans('Too many login attempts. Please try again in :seconds seconds.', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    private function throttleKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower((string) $request->string('email')).'|'.$request->ip());
+    }
+}

@@ -34,7 +34,7 @@ class CreateUserTest extends TestCase
             'email' => 'jim.halpert@dundermifflin.com',
             'is_active' => true,
         ]);
-        $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->password_hash));
+        $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->password));
     }
 
     #[Test]
@@ -48,7 +48,7 @@ class CreateUserTest extends TestCase
             ssoProvider: 'google',
         )->execute();
 
-        $this->assertNull($user->password_hash);
+        $this->assertNull($user->password);
         $this->assertEquals('google', $user->sso_provider);
         $this->assertTrue($user->usesSingleSignOn());
     }

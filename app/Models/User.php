@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,18 +18,23 @@ use Illuminate\Notifications\Notifiable;
  *
  * @property int $id
  * @property int $company_id
+ * @property int|null $employee_id
  * @property string $email
  * @property Carbon|null $email_verified_at
- * @property string|null $password_hash
+ * @property string|null $password
  * @property string|null $sso_provider
+ * @property string|null $two_factor_secret
+ * @property array<int, string>|null $two_factor_recovery_codes
+ * @property Carbon|null $two_factor_confirmed_at
  * @property bool $is_active
  * @property string|null $locale
+ * @property string|null $last_used_ip
  * @property Carbon|null $last_login_at
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory;
@@ -45,12 +51,17 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_id',
+        'employee_id',
         'email',
         'email_verified_at',
-        'password_hash',
+        'password',
         'sso_provider',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
         'is_active',
         'locale',
+        'last_used_ip',
         'last_login_at',
     ];
 
@@ -60,8 +71,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password_hash',
+        'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -73,9 +86,11 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'two_factor_recovery_codes' => 'array',
+            'two_factor_confirmed_at' => 'datetime',
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
-            'password_hash' => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -90,12 +105,21 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the password of the user. The column is named password_hash, so the
-     * guard needs to be told where to look.
+     * Get the employee record of the user, when they have one.
+     *
+     * @return BelongsTo<Employee, $this>
      */
-    public function getAuthPassword(): string
+    public function employee(): BelongsTo
     {
-        return (string) $this->password_hash;
+        return $this->belongsTo(Employee::class);
+    }
+
+    /**
+     * Get whether the user turned two factor authentication on.
+     */
+    public function usesTwoFactorAuthentication(): bool
+    {
+        return $this->two_factor_confirmed_at !== null;
     }
 
     /**

@@ -26,11 +26,11 @@ class UserTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_the_password_hash_as_the_authentication_password(): void
+    public function it_returns_the_password_as_the_authentication_password(): void
     {
-        $user = User::factory()->create(['password_hash' => Hash::make('dwightschrute')]);
+        $user = User::factory()->create(['password' => Hash::make('dwightschrute')]);
 
-        $this->assertEquals($user->password_hash, $user->getAuthPassword());
+        $this->assertEquals($user->password, $user->getAuthPassword());
         $this->assertTrue(Hash::check('dwightschrute', $user->getAuthPassword()));
     }
 
@@ -53,11 +53,11 @@ class UserTest extends TestCase
     }
 
     #[Test]
-    public function it_hides_the_password_hash_when_serialized(): void
+    public function it_hides_the_password_when_serialized(): void
     {
         $user = User::factory()->create();
 
-        $this->assertArrayNotHasKey('password_hash', $user->toArray());
+        $this->assertArrayNotHasKey('password', $user->toArray());
         $this->assertArrayNotHasKey('remember_token', $user->toArray());
     }
 

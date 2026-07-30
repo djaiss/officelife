@@ -9,16 +9,21 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
  * Create a company and its first user, who becomes the owner of the company.
+ * That first user is also an employee of the company, since somebody signing up
+ * works there.
  */
 class CreateCompany
 {
     private Company $company;
+
+    private Employee $employee;
 
     private User $owner;
 
@@ -26,6 +31,8 @@ class CreateCompany
         private string $name,
         private string $email,
         private readonly string $password,
+        private readonly string $firstName,
+        private readonly string $lastName,
         private readonly PlanEnum $plan = PlanEnum::Free,
     ) {}
 
@@ -35,6 +42,7 @@ class CreateCompany
 
         DB::transaction(function (): void {
             $this->createCompany();
+            $this->createEmployee();
             $this->createOwner();
             $this->attachOwner();
         });
@@ -73,12 +81,22 @@ class CreateCompany
         ]);
     }
 
+    private function createEmployee(): void
+    {
+        $this->employee = new CreateEmployee(
+            company: $this->company,
+            firstName: $this->firstName,
+            lastName: $this->lastName,
+        )->execute();
+    }
+
     private function createOwner(): void
     {
         $this->owner = new CreateUser(
             company: $this->company,
             email: $this->email,
             password: $this->password,
+            employee: $this->employee,
         )->execute();
     }
 

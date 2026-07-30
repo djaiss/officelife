@@ -24,7 +24,7 @@ class UpdateUserPasswordTest extends TestCase
     {
         Queue::fake();
 
-        $user = User::factory()->create(['password_hash' => Hash::make('beets')]);
+        $user = User::factory()->create(['password' => Hash::make('beets')]);
 
         $result = new UpdateUserPassword(
             user: $user,
@@ -32,7 +32,7 @@ class UpdateUserPasswordTest extends TestCase
         )->execute();
 
         $this->assertInstanceOf(User::class, $result);
-        $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->refresh()->password_hash));
+        $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->refresh()->password));
 
         Queue::assertPushedOn(
             queue: 'low',

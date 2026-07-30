@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'company_id' => Company::factory(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password_hash' => self::$password ??= Hash::make('password'),
+            'password' => self::$password ??= Hash::make('password'),
             'is_active' => true,
             'locale' => 'en',
             'remember_token' => Str::random(10),
@@ -54,7 +54,7 @@ class UserFactory extends Factory
     public function singleSignOn(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'password_hash' => null,
+            'password' => null,
             'sso_provider' => 'google',
         ]);
     }

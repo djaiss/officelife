@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             name: 'Dunder Mifflin',
             email: 'michael.scott@dundermifflin.com',
             password: 'password',
+            firstName: 'Michael',
+            lastName: 'Scott',
         )->execute();
 
         User::factory()->count(5)->create([

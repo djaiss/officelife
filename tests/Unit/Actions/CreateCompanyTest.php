@@ -28,6 +28,8 @@ class CreateCompanyTest extends TestCase
             name: 'Dunder Mifflin',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
+            firstName: 'Michael',
+            lastName: 'Scott',
         )->execute();
 
         $this->assertInstanceOf(Company::class, $company);
@@ -43,7 +45,14 @@ class CreateCompanyTest extends TestCase
         ]);
 
         $this->assertEquals($company->users()->first()->id, $company->owner_user_id);
-        $this->assertTrue(Hash::check('thatswhatshesaid', $company->owner->password_hash));
+        $this->assertTrue(Hash::check('thatswhatshesaid', $company->owner->password));
+
+        $this->assertDatabaseHas('employees', [
+            'company_id' => $company->id,
+            'first_name' => 'Michael',
+            'last_name' => 'Scott',
+        ]);
+        $this->assertEquals('Michael Scott', $company->owner->employee->name);
 
         Queue::assertPushedOn(
             queue: 'low',
@@ -63,6 +72,8 @@ class CreateCompanyTest extends TestCase
             name: 'Dunder Mifflin',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
+            firstName: 'Michael',
+            lastName: 'Scott',
         )->execute();
 
         $this->assertTrue($company->isOnTrial());
@@ -77,6 +88,8 @@ class CreateCompanyTest extends TestCase
             name: 'Dunder Mifflin',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
+            firstName: 'Michael',
+            lastName: 'Scott',
             plan: PlanEnum::Business,
         )->execute();
 
@@ -92,12 +105,16 @@ class CreateCompanyTest extends TestCase
             name: 'Dunder Mifflin',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
+            firstName: 'Michael',
+            lastName: 'Scott',
         )->execute();
 
         $second = new CreateCompany(
             name: 'Dunder Mifflin',
             email: 'jim.halpert@dundermifflin.com',
             password: 'bearsbeatsbattlestar',
+            firstName: 'Jim',
+            lastName: 'Halpert',
         )->execute();
 
         $this->assertEquals('dunder-mifflin', $first->slug);

@@ -16,18 +16,24 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('company_id')->comment('company the user belongs to');
+            $table->unsignedBigInteger('employee_id')->nullable()->comment('employee record of the user, null when the user is not an employee of the company');
             $table->string('email')->unique()->comment('email address the user logs in with');
             $table->timestamp('email_verified_at')->nullable()->comment('when the email address was verified');
-            $table->string('password_hash')->nullable()->comment('hashed password, null when the user signs in through SSO');
+            $table->string('password')->nullable()->comment('hashed password, null when the user signs in through SSO');
             $table->string('sso_provider')->nullable()->comment('SSO provider the user signs in with');
+            $table->text('two_factor_secret')->nullable()->comment('secret of the two factor authentication of the user');
+            $table->json('two_factor_recovery_codes')->nullable()->comment('recovery codes of the two factor authentication of the user');
+            $table->timestamp('two_factor_confirmed_at')->nullable()->comment('when the user confirmed their two factor authentication, which is what turns it on');
             $table->boolean('is_active')->default(true)->comment('whether the user can sign in, so a user can be suspended without being deleted');
             $table->string('locale', 5)->nullable()->comment('language of the interface, falls back to the company locale');
+            $table->string('last_used_ip')->nullable()->comment('ip address the user last signed in from');
             $table->datetime('last_login_at')->nullable()->comment('when the user last signed in');
             $table->rememberToken()->comment('remember token');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
+            $table->foreign('employee_id')->references('id')->on('employees')->nullOnDelete();
         });
 
         Schema::table('companies', function (Blueprint $table): void {

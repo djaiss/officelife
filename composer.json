@@ -10,8 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
+        "cesargb/laravel-magiclink": "^2.28",
+        "erag/laravel-disposable-email": "^5.2",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
+        "pragmarx/google2fa-laravel": "^3.0",
         "resend/resend-laravel": "^1.4",
         "stevebauman/purify": "^6.3"
     },
