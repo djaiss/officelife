@@ -7,6 +7,7 @@
 
 ## General PHP
 
+- You MUST declare one class, interface, trait or enum per file. This has no exception, and applies to tests exactly as it applies to the rest of the application.
 - Follow PSR-1, PSR-2, and PSR-12 standards.
 - Use camelCase for non-public-facing string-like elements.
 - Avoid using the `final` keyword; assume users write tests for overridden behavior.
@@ -63,8 +64,8 @@
 
 ## Test Classes
 
-- Keep test-specific classes within the same test file when possible.
-- Extract to dedicated classes only when reused across tests.
+- A test file MUST contain the test class and nothing else.
+- Every class a test needs (a mailable, a stub, a fake) MUST live in its own file under `tests/Fixtures`, in a namespace that mirrors the application (e.g. `Tests\Fixtures\Mail\NewLoginDetected`), whether or not it is used by a single test.
 
 ## Whitespace
 
