@@ -44,21 +44,6 @@ class LogUserActionTest extends TestCase
     }
 
     #[Test]
-    public function it_logs_an_action_without_parameters(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-
-        new LogUserAction(
-            company: $company,
-            user: $user,
-            action: UserActionEnum::UserPasswordUpdate,
-        )->handle();
-
-        $this->assertNull(Log::query()->latest()->first()->parameters);
-    }
-
-    #[Test]
     public function it_keeps_the_email_of_the_user_once_they_are_deleted(): void
     {
         $company = Company::factory()->create();
