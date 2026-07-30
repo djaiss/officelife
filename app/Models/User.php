@@ -17,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
  *
  * @property int $id
  * @property int $company_id
+ * @property int|null $employee_id
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string|null $password_hash
@@ -45,6 +46,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_id',
+        'employee_id',
         'email',
         'email_verified_at',
         'password_hash',
@@ -87,6 +89,17 @@ class User extends Authenticatable
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get the employee the account gives access to, when the account belongs to
+     * somebody who works for the company.
+     *
+     * @return BelongsTo<Employee, $this>
+     */
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class);
     }
 
     /**
