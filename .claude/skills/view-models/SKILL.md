@@ -5,14 +5,14 @@ description: Conventions for defining view models. Use when the user wants to cr
 
 # View models
 
-- View models are classes that extend the `ViewModel` class, and are responsible for preparing data for the view. They should not contain any business logic, but can contain presentation logic.
+- View models are classes responsible for preparing data for the view. They MUST NOT contain any business logic, but they MAY contain presentation logic.
 - You MUST create a view model for every view that needs data to be displayed, except when the data is really minimal.
-- View models are stored in the `app/ViewModels` folder, and are grouped by major domains of the application, like `Account`, `Operate`, `Grow`,... like controllers and views. They MUST match the controller folder structure.
-- View models are named after the view they are used for, with the suffix `ViewModel`. For example, the view model for the `account/profile.blade.php` view is `Account/ProfileViewModel`.
+- View models MUST be stored in the `app/ViewModels` folder, and MUST be grouped by major domains of the application, like `Account`, `Operate`, `Grow`, like controllers and views. They MUST match the controller folder structure.
+- View models MUST be named after the view they are used for, with the suffix `ViewModel`. For example, the view model for the `account/profile.blade.php` view is `Account/ProfileViewModel`.
 
 ## Structure for simple pages
 
-Je ferais simplement un ViewModel par page, dans un seul fichier.
+You MUST write a single view model per page, in a single file.
 
 ```
 app/
@@ -72,7 +72,7 @@ View:
 
 ## Structure for complex pages
 
-- Pour une page riche comme un dashboard, je ferais un ViewModel principal par page, puis je déléguerais les blocs complexes à de petits objets dédiés.
+For a rich page such as a dashboard, you MUST write one main view model for the page, and you MUST delegate the complex blocks to small dedicated objects.
 
 ```
 app/
@@ -85,7 +85,7 @@ app/
         └── CompanyMetrics.php
 ```
 
-Le contrôleur ne connaît que le ViewModel principal
+The controller MUST only know about the main view model:
 ```
 return view('dashboard.show', [
     'viewModel' => new DashboardViewModel(
@@ -95,7 +95,7 @@ return view('dashboard.show', [
 ]);
 ```
 
-Viewmodel principal
+Main view model:
 ```
 class DashboardViewModel
 {

@@ -5,11 +5,11 @@ description: Conventions for defining views. Use when the user wants to create o
 
 # Views
 
-- Views are kebab-case, and are stored in the `resources/views` folder.
-- Views are grouped by major domains of the application, like `account`, `operate`, `grow`,... and must match the controller folder structure.
-- View partials are prefixed with an underscore, and are stored in the same folder as the view that uses them.
-- Never put domain logic in a view.
-- Never compute data in a view. Instead, compute data in a viewmodel, that is passed to the controller, and pass it to the view.
+- View names MUST be kebab-case, and views MUST be stored in the `resources/views` folder.
+- Views MUST be grouped by major domains of the application, like `account`, `operate`, `grow`, and they MUST match the controller folder structure.
+- View partials MUST be prefixed with an underscore, and MUST be stored in the same folder as the view that uses them.
+- You MUST NOT put domain logic in a view.
+- You MUST NOT compute data in a view. You MUST compute data in a viewmodel, that is passed to the controller, and pass it to the view.
 - You SHOULD create and maintain PHPDoc blocks at the top of every view file.
 - You MUST create and maintain PHPDoc blocks for components.
 
@@ -25,5 +25,5 @@ description: Conventions for defining views. Use when the user wants to create o
 
 ## Blade components
 
-- Write a component class for every component, in a subfolder when needed (for instance, all the buttons are in `resources/views/components`).
-- As soon as you notice that a piece of view is repeated in multiple places, create a component for it.
+- You MUST write a component class for every component, in a subfolder when needed (for instance, all the buttons are in `resources/views/components`).
+- As soon as you notice that a piece of view is repeated in multiple places, you MUST create a component for it.

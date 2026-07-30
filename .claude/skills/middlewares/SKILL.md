@@ -6,6 +6,7 @@ description: Conventions for defining middlewares. Use when the user wants to cr
 # Middlewares
 
 - You MUST use middlewares instead of checking permissions in controllers or actions.
+- You MUST scope the lookup to the current account, `abort(404)` on `ModelNotFoundException`, and expose the resolved model through both `setParameter()` and `$request->attributes`, as shown below.
 
 ```
 class CheckCatalog
