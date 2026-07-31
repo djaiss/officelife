@@ -5,10 +5,11 @@ permissions:
   pull-requests: read
 
 on:
-  # pull_request_target, rather than pull_request, so the workflow also runs on
-  # pull requests opened from a fork. This is only safe because nothing here
-  # checks out or executes the code being proposed.
-  pull_request_target:
+  # pull_request, not pull_request_target. A pull request from a fork does run
+  # this workflow, and the token it gets is read only, which is all that reading
+  # a title needs. pull_request_target would hand a write token to a workflow
+  # running against a branch somebody else controls, and buys nothing here.
+  pull_request:
     types: [opened, edited, synchronize]
   workflow_dispatch:
 
