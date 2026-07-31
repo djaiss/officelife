@@ -33,6 +33,7 @@ description: Conventions for writing thin HTTP controllers that validate input a
 - You MUST instantiate the Action and call `->execute()`, passing `user: $request->user()` and the validated data with named arguments.
 - You MUST prepare the data for the view in a ViewModel, and pass it to the view.
 - You MUST type-hint the return of every method (`View`, `RedirectResponse`, `JsonResponse`, `AnonymousResourceCollection`, `Response`).
+- You MUST use `return redirect()->route('home.index')` instead of `return to_route('home.index')`.
 
 ### If it's a web controller
 

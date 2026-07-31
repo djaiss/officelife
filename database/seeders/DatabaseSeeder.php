@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
     {
         $company = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
             email: 'michael.scott@dundermifflin.com',
             password: 'password',
         )->execute();

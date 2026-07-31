@@ -119,4 +119,12 @@ class User extends Authenticatable
     {
         return $this->sso_provider !== null;
     }
+
+    /**
+     * Get whether the user confirmed their email address.
+     */
+    public function hasConfirmedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
 }
