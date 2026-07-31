@@ -25,7 +25,7 @@ That separation between "a person who works here" and "an account that can sign 
 
 ### The state of the product, and what that means for the portal
 
-**Read this before writing a single page.** OfficeLife is early. As of this roadmap, the user facing surfaces that exist are the guest and authentication screens, plus one screen inside the application: the profile, where somebody edits their own employee record and their emergency contact. There is no dashboard, no employee directory, no billing screen, and no API. `routes/web.php` still sends `/` to a landing page, with a comment saying it stands in "until there is a dashboard to send people to."
+**Read this before writing a single page.** OfficeLife is early. As of this roadmap, the user facing surfaces that exist are the guest and authentication screens, plus one screen inside the application: the profile, where somebody edits their own employee record, uploads a photo of themselves, and fills in their emergency contact. There is no dashboard, no employee directory, no billing screen, and no API. `routes/web.php` still sends `/` to a landing page, with a comment saying it stands in "until there is a dashboard to send people to."
 
 This has two consequences the writer must respect:
 
@@ -324,10 +324,20 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `profile.details`
 - **Purpose.** Walk somebody through the only editing form the product has, and explain the one field whose behavior is not obvious.
 - **Audience.** All.
-- **Summary.** The four fields, and which are required: **first name** and **last name** are, **display name** and **work email** are not. Explain the display name properly, since it is the field people ask about: it is the name you go by, and when you give one the product calls you by it everywhere, including the sidebar and your initials; leave it empty and your legal name is used instead. Say plainly who sees all of this: everyone in your company. Describe what saving looks like, because it is not what a reader expects from a web form: the page does not reload, a short confirmation slides into the bottom right corner and leaves on its own after a few seconds (it can be dismissed sooner with its close button), and the **Last saved** line under the fields updates in place. Note that saving is recorded in the company's activity log. Cover the avatar box in a sentence or two, honestly: there is no picture to upload today, the product draws the first letters of your name in a circle instead, and the screen says as much.
+- **Summary.** The four fields, and which are required: **first name** and **last name** are, **display name** and **work email** are not. Explain the display name properly, since it is the field people ask about: it is the name you go by, and when you give one the product calls you by it everywhere, including the sidebar and your initials; leave it empty and your legal name is used instead. Say plainly who sees all of this: everyone in your company. Describe what saving looks like, because it is not what a reader expects from a web form: the page does not reload, a short confirmation slides into the bottom right corner and leaves on its own after a few seconds (it can be dismissed sooner with its close button), and the **Last saved** line under the fields updates in place. Note that saving is recorded in the company's activity log. Point at `profile.photo` for the avatar box rather than covering it here.
 - **Prerequisites.** `profile.introduction`.
 - **Complexity.** Low.
-- **Related pages.** `concepts.employee-record`, `concepts.activity-log`, `profile.logs`, `profile.emergency-contact`.
+- **Related pages.** `concepts.employee-record`, `concepts.activity-log`, `profile.photo`, `profile.logs`, `profile.emergency-contact`.
+
+### Add a profile photo
+
+- **id.** `profile.photo`
+- **Purpose.** Walk somebody through putting a face to their name, and answer the two questions they will have about it: who can see it, and how to get rid of it.
+- **Audience.** All.
+- **Summary.** What the avatar is and where it turns up: beside your name across the product, in the sidebar and on your profile. What the product accepts, in the screen's own words: a JPEG, PNG or WebP up to 5 MB, square for the best result, because the avatar is shown in a circle and anything else is cropped to the middle rather than squashed. What happens after you choose a file and press **Upload**: the picture is converted to WebP and kept at two sizes, one for an ordinary screen and one for a sharp one, so it stays crisp on a laptop without costing a phone extra data. Say that the file you picked is not the file that is stored: it is resized, renamed, and the name you gave it is discarded. Be exact about who can see it, because this is where a reader looks for that: the photo is not on a public address, it is served through the application, and only to people who work at the same company. Then removal: **Remove the photo** asks once more before it goes, and taking it away brings back the initials the product drew before. Note that both uploading and removing are recorded in the company's activity log, and that neither is something an administrator can do on your behalf today.
+- **Prerequisites.** `profile.introduction`.
+- **Complexity.** Low.
+- **Related pages.** `profile.details`, `concepts.employee-record`, `concepts.activity-log`, `security.privacy`.
 
 ### Add an emergency contact
 

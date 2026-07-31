@@ -7,11 +7,13 @@
 
   @var string $companyName
   @var string $name
+  @var \App\Models\Employee|null $employee
   @var string $current
 --}}
 @props([
   'companyName',
   'name',
+  'employee' => null,
   'current' => 'profile',
 ])
 
@@ -53,7 +55,7 @@
   </nav>
 
   <div id="sidebar-identity" class="flex items-center gap-[9px] border-t border-hairline-soft px-3 py-[10px]">
-    <x-avatar-initials :name="$name" :size="26" />
+    <x-avatar :employee="$employee" :name="$name" :size="26" />
 
     <span class="truncate text-[12.5px] font-semibold text-ink">{{ $name }}</span>
   </div>

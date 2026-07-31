@@ -13,6 +13,8 @@ enum UserActionEnum: string
     case UserDeletion = 'user_deleted';
     case EmployeeCreation = 'employee_created';
     case EmployeeInformationUpdate = 'employee_information_updated';
+    case EmployeePhotoUpdate = 'employee_photo_updated';
+    case EmployeePhotoDeletion = 'employee_photo_deleted';
     case EmergencyContactUpdate = 'emergency_contact_updated';
     case EmailConfirmation = 'email_confirmed';
     case UserLogin = 'user_logged_in';
@@ -33,6 +35,8 @@ enum UserActionEnum: string
             self::UserDeletion => 'Deleted the account of :email',
             self::EmployeeCreation => 'Added :name to the company',
             self::EmployeeInformationUpdate => 'Updated the profile of :name',
+            self::EmployeePhotoUpdate => 'Changed the photo of :name',
+            self::EmployeePhotoDeletion => 'Removed the photo of :name',
             self::EmergencyContactUpdate => 'Updated their emergency contact',
             self::EmailConfirmation => 'Confirmed their email address',
             self::UserLogin => 'Signed in',

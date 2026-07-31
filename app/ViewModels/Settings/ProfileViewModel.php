@@ -64,6 +64,20 @@ class ProfileViewModel
         return $this->employee->name ?? $this->user->email;
     }
 
+    /**
+     * The record the avatar draws from, so the screen can show the photo when
+     * there is one. An account that belongs to nobody who works here has none.
+     */
+    public function employee(): ?Employee
+    {
+        return $this->employee;
+    }
+
+    public function hasPhoto(): bool
+    {
+        return $this->employee?->hasPhoto() ?? false;
+    }
+
     public function email(): string
     {
         return $this->user->email;
