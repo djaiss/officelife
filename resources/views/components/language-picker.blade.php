@@ -22,7 +22,6 @@
     @click.outside="open = false"
     @keydown.escape.window="open = false"
     :aria-expanded="open ? 'true' : 'false'"
-    aria-haspopup="menu"
     :class="open ? 'border-focus' : 'border-hairline-strong'"
     class="flex cursor-pointer items-center gap-[9px] rounded-md border bg-canvas px-[11px] py-2 text-[13px] text-ink transition-colors"
   >
@@ -39,7 +38,6 @@
     x-cloak
     x-show="open"
     x-transition.opacity.duration.120ms
-    role="menu"
     class="absolute bottom-[calc(100%+6px)] left-0 z-10 w-[250px] overflow-hidden rounded-lg border border-hairline-strong bg-canvas shadow-lg"
   >
     <div class="px-3 pt-[10px] pb-[6px] text-[10.5px] tracking-[0.09em] text-muted-soft uppercase">
@@ -52,7 +50,7 @@
           type="submit"
           name="locale"
           value="{{ $locale['code'] }}"
-          role="menuitem"
+          @if ($locale['code'] === $current) aria-current="true" @endif
           class="flex w-full cursor-pointer items-center gap-[10px] px-3 py-[9px] text-left transition-colors hover:bg-hover {{ $locale['code'] === $current ? 'bg-card' : '' }}"
         >
           <span class="{{ $flag }}" style="background: {{ $locale['flag'] }};" aria-hidden="true"></span>
@@ -60,7 +58,7 @@
           <span class="text-xs text-muted-soft">{{ $locale['region'] }}</span>
 
           <span class="flex w-[14px] items-center justify-center text-ink {{ $locale['code'] === $current ? '' : 'opacity-0' }}">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
               <path d="M2.2 6.3 4.7 8.8 9.8 3.4"></path>
             </svg>
           </span>

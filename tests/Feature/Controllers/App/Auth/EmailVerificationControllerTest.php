@@ -117,6 +117,12 @@ class EmailVerificationControllerTest extends TestCase
             ->post(route('auth.verification.send'));
 
         $response->assertRedirect(route('auth.verification.notice'));
+        $response->assertSessionHas('status', 'We sent you another email.');
+
+        $this->actingAs($user)
+            ->get(route('auth.verification.notice'))
+            ->assertSee('role="status"', escape: false)
+            ->assertSee('We sent you another email.');
 
         Queue::assertPushedOn(
             queue: 'high',

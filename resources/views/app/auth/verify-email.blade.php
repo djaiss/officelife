@@ -5,7 +5,7 @@
 --}}
 <x-guest-layout :title="__('Confirm your email address')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
-    <div class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-[60px]">
+    <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-[60px]">
       <div class="mx-auto w-full max-w-[470px] space-y-[22px]">
         <div class="space-y-[9px]">
           <div class="flex items-center gap-[11px]">
@@ -21,7 +21,7 @@
           </p>
         </div>
 
-        <x-error :messages="session('status')" />
+        <x-status :message="session('status')" />
 
         <x-box class="space-y-4">
           <p class="text-[13px] leading-relaxed text-body">
@@ -37,7 +37,7 @@
           {{ __('You can close this page. The link works from any browser, on any device.') }}
         </x-notice>
       </div>
-    </div>
+    </main>
 
     @include('app.auth._quote', ['quote' => $viewModel->quote()])
   </div>

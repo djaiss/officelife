@@ -12,7 +12,7 @@
 <x-guest-layout :title="__('Create your account')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     {{-- The form --}}
-    <div class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-[60px] sm:pt-14">
+    <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-[60px] sm:pt-14">
       <div class="mx-auto w-full max-w-[470px] space-y-[22px]">
         <div class="space-y-[9px]">
           <div class="flex items-center gap-[11px]">
@@ -26,7 +26,7 @@
           <p class="text-sm text-body">{{ __('You will be the first administrator of this company.') }}</p>
         </div>
 
-        <x-error :messages="session('status')" />
+        <x-status :message="session('status')" />
 
         {{-- The submit button stays greyed out until the terms are ticked. The
              server refuses the form all the same, so a browser without
@@ -145,7 +145,7 @@
       <p class="mt-auto pt-10 text-center text-xs text-muted-soft">
         &copy; {{ config('app.name') }} {{ now()->format('Y') }} &middot; {{ __('Open source HR') }}
       </p>
-    </div>
+    </main>
 
     {{-- The quote --}}
     @include('app.auth._quote', ['quote' => $viewModel->quote()])

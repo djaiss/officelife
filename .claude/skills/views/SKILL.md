@@ -14,6 +14,7 @@ description: Conventions for defining views. Use when the user wants to create o
 - You MUST NOT compute data in a view. You MUST compute data in a viewmodel, that is passed to the controller, and pass it to the view.
 - You SHOULD create and maintain PHPDoc blocks at the top of every view file.
 - You MUST create and maintain PHPDoc blocks for components.
+- When passing variables to a partial using `@include`, you MUST explicitly pass all required variables.
 
 ## Example
 ```
@@ -27,7 +28,7 @@ description: Conventions for defining views. Use when the user wants to create o
 
 ## Accessibility
 
-- You MUST make sure that your views are accessible.
+- You MUST make sure that your views are accessible following the best practices.
 - You MUST use semantic HTML elements when possible.
 - You MUST NOT use a clickable <div> or <span>. Use a <button> for actions and an <a> for navigation.
 - Placeholder text MUST NOT be used as the only label for a form control.
