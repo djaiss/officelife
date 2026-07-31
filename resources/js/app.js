@@ -27,6 +27,14 @@ Alpine.plugin(ajax);
 ajax.configure({ mergeStrategy: 'morph' });
 
 /*
+ * The files in `fileList` bigger than maxKilobytes. An upload form uses it to
+ * turn an oversized picture away in the browser, with something readable to
+ * say, rather than letting the request go and bounce off the web server.
+ */
+window.oversizedFiles = (fileList, maxKilobytes) =>
+    Array.from(fileList ?? []).filter((file) => file.size > maxKilobytes * 1024);
+
+/*
  * The theme the visitor picked, kept in local storage so it survives a reload.
  * The `.dark` class on <html> is what every token in app.css reads, and the
  * inline script in partials/meta sets it before the first paint so there is no

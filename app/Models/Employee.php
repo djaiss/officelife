@@ -48,6 +48,14 @@ class Employee extends Model
     /** @use HasFactory<EmployeeFactory> */
     use HasFactory;
 
+    /**
+     * The size, in CSS pixels, the photo is displayed at. It is written to disk
+     * twice, at this size and at twice it, so a dense screen has a sharp
+     * version to pick from. 96 covers the 74 pixel avatar on the profile
+     * screen, and downsizes cleanly to the 26 pixel one in the sidebar.
+     */
+    public const int PHOTO_SIZE = 96;
+
     protected $table = 'employees';
 
     /**
@@ -146,5 +154,31 @@ class Employee extends Model
     public function isEmployed(): bool
     {
         return $this->departed_at === null || $this->departed_at->isFuture();
+    }
+
+    /**
+     * Every pixel size actually written to disk, which is what the route that
+     * serves the photo accepts.
+     *
+     * @return list<int>
+     */
+    public static function photoPixelSizes(): array
+    {
+        return [self::PHOTO_SIZE, self::PHOTO_SIZE * 2];
+    }
+
+    public function hasPhoto(): bool
+    {
+        return $this->photo_path !== null;
+    }
+
+    /**
+     * The path of one version of the photo. photo_path holds the base the two
+     * versions are named after, without an extension, so the files beside it
+     * are photos/{employee}/{uuid}_96.webp and photos/{employee}/{uuid}_192.webp.
+     */
+    public function photoVariantPath(int $pixels): string
+    {
+        return $this->photo_path.'_'.$pixels.'.webp';
     }
 }
