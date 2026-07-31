@@ -50,7 +50,7 @@
             <x-turnstile data-size="flexible" />
 
             <div class="flex items-center gap-[14px]">
-              <x-link :href="route('auth.password.new')" class="text-[13px] text-body">
+              <x-link turbo :href="route('auth.password.new')" class="text-[13px] text-body">
                 {{ __('Forgot your password?') }}
               </x-link>
 
@@ -61,12 +61,12 @@
 
         <x-box padding="p-[15px]" class="rounded-lg text-center text-[13.5px] text-body">
           {{ __('Wanna skip the password?') }}
-          <x-link :href="route('auth.magicLink.new')" class="font-semibold text-ink">{{ __('Send me a link instead') }}</x-link>
+          <x-link turbo :href="route('auth.magicLink.new')" class="font-semibold text-ink">{{ __('Send me a link instead') }}</x-link>
         </x-box>
 
         <x-box padding="p-[15px]" class="rounded-lg text-center text-[13.5px] text-body">
           {{ __('New to :app?', ['app' => config('app.name')]) }}
-          <x-link :href="route('auth.register.new')" class="font-semibold text-ink">{{ __('Create a company') }}</x-link>
+          <x-link turbo :href="route('auth.register.new')" class="font-semibold text-ink">{{ __('Create a company') }}</x-link>
         </x-box>
 
         <div class="flex items-center gap-3">
