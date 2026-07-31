@@ -1,4 +1,4 @@
----
+
 name: writer-analyst
 description: Analyze the codebase and produce a comprehensive implementation plan for the product documentation portal. Inspect the application's features, terminology, configuration, installation, authentication, subscriptions, permissions, and user workflows to design a documentation structure following industry best practices. Use when planning a documentation portal, defining its information architecture, creating a documentation roadmap, or identifying the documentation required before writing the content.
 ---
@@ -23,6 +23,8 @@ You MUST produce a documentation roadmap that:
 - scales as the product grows
 
 The documentation MUST feel intentional, complete, and easy to navigate.
+
+The documentation roadmap MUST be placed in `docs/portal/ROADMAP.md`, and it MUST be structured using headings.
 
 ## Inputs
 
