@@ -22,7 +22,7 @@
     :description="__('Manage your personal details and how colleagues see you.')"
   />
 
-  <x-status :message="session('status')" />
+  <x-status id="status" x-sync :message="session('status')" />
 
   {{-- Avatar --}}
   <x-box :title="__('Avatar')">
@@ -39,7 +39,7 @@
       </div>
 
       <div class="flex items-center gap-4">
-        <x-avatar-initials :name="$viewModel->name()" :size="74" />
+        <x-avatar-initials id="profile-avatar" :name="$viewModel->name()" :size="74" />
 
         <x-notice>{{ __('Changing your picture is coming soon.') }}</x-notice>
       </div>
@@ -60,7 +60,13 @@
         <p>{{ __('The details you keep private, such as your emergency contact, are never shown to your colleagues.') }}</p>
       </div>
 
-      <x-form method="put" :action="route('settings.profile.update')" class="space-y-[14px]">
+      <x-form
+        method="put"
+        :action="route('settings.profile.update')"
+        id="details-form"
+        x-target="details-form profile-avatar sidebar-identity"
+        class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
+      >
         <x-input
           id="first_name"
           :label="__('First name')"
@@ -95,9 +101,11 @@
         />
 
         <div class="flex items-center gap-3 pt-1">
-          @if ($viewModel->lastSavedAt())
-            <span class="text-xs text-muted-soft">{{ __('Last saved :time', ['time' => $viewModel->lastSavedAt()]) }}</span>
-          @endif
+          <span id="last-saved" @class(['text-xs text-muted-soft', 'hidden' => ! $viewModel->lastSavedAt()])>
+            @if ($viewModel->lastSavedAt())
+              {{ __('Last saved :time', ['time' => $viewModel->lastSavedAt()]) }}
+            @endif
+          </span>
 
           <x-button class="ml-auto">{{ __('Save') }}</x-button>
         </div>
@@ -119,7 +127,13 @@
         <p>{{ __('Only you and your company administrators can see this.') }}</p>
       </div>
 
-      <x-form method="put" :action="route('settings.emergencyContact.update')" class="space-y-[14px]">
+      <x-form
+        method="put"
+        :action="route('settings.emergencyContact.update')"
+        id="emergency-contact-form"
+        x-target="emergency-contact-form last-saved"
+        class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
+      >
         <x-input
           id="name"
           :label="__('Name')"

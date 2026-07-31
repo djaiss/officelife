@@ -52,7 +52,7 @@
     </span>
   </nav>
 
-  <div class="flex items-center gap-[9px] border-t border-hairline-soft px-3 py-[10px]">
+  <div id="sidebar-identity" class="flex items-center gap-[9px] border-t border-hairline-soft px-3 py-[10px]">
     <x-avatar-initials :name="$name" :size="26" />
 
     <span class="truncate text-[12.5px] font-semibold text-ink">{{ $name }}</span>
