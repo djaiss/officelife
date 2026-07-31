@@ -31,6 +31,12 @@
 ])
 
 @php
+  /* The hint and the errors are announced with the field rather than read as
+     loose text somewhere after it, so they are pointed at by id. */
+  $helpId = $help ? $id.'-help' : null;
+  $errorId = $error ? $id.'-error' : null;
+  $describedBy = trim(($helpId ?? '').' '.($errorId ?? ''));
+
   $classes = [
     'block w-full appearance-none',
     'px-[11px] py-[10px] text-[13.5px]',
@@ -55,6 +61,8 @@
     value="{{ $value }}"
     placeholder="{{ $placeholder }}"
     @if ($autocomplete) autocomplete="{{ $autocomplete }}" @endif
+    @if ($describedBy !== '') aria-describedby="{{ $describedBy }}" @endif
+    @if ($error) aria-invalid="true" @endif
     @unless ($allowPasswordManager) data-1p-ignore @endunless
     {{ $autofocus ? 'autofocus' : '' }}
     {{ $required ? 'required' : '' }}
@@ -63,8 +71,8 @@
   />
 
   @if ($help)
-    <p class="text-xs text-muted">{{ $help }}</p>
+    <p id="{{ $helpId }}" class="text-xs text-muted">{{ $help }}</p>
   @endif
 
-  <x-error :messages="$error" />
+  <x-error :id="$errorId" :messages="$error" />
 </div>

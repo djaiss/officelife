@@ -10,3 +10,4 @@ description: Conventions for defining tests. Use when the user wants to create o
 - Test method names MUST be descriptive and use `snake_case`, like `it_can_list_the_api_keys_of_the_current_user`.
 - You MUST not test sanitization.
 - You MUST not test casts.
+- You MUST not test blade components.
