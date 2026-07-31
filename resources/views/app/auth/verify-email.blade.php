@@ -6,8 +6,8 @@
 <x-guest-layout :title="__('Confirm your email address')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <div class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-[60px]">
-      <div class="mx-auto flex w-full max-w-[470px] flex-col gap-[22px]">
-        <div>
+      <div class="mx-auto w-full max-w-[470px] space-y-[22px]">
+        <div class="space-y-[9px]">
           <div class="flex items-center gap-[11px]">
             <x-logo :size="30" />
 
@@ -16,14 +16,14 @@
             <x-theme-toggle class="ml-auto" />
           </div>
 
-          <p class="mt-[9px] text-sm text-body">
+          <p class="text-sm text-body">
             {{ __('We sent a link to :email. Click it, and your account is ready.', ['email' => $viewModel->email()]) }}
           </p>
         </div>
 
         <x-error :messages="session('status')" />
 
-        <x-box class="flex flex-col gap-4">
+        <x-box class="space-y-4">
           <p class="text-[13px] leading-relaxed text-body">
             {{ __('Nothing in your inbox? It can take a minute, and it sometimes lands in the spam folder.') }}
           </p>
