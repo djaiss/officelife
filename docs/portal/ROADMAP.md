@@ -25,12 +25,12 @@ That separation between "a person who works here" and "an account that can sign 
 
 ### The state of the product, and what that means for the portal
 
-**Read this before writing a single page.** OfficeLife is early. As of this roadmap, the only user facing surfaces that exist are the guest and authentication screens. There is no dashboard, no employee directory, no settings screen, no billing screen, and no API. `routes/web.php` contains exactly one route, `/`, which still renders the Laravel starter page, with a comment saying it stands in "until there is a dashboard to send people to."
+**Read this before writing a single page.** OfficeLife is early. As of this roadmap, the user facing surfaces that exist are the guest and authentication screens, plus one screen inside the application: the profile, where somebody edits their own employee record and their emergency contact. There is no dashboard, no employee directory, no billing screen, and no API. `routes/web.php` still sends `/` to a landing page, with a comment saying it stands in "until there is a dashboard to send people to."
 
 This has two consequences the writer must respect:
 
-1. **Sections 1 through 8 below are writable today.** They cover accounts, signing in, security, language, the emails the product sends, and running your own instance. Every claim in them is backed by code that exists and by tests that pass.
-2. **Section 9 is not writable yet.** It is an inventory of things the database or the enums anticipate but no screen or route delivers. It exists so nobody writes those pages by accident, and so they can be written the moment the feature lands.
+1. **Every numbered section below is writable today.** They cover accounts, signing in, your profile, security, language, the emails the product sends, and running your own instance. Every claim in them is backed by code that exists and by tests that pass.
+2. **"Not yet documentable", at the end, is not writable.** It is an inventory of things the database or the enums anticipate but no screen or route delivers. It exists so nobody writes those pages by accident, and so they can be written the moment the feature lands.
 
 Never present a planned capability as finished. When a page has to mention something that is half built, say plainly what works and what does not.
 
@@ -63,7 +63,7 @@ The `id` given for each page is its permanent frontmatter identifier, in `domain
 
 ### Ordering
 
-Sections are ordered by how somebody actually meets the product: find out what it is, create an account, understand the vocabulary, learn to get back in, secure the account, adjust the interface, understand the mail it sends, and (for operators) run it. Nobody should need a later section to finish an earlier one.
+Sections are ordered by how somebody actually meets the product: find out what it is, create an account, understand the vocabulary, learn to get back in, fill in your profile, secure the account, adjust the interface, understand the mail it sends, and (for operators) run it. Nobody should need a later section to finish an earlier one.
 
 ---
 
@@ -154,7 +154,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `getting.what-works-today`
 - **Purpose.** Set honest expectations for somebody who just got in and is looking at a bare page.
 - **Audience.** New owners.
-- **Summary.** A short, factual page. What exists: your company, your account, your employee record, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
+- **Summary.** A short, factual page. What exists: your company, your account, your employee record, the profile screen where you edit it, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
 - **Prerequisites.** `getting.create-account`.
 - **Complexity.** Low, but must be revisited every time a feature ships. Flag it in the page as the portal's "what is built" page.
 - **Related pages.** `portal.introduction`, `concepts.introduction`.
@@ -214,7 +214,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `concepts.employee-record`
 - **Purpose.** Say exactly what the product knows about a person, which is a question people ask about HR software before they ask anything else.
 - **Audience.** Employees and owners.
-- **Summary.** A plain inventory, grouped by who it is for. Work facts: employee number as used by payroll, legal first and last name, the name they go by, photo, work email, job title, country, timezone, hire date, departure date. Personal facts: personal email and phone, date of birth, home address, and an emergency contact with their relationship to the employee. Explain the naming rule the product applies, because it shows up everywhere: the product calls you by the name you go by when you have given one, and by your legal name otherwise. Be clear about what is not stored: no salary, no compensation, no performance record, none of it exists in the product today. Be equally clear that no screen creates or edits an employee yet except the one the product creates for you when you sign up.
+- **Summary.** A plain inventory, grouped by who it is for. Work facts: employee number as used by payroll, legal first and last name, the name they go by, photo, work email, job title, country, timezone, hire date, departure date. Personal facts: personal email and phone, date of birth, home address, and an emergency contact with their relationship to the employee. Explain the naming rule the product applies, because it shows up everywhere: the product calls you by the name you go by when you have given one, and by your legal name otherwise. Be clear about what is not stored: no salary, no compensation, no performance record, none of it exists in the product today. Be equally clear about which of it you can reach: the profile screen edits four of these fields on your own record, no screen creates an employee except the one the product makes for you when you sign up, and nothing lets you see or edit anybody else's.
 - **Prerequisites.** `concepts.employee-vs-user`.
 - **Complexity.** Medium.
 - **Related pages.** `concepts.employee-vs-user`, `security.privacy`.
@@ -301,13 +301,53 @@ The screen also carries a line telling people joining an existing company to ask
 
 ---
 
-## Section 5: Your account and its security
+## Section 5: Your profile
+
+**Why this section exists.** The profile screen is the first and, so far, the only place in the signed in application where somebody changes something about themselves. It is what a new user reaches for once they are in, and it is where the abstract distinction between an employee and an account finally becomes something you can click. It also holds the one piece of genuinely private information the product asks for, which deserves its own page rather than a paragraph.
+
+**Who it is for.** Every employee with an account.
+
+**On disk.** `5-your-profile/`. Section value `your-profile`.
+
+### Your profile
+
+- **id.** `profile.introduction`
+- **Purpose.** Section index, and the reader's first tour of a screen inside the application.
+- **Audience.** All.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Preferences** is listed but cannot be opened, because that screen does not exist yet.
+- **Prerequisites.** `concepts.employee-vs-user`.
+- **Complexity.** Low.
+- **Related pages.** Both pages below, `concepts.employee-record`, `security.introduction`.
+
+### Edit your details
+
+- **id.** `profile.details`
+- **Purpose.** Walk somebody through the only editing form the product has, and explain the one field whose behavior is not obvious.
+- **Audience.** All.
+- **Summary.** The four fields, and which are required: **first name** and **last name** are, **display name** and **work email** are not. Explain the display name properly, since it is the field people ask about: it is the name you go by, and when you give one the product calls you by it everywhere, including the sidebar and your initials; leave it empty and your legal name is used instead. Say plainly who sees all of this: everyone in your company. Note that the form remembers when it last saved and shows it under the fields, and that saving is recorded in the company's activity log. Cover the avatar box in a sentence or two, honestly: there is no picture to upload today, the product draws the first letters of your name in a circle instead, and the screen says as much.
+- **Prerequisites.** `profile.introduction`.
+- **Complexity.** Low.
+- **Related pages.** `concepts.employee-record`, `concepts.activity-log`, `profile.emergency-contact`.
+
+### Add an emergency contact
+
+- **id.** `profile.emergency-contact`
+- **Purpose.** Explain the one form in the product that asks for somebody else's personal details, and be exact about who can read them.
+- **Audience.** All.
+- **Summary.** What it is for, in the product's own framing: who to call if something happens to you at work. The three fields, all optional: **name**, **phone number**, **relationship**. Be precise about privacy, because this is the page where a reader will be looking for it. What the code actually does: the details are stored on your employee record, they are never written into the activity log, which records only that they changed, and no screen in the product shows them to anybody but you. Note that the screen tells you your company administrators can see this, and that no such screen exists yet, so today the honest answer is that only you can read them in the application. Tell the reader they can empty the fields and save to remove the contact.
+- **Prerequisites.** `profile.introduction`.
+- **Complexity.** Medium, because the privacy claim has to be worded carefully.
+- **Related pages.** `security.privacy`, `concepts.employee-record`, `concepts.activity-log`.
+
+---
+
+## Section 6: Your account and its security
 
 **Why this section exists.** Account and security questions are the ones users ask under pressure, when something looks wrong. They need direct, calm answers in one place. This section also has to be scrupulous about which protections are on by default, which are optional, and which are half built.
 
 **Who it is for.** Everybody, plus owners for the parts about other people's accounts.
 
-**On disk.** `5-account-and-security/`. Section value `account-and-security`.
+**On disk.** `6-account-and-security/`. Section value `account-and-security`.
 
 ### Your account and its security
 
@@ -324,7 +364,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `security.password`
 - **Purpose.** Explain what the product requires of a password and what changing one does.
 - **Audience.** All.
-- **Summary.** The rule, which is short: at least eight characters, confirmed by typing it twice. Advice on choosing one. That the change is recorded in the company's activity log. That an account which signs in through an identity provider has no password to change, and what the message about that means. Then be straight with the reader: **the only way to change your password today is the forgotten password flow**, because there is no account settings screen yet. Walk them through it in one line and link there. Do not describe a settings form that does not exist.
+- **Summary.** The rule, which is short: at least eight characters, confirmed by typing it twice. Advice on choosing one. That the change is recorded in the company's activity log. That an account which signs in through an identity provider has no password to change, and what the message about that means. Then be straight with the reader: **the only way to change your password today is the forgotten password flow**, because the settings screens carry your employee record and nothing about your account yet. Walk them through it in one line and link there. Do not describe a password form that does not exist.
 - **Prerequisites.** An account.
 - **Complexity.** Medium.
 - **Related pages.** `signin.forgot-password`, `concepts.activity-log`.
@@ -375,13 +415,13 @@ There is no screen, route or command to **turn two factor authentication on**. T
 
 ---
 
-## Section 6: Language and appearance
+## Section 7: Language and appearance
 
 **Why this section exists.** Two things every reader can change immediately, on any screen, signed in or not. Small, satisfying, and genuinely finished.
 
 **Who it is for.** Everybody.
 
-**On disk.** `6-language-and-appearance/`. Section value `language-and-appearance`.
+**On disk.** `7-language-and-appearance/`. Section value `language-and-appearance`.
 
 ### Language and appearance
 
@@ -425,13 +465,13 @@ There is no screen, route or command to **turn two factor authentication on**. T
 
 ---
 
-## Section 7: Emails from OfficeLife
+## Section 8: Emails from OfficeLife
 
 **Why this section exists.** Five emails exist, three of them are security warnings, and a reader who receives one arrives at the portal with that exact subject line in their hand. A page per email, findable by its subject, is the fastest possible answer. This section is also where the "we keep a copy of what we sent you" fact belongs.
 
 **Who it is for.** Employees who received something, and owners who want to know what the product sends.
 
-**On disk.** `7-emails/`. Section value `emails`.
+**On disk.** `8-emails/`. Section value `emails`.
 
 ### Emails from OfficeLife
 
@@ -505,13 +545,13 @@ There is no screen, route or command to **turn two factor authentication on**. T
 
 ---
 
-## Section 8: Running your own instance
+## Section 9: Running your own instance
 
 **Why this section exists.** OfficeLife is open source, and self hosting is a first class way to use it. This audience is entirely different from every other section: they read commands, not walkthroughs. Everything here is grounded in the composer scripts, the environment file, and the configuration.
 
 **Who it is for.** Operators and developers only. Say so at the top of every page.
 
-**On disk.** `8-self-hosting/`. Section value `self-hosting`.
+**On disk.** `9-self-hosting/`. Section value `self-hosting`.
 
 ### Running your own instance
 
@@ -615,13 +655,13 @@ There is no screen, route or command to **turn two factor authentication on**. T
 
 ---
 
-## Section 9: Troubleshooting
+## Section 10: Troubleshooting
 
 **Why this section exists.** A reader with a problem does not know which section their problem lives in. This one is organised by symptom, in their words, and does nothing but route them or answer them.
 
 **Who it is for.** Everybody.
 
-**On disk.** `9-troubleshooting/`. Section value `troubleshooting`.
+**On disk.** `10-troubleshooting/`. Section value `troubleshooting`.
 
 ### Troubleshooting
 
@@ -665,13 +705,13 @@ There is no screen, route or command to **turn two factor authentication on**. T
 
 ---
 
-## Section 10: Reference
+## Section 11: Reference
 
 **Why this section exists.** A few facts get asked repeatedly and belong somewhere scannable, not buried in prose. Reference pages are factual and short.
 
 **Who it is for.** All, depending on the page.
 
-**On disk.** `10-reference/`. Section value `reference`.
+**On disk.** `11-reference/`. Section value `reference`.
 
 ### Reference
 
@@ -721,7 +761,7 @@ Each entry names the evidence, what is missing, and the page it should become.
 
 - **Inviting people, and adding employees.** The registration screen tells people joining an existing company to ask an administrator to invite them, but no invitation exists: no route, no mail, no token, no screen. Creating an employee works as business logic and is exercised by tests, but the only employee ever created is the founder's own, during signup. **No page may describe inviting a colleague or adding an employee.** When it ships it is the most important tutorial in the portal.
 
-- **Editing your company, your account, or an employee.** The business logic for all three exists and is tested. No screen or route reaches it. Several pages above are shaped around this absence and say so; when the screens land, those caveats come out and the pages become how-tos.
+- **Editing your company, your account, or somebody else's employee record.** The business logic for all three exists and is tested. Only your own employee record has a screen, covered by Section 5; nothing reaches the other three. Several pages above are shaped around this absence and say so; when the screens land, those caveats come out and the pages become how-tos.
 
 - **Viewing the activity log, and the record of emails sent.** Both are written and stored. Neither is displayed anywhere. `concepts.activity-log` and `email.record` describe what is recorded, not how to read it.
 
@@ -731,7 +771,7 @@ Each entry names the evidence, what is missing, and the page it should become.
 
 - **Any API.** There is no API route file, no API controller, no resource, no token authentication. The application's own conventions describe an `Api` controller namespace and versioning, but nothing is built. **The portal must not contain an API section.**
 
-- **The application itself, past sign in.** There is no dashboard, no navigation, no employee directory, no home screen. `/` renders the framework's starter page. `getting.what-works-today` is the page that tells readers this, and it is the page to revisit first as the product grows.
+- **The application itself, past the profile screen.** There is no dashboard, no employee directory, no home screen, and the only navigation is the settings sidebar, whose **Preferences** entry opens nothing. `/` renders a landing page rather than anything signed in. `getting.what-works-today` is the page that tells readers this, and it is the page to revisit first as the product grows.
 
 ---
 
@@ -741,7 +781,8 @@ Build the portal in this order. Each block is independently publishable, so the 
 
 1. **First pass, the essentials.** `portal.introduction`, `getting.introduction`, `getting.what-is-officelife`, `getting.create-account`, `getting.confirm-email`, `signin.introduction`, `signin.password`, `signin.magic-link`, `signin.forgot-password`. This alone answers most of what a real user will ask today.
 2. **Second pass, the model.** All of Section 3, plus `getting.what-works-today`. This is where the product becomes comprehensible rather than merely usable.
-3. **Third pass, security and email.** Sections 5 and 7. These are the pages people arrive at from an inbox, under stress, so they benefit from being written together and in one voice.
-4. **Fourth pass, operators.** Section 8. A different audience and a different register; writing it in one block keeps it consistent.
-5. **Fifth pass, the connective tissue.** Sections 6, 9 and 10. Language, troubleshooting and reference are best written last, because they mostly link to pages that must already exist.
-6. **Then translate.** `fr_FR`, `de_DE`, `es_ES`. Only the `id` stays identical across locales; titles, slugs and sections are translated with the rest.
+3. **Third pass, the one screen there is.** All of Section 5. It is short, it is the only part of the portal a reader can follow with the product open in front of them, and it makes Section 3 concrete.
+4. **Fourth pass, security and email.** Sections 6 and 8. These are the pages people arrive at from an inbox, under stress, so they benefit from being written together and in one voice.
+5. **Fifth pass, operators.** Section 9. A different audience and a different register; writing it in one block keeps it consistent.
+6. **Sixth pass, the connective tissue.** Sections 7, 10 and 11. Language, troubleshooting and reference are best written last, because they mostly link to pages that must already exist.
+7. **Then translate.** `fr_FR`, `de_DE`, `es_ES`. Only the `id` stays identical across locales; titles, slugs and sections are translated with the rest.
