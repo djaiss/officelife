@@ -22,8 +22,6 @@
     :description="__('Manage your personal details and how colleagues see you.')"
   />
 
-  <x-status id="status" x-sync :message="session('status')" />
-
   {{-- Avatar --}}
   <x-box :title="__('Avatar')">
     <x-slot:help>

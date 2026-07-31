@@ -27,6 +27,7 @@ class EmergencyContactController extends Controller
         )->execute();
 
         return redirect()->route('settings.profile.index')
-            ->with('status', __('Your emergency contact is saved.'));
+            ->with('status', __('Your emergency contact is saved.'))
+            ->with('status_description', __('Only you and your company administrators can see this.'));
     }
 }
