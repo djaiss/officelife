@@ -17,7 +17,7 @@
   'error' => null,
 ])
 
-<div class="flex flex-col gap-1">
+<div class="space-y-1">
   <label for="{{ $id }}" class="flex cursor-pointer items-start gap-[10px]">
     <input
       type="checkbox"

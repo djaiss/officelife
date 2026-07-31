@@ -15,10 +15,10 @@
   'additionalInfo' => null,
 ])
 
-<div class="flex flex-col gap-2">
+<div class="space-y-2">
   @isset($title)
     <div class="flex items-center justify-between">
-      <h2 class="mb-1 text-lg font-semibold text-ink">{{ $title }}</h2>
+      <h2 class="text-lg font-semibold text-ink">{{ $title }}</h2>
 
       @isset($actions)
         <div>{{ $actions }}</div>
@@ -27,7 +27,7 @@
   @endisset
 
   @isset($description)
-    <div class="mb-2 flex flex-col gap-y-2 text-sm text-muted">
+    <div class="space-y-2 text-sm text-muted">
       {{ $description }}
     </div>
   @endisset

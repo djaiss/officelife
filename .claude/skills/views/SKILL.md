@@ -23,6 +23,10 @@ description: Conventions for defining views. Use when the user wants to create o
 ?>
 ```
 
+## CSS
+
+- Instead of using margin and padding between elements, you MUST use `space-x` or `space-y` in div to create consistent spacing between child elements.
+
 ## Blade components
 
 - You MUST write a component class for every component, in a subfolder when needed (for instance, all the buttons are in `resources/views/components`).

@@ -43,7 +43,7 @@
   ];
 @endphp
 
-<div class="flex flex-col gap-[6px]">
+<div class="space-y-[6px]">
   @if ($label)
     <x-label :for="$id" :value="$label" />
   @endif
