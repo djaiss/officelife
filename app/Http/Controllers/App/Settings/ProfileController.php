@@ -41,6 +41,7 @@ class ProfileController extends Controller
         )->execute();
 
         return redirect()->route('settings.profile.index')
-            ->with('status', __('Your details are saved.'));
+            ->with('status', __('Your details are saved.'))
+            ->with('status_description', __('Your colleagues see them right away.'));
     }
 }

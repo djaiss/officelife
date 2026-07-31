@@ -39,6 +39,29 @@ class ProfileControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_shows_the_toast_of_the_previous_save(): void
+    {
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession([
+                'status' => 'Your details are saved.',
+                'status_description' => 'Your colleagues see them right away.',
+            ])
+            ->get(route('settings.profile.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('id="notifications"', escape: false);
+        $response->assertSee('Your details are saved.', escape: false);
+        $response->assertSee('Your colleagues see them right away.', escape: false);
+    }
+
+    #[Test]
     public function it_redirects_a_visitor_who_is_not_signed_in(): void
     {
         $response = $this->get(route('settings.profile.index'));
@@ -67,6 +90,7 @@ class ProfileControllerTest extends TestCase
 
         $response->assertRedirect(route('settings.profile.index'));
         $response->assertSessionHas('status', 'Your details are saved.');
+        $response->assertSessionHas('status_description', 'Your colleagues see them right away.');
 
         $employee->refresh();
 

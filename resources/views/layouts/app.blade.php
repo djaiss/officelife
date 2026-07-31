@@ -33,5 +33,7 @@
         </div>
       </main>
     </div>
+
+    <x-toaster />
   </body>
 </html>

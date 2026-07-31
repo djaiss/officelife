@@ -36,6 +36,7 @@ class EmergencyContactControllerTest extends TestCase
 
         $response->assertRedirect(route('settings.profile.index'));
         $response->assertSessionHas('status', 'Your emergency contact is saved.');
+        $response->assertSessionHas('status_description', 'Only you and your company administrators can see this.');
 
         $employee->refresh();
 
