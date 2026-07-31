@@ -59,6 +59,18 @@
           </x-form>
         </x-box>
 
+        {{-- The shortcut that signs the seeded account in, only ever on a machine somebody develops on --}}
+        @env(config('login-link.allowed_environments'))
+          <x-box padding="p-[15px]" class="rounded-lg text-center text-[13.5px] text-body">
+            <x-login-link
+              label="Sign in as Michael Scott"
+              email="michael.scott@dundermifflin.com"
+              :redirect-url="route('home.index')"
+              class="inline cursor-pointer font-semibold text-ink underline underline-offset-2 decoration-hairline-strong transition-colors duration-150 hover:text-brand hover:decoration-brand"
+            />
+          </x-box>
+        @endenv
+
         <x-box padding="p-[15px]" class="rounded-lg text-center text-[13.5px] text-body">
           {{ __('Wanna skip the password?') }}
           <x-link turbo :href="route('auth.magicLink.new')" class="font-semibold text-ink">{{ __('Send me a link instead') }}</x-link>
