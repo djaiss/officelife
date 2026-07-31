@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings;
 
+use App\Enums\UserActionEnum;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Log;
 use App\Models\User;
 use App\ViewModels\Settings\ProfileViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -154,5 +156,70 @@ class ProfileViewModelTest extends TestCase
 
         $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
         $this->assertEquals('dwight.schrute@dundermifflin.com', $viewModel->email());
+    }
+
+    #[Test]
+    public function it_gives_the_five_latest_logs_newest_first(): void
+    {
+        $user = User::factory()->create();
+
+        Log::factory()->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+            'action' => UserActionEnum::UserLogin->value,
+            'created_at' => now()->subWeek(),
+        ]);
+        Log::factory()->count(6)->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+            'action' => UserActionEnum::UserPasswordUpdate->value,
+            'created_at' => now()->subDay(),
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+        $logs = $viewModel->logs();
+
+        $this->assertCount(5, $logs);
+        $this->assertEquals(UserActionEnum::UserPasswordUpdate->value, $logs->first()->action);
+    }
+
+    #[Test]
+    public function it_leaves_out_the_logs_of_somebody_else(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $colleague = User::factory()->create(['company_id' => $company->id]);
+
+        Log::factory()->create([
+            'company_id' => $company->id,
+            'user_id' => $colleague->id,
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+
+        $this->assertCount(0, $viewModel->logs());
+        $this->assertFalse($viewModel->hasMoreLogs());
+    }
+
+    #[Test]
+    public function it_says_when_there_is_more_to_read_than_the_box_shows(): void
+    {
+        $user = User::factory()->create();
+
+        Log::factory()->count(5)->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+
+        $this->assertFalse($viewModel->hasMoreLogs());
+
+        Log::factory()->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $this->assertTrue($viewModel->hasMoreLogs());
     }
 }

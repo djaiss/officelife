@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\ViewModels\Settings;
+
+use App\Models\Employee;
+use App\Models\Log;
+use App\Models\User;
+use Illuminate\Pagination\CursorPaginator;
+
+/**
+ * What the logs screen shows: every action the signed in person performed, a
+ * page at a time, and the shell around it.
+ */
+class LogsViewModel
+{
+    /**
+     * How many entries a page holds. The screen loads the next page in place
+     * rather than sending the reader to a second one, so the page is small
+     * enough that asking for more is cheap.
+     */
+    private const int PER_PAGE = 10;
+
+    /** @var CursorPaginator<int, Log>|null */
+    private ?CursorPaginator $logs = null;
+
+    public function __construct(
+        private readonly User $user,
+        private readonly ?Employee $employee,
+    ) {}
+
+    /**
+     * The actions of the signed in person, newest first. The author of each
+     * entry is read off the user, so both are loaded up front. The screen asks
+     * for the page more than once, and one page is one query.
+     *
+     * @return CursorPaginator<int, Log>
+     */
+    public function logs(): CursorPaginator
+    {
+        return $this->logs ??= $this->user->logs()
+            ->with('user.employee')
+            ->latest()
+            ->cursorPaginate(self::PER_PAGE);
+    }
+
+    /**
+     * The name to show and to draw initials from. Somebody whose account is not
+     * attached to an employee record has only an email address to go by.
+     */
+    public function name(): string
+    {
+        return $this->employee->name ?? $this->user->email;
+    }
+
+    public function companyName(): string
+    {
+        return $this->user->company->name;
+    }
+}

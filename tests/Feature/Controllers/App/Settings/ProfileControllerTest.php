@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Settings;
 
+use App\Enums\UserActionEnum;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Log;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -59,6 +61,52 @@ class ProfileControllerTest extends TestCase
         $response->assertSee('id="notifications"', escape: false);
         $response->assertSee('Your details are saved.', escape: false);
         $response->assertSee('Your colleagues see them right away.', escape: false);
+    }
+
+    #[Test]
+    public function it_shows_the_latest_logs_and_offers_to_browse_the_rest(): void
+    {
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        Log::factory()->count(6)->create([
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+            'action' => UserActionEnum::CompanyUpdate->value,
+            'parameters' => ['name' => 'Dunder Mifflin'],
+        ]);
+
+        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Updated the company called Dunder Mifflin', escape: false);
+        $response->assertSee('Browse all activity', escape: false);
+        $response->assertSee(route('settings.logs.index'), escape: false);
+    }
+
+    #[Test]
+    public function it_hides_the_link_to_the_logs_when_there_is_nothing_more_to_read(): void
+    {
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        Log::factory()->count(2)->create([
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Browse all activity', escape: false);
     }
 
     #[Test]

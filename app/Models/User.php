@@ -127,6 +127,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the actions the user performed.
+     *
+     * @return HasMany<Log, $this>
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class);
+    }
+
+    /**
      * Get the password of the user. The column is named password_hash, so the
      * guard needs to be told where to look.
      */

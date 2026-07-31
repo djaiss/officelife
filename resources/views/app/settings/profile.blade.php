@@ -113,6 +113,31 @@
     </div>
   </x-box>
 
+  {{-- Logs --}}
+  <x-box :title="__('Logs')" padding="p-0">
+    <x-slot:help>
+      <x-help :title="__('Logs')">
+        {{ __('Every action you take that touches your account or your company is written down here, so you can tell what happened and when.') }}
+      </x-help>
+    </x-slot:help>
+
+    <x-slot:description>
+      <p>{{ __('Sensitive actions performed with your account are recorded here.') }}</p>
+    </x-slot:description>
+
+    @forelse ($viewModel->logs() as $log)
+      <x-log-entry :log="$log" />
+    @empty
+      <p class="px-4 py-[13px] text-[13px] text-muted">{{ __('Nothing yet. Your actions show up here as you go.') }}</p>
+    @endforelse
+
+    @if ($viewModel->hasMoreLogs())
+      <div class="border-t border-hairline-soft p-[13px] text-center text-[13px]">
+        <x-link :href="route('settings.logs.index')" turbo>{{ __('Browse all activity') }}</x-link>
+      </div>
+    @endif
+  </x-box>
+
   {{-- Emergency contact --}}
   <x-box :title="__('Emergency contact')">
     <x-slot:help>
