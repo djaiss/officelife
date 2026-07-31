@@ -48,6 +48,14 @@ class Employee extends Model
     /** @use HasFactory<EmployeeFactory> */
     use HasFactory;
 
+    /**
+     * The size, in CSS pixels, the photo is displayed at. It is written to disk
+     * twice, at this size and at twice it, so a dense screen has a sharp
+     * version to pick from. 96 covers the 74 pixel avatar on the profile
+     * screen, and downsizes cleanly to the 26 pixel one in the sidebar.
+     */
+    public const int PHOTO_SIZE = 96;
+
     protected $table = 'employees';
 
     /**
@@ -147,14 +155,6 @@ class Employee extends Model
     {
         return $this->departed_at === null || $this->departed_at->isFuture();
     }
-
-    /**
-     * The size, in CSS pixels, the photo is displayed at. It is written to disk
-     * twice, at this size and at twice it, so a dense screen has a sharp
-     * version to pick from. 96 covers the 74 pixel avatar on the profile
-     * screen, and downsizes cleanly to the 26 pixel one in the sidebar.
-     */
-    public const int PHOTO_SIZE = 96;
 
     /**
      * Every pixel size actually written to disk, which is what the route that
