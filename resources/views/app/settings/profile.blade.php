@@ -41,18 +41,18 @@
         <x-avatar id="profile-avatar" :employee="$viewModel->employee()" :name="$viewModel->name()" :size="74" />
 
         {{--
-          The two forms are refreshed together, as one region: uploading a first
-          photo has to bring the remove button with it, and removing one has to
-          take it away again.
-        --}}
-        {{--
+          These two forms reload the page rather than updating it in place, the
+          way the forms below do. A picture is not a field: it is read, turned
+          upright, cropped and written twice before there is anything to show,
+          and the screen is better off asking the server for the whole thing
+          once that is done.
+
           The message lives in the x-data of this div rather than in the change
           handler, because Blade does not compile a directive written inside an
           attribute of a component tag: @js() would reach the browser as itself
           and Alpine would refuse the whole expression.
         --}}
         <div
-          id="photo-controls"
           class="space-y-3"
           x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')) }"
         >
@@ -61,8 +61,7 @@
             :action="route('settings.photo.update')"
             :upload="true"
             id="photo-form"
-            x-target="photo-controls profile-avatar sidebar-identity"
-            class="space-y-3 transition-opacity [&[aria-busy]]:opacity-60"
+            class="space-y-3"
             x-on:submit="if (tooBig) $event.preventDefault()"
           >
             <x-file-input
@@ -84,7 +83,6 @@
               method="delete"
               :action="route('settings.photo.destroy')"
               id="photo-delete-form"
-              x-target="photo-controls profile-avatar sidebar-identity"
               x-data="{ confirming: false }"
             >
               <button
