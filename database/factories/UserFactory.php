@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use PragmaRX\Google2FA\Google2FA;
 
 /**
  * @extends Factory<User>
@@ -66,6 +67,19 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'is_active' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the user finished enrolling in two factor authentication.
+     * The secret is a real one, so a test can generate a code that verifies.
+     */
+    public function twoFactor(?string $secret = null): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'two_factor_secret' => $secret ?? new Google2FA()->generateSecretKey(),
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => ['scranton-1', 'scranton-2'],
         ]);
     }
 }

@@ -40,6 +40,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Remember me
+    |--------------------------------------------------------------------------
+    |
+    | How long a session survives when somebody ticks "remember me" on the sign
+    | in screen. The screen names this number, so changing it here changes what
+    | the visitor is promised.
+    |
+    */
+
+    'remember_duration_days' => env('OFFICELIFE_REMEMBER_DURATION_DAYS', 30),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Magic link
+    |--------------------------------------------------------------------------
+    |
+    | How many minutes a passwordless sign in link stays valid. It is short on
+    | purpose: the link is single use, but a short window limits the damage of
+    | a forwarded or intercepted email.
+    |
+    */
+
+    'magic_link_duration_minutes' => env('OFFICELIFE_MAGIC_LINK_DURATION_MINUTES', 5),
+
+    /*
+    |--------------------------------------------------------------------------
     | Legal pages
     |--------------------------------------------------------------------------
     |
