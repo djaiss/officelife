@@ -6,7 +6,7 @@
 --}}
 <x-app-layout :title="__('Profile')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" current="profile" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="profile" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
@@ -33,13 +33,69 @@
     <div class="grid items-center gap-7 md:grid-cols-[minmax(0,1fr)_auto]">
       <div class="space-y-[10px] text-[13px] leading-relaxed text-body">
         <p>{{ __('Your avatar appears next to your name across :app.', ['app' => config('app.name')]) }}</p>
+        <p>{{ __('Use a square image for the best result. JPEG, PNG and WebP up to 5 MB.') }}</p>
         <p>{{ __('Without an avatar, we show your initials instead.') }}</p>
       </div>
 
       <div class="flex items-center gap-4">
-        <x-avatar-initials id="profile-avatar" :name="$viewModel->name()" :size="74" />
+        <x-avatar id="profile-avatar" :employee="$viewModel->employee()" :name="$viewModel->name()" :size="74" />
 
-        <x-notice>{{ __('Changing your picture is coming soon.') }}</x-notice>
+        {{--
+          The two forms are refreshed together, as one region: uploading a first
+          photo has to bring the remove button with it, and removing one has to
+          take it away again.
+        --}}
+        {{--
+          The message lives in the x-data of this div rather than in the change
+          handler, because Blade does not compile a directive written inside an
+          attribute of a component tag: @js() would reach the browser as itself
+          and Alpine would refuse the whole expression.
+        --}}
+        <div
+          id="photo-controls"
+          class="space-y-3"
+          x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')) }"
+        >
+          <x-form
+            method="post"
+            :action="route('settings.photo.update')"
+            :upload="true"
+            id="photo-form"
+            x-target="photo-controls profile-avatar sidebar-identity"
+            class="space-y-3 transition-opacity [&[aria-busy]]:opacity-60"
+            x-on:submit="if (tooBig) $event.preventDefault()"
+          >
+            <x-file-input
+              id="photo"
+              accept="image/jpeg,image/png,image/webp"
+              :error="$errors->get('photo')"
+              required
+              x-on:change="tooBig = window.oversizedFiles($event.target.files, 5120).length > 0"
+            />
+
+            <p x-show="tooBig" x-cloak x-text="tooBigMessage" class="text-xs text-error"></p>
+
+            <x-button>{{ __('Upload') }}</x-button>
+          </x-form>
+
+          @if ($viewModel->hasPhoto())
+            {{-- Two steps rather than one, so a photo is never removed by a slip. --}}
+            <x-form
+              method="delete"
+              :action="route('settings.photo.destroy')"
+              id="photo-delete-form"
+              x-target="photo-controls profile-avatar sidebar-identity"
+              x-data="{ confirming: false }"
+            >
+              <button
+                type="submit"
+                x-on:click="if (! confirming) { $event.preventDefault(); confirming = true }"
+                class="cursor-pointer text-[13px] text-muted hover:text-ink"
+                x-text="confirming ? @js(__('Remove it for good?')) : @js(__('Remove the photo'))"
+              ></button>
+            </x-form>
+          @endif
+        </div>
       </div>
     </div>
   </x-box>

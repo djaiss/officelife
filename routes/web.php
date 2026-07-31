@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\App\Settings\EmergencyContactController;
+use App\Http\Controllers\App\Settings\PhotoController;
 use App\Http\Controllers\App\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,8 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::put('settings/account/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
 
     Route::put('settings/account/emergency-contact', [EmergencyContactController::class, 'update'])->name('settings.emergencyContact.update');
+
+    Route::post('settings/account/photo', [PhotoController::class, 'update'])->name('settings.photo.update');
+    Route::delete('settings/account/photo', [PhotoController::class, 'destroy'])->name('settings.photo.destroy');
+    Route::get('settings/account/photo/{employee}/{size}', [PhotoController::class, 'show'])->whereNumber(['employee', 'size'])->name('settings.photo.show');
 });
