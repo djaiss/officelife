@@ -12,4 +12,5 @@ enum UserActionEnum: string
     case UserPasswordUpdate = 'user_password_updated';
     case UserDeletion = 'user_deleted';
     case EmployeeCreation = 'employee_created';
+    case EmailConfirmation = 'email_confirmed';
 }

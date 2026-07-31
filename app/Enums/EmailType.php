@@ -10,4 +10,5 @@ enum EmailType: string
     case NewLogin = 'new_login';
     case UserIpChanged = 'user_ip_changed';
     case MagicLinkCreated = 'magic_link_created';
+    case EmailVerification = 'email_verification';
 }

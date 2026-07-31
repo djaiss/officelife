@@ -9,12 +9,14 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * Create a company and its first user, who becomes the owner of the company.
+ * Create a company, its first user, who becomes the owner of the company, and
+ * the employee that user is.
  */
 class CreateCompany
 {
@@ -22,8 +24,12 @@ class CreateCompany
 
     private User $owner;
 
+    private Employee $employee;
+
     public function __construct(
         private string $name,
+        private string $firstName,
+        private string $lastName,
         private string $email,
         private readonly string $password,
         private readonly PlanEnum $plan = PlanEnum::Free,
@@ -37,6 +43,8 @@ class CreateCompany
             $this->createCompany();
             $this->createOwner();
             $this->attachOwner();
+            $this->createEmployee();
+            $this->attachEmployee();
         });
 
         $this->log();
@@ -44,19 +52,11 @@ class CreateCompany
         return $this->company;
     }
 
-    private function log(): void
-    {
-        LogUserAction::dispatch(
-            company: $this->company,
-            user: $this->owner,
-            action: UserActionEnum::CompanyCreation,
-            parameters: ['name' => $this->company->name],
-        )->onQueue('low');
-    }
-
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+        $this->firstName = TextSanitizer::plainText($this->firstName);
+        $this->lastName = TextSanitizer::plainText($this->lastName);
         $this->email = mb_strtolower(TextSanitizer::plainText($this->email));
     }
 
@@ -86,6 +86,33 @@ class CreateCompany
     {
         $this->company->owner_user_id = $this->owner->id;
         $this->company->save();
+    }
+
+    private function createEmployee(): void
+    {
+        $this->employee = new CreateEmployee(
+            user: $this->owner,
+            company: $this->company,
+            firstName: $this->firstName,
+            lastName: $this->lastName,
+            workEmail: $this->email,
+        )->execute();
+    }
+
+    private function attachEmployee(): void
+    {
+        $this->owner->employee_id = $this->employee->id;
+        $this->owner->save();
+    }
+
+    private function log(): void
+    {
+        LogUserAction::dispatch(
+            company: $this->company,
+            user: $this->owner,
+            action: UserActionEnum::CompanyCreation,
+            parameters: ['name' => $this->company->name],
+        )->onQueue('low');
     }
 
     /**

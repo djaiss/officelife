@@ -96,4 +96,11 @@ class UserTest extends TestCase
 
         $this->assertSoftDeleted($user);
     }
+
+    #[Test]
+    public function it_knows_whether_the_email_address_was_confirmed(): void
+    {
+        $this->assertFalse(User::factory()->unverified()->create()->hasConfirmedEmail());
+        $this->assertTrue(User::factory()->create()->hasConfirmedEmail());
+    }
 }

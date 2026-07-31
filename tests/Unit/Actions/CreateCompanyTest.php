@@ -26,6 +26,8 @@ class CreateCompanyTest extends TestCase
 
         $company = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
         )->execute();
@@ -55,12 +57,40 @@ class CreateCompanyTest extends TestCase
     }
 
     #[Test]
+    public function it_creates_the_employee_the_owner_is(): void
+    {
+        Queue::fake();
+
+        $company = new CreateCompany(
+            name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
+            email: 'michael.scott@dundermifflin.com',
+            password: 'thatswhatshesaid',
+        )->execute();
+
+        $this->assertDatabaseHas('employees', [
+            'company_id' => $company->id,
+            'first_name' => 'Michael',
+            'last_name' => 'Scott',
+            'work_email' => 'michael.scott@dundermifflin.com',
+        ]);
+
+        $owner = $company->owner;
+
+        $this->assertNotNull($owner->employee_id);
+        $this->assertEquals('Michael Scott', $owner->employee->name);
+    }
+
+    #[Test]
     public function it_starts_the_company_on_a_trial(): void
     {
         Queue::fake();
 
         $company = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
         )->execute();
@@ -75,6 +105,8 @@ class CreateCompanyTest extends TestCase
 
         $company = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
             plan: PlanEnum::Business,
@@ -90,12 +122,16 @@ class CreateCompanyTest extends TestCase
 
         $first = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
             email: 'michael.scott@dundermifflin.com',
             password: 'thatswhatshesaid',
         )->execute();
 
         $second = new CreateCompany(
             name: 'Dunder Mifflin',
+            firstName: 'Jim',
+            lastName: 'Halpert',
             email: 'jim.halpert@dundermifflin.com',
             password: 'bearsbeatsbattlestar',
         )->execute();
