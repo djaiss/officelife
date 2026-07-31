@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('emergency_contact_phone')->nullable()->comment('phone number of the person to contact in case of emergency');
             $table->string('emergency_contact_relationship')->nullable()->comment('how the emergency contact relates to the employee');
             $table->text('home_address')->nullable()->comment('home address of the employee');
+            $table->datetime('last_saved_at')->nullable()->comment('when the employee last saved their own information, shown on their profile');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();

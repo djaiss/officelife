@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $emergency_contact_phone
  * @property string|null $emergency_contact_relationship
  * @property string|null $home_address
+ * @property Carbon|null $last_saved_at
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -74,6 +75,7 @@ class Employee extends Model
         'emergency_contact_phone',
         'emergency_contact_relationship',
         'home_address',
+        'last_saved_at',
     ];
 
     /**
@@ -87,6 +89,7 @@ class Employee extends Model
             'hired_at' => 'date',
             'departed_at' => 'date',
             'date_of_birth' => 'date',
+            'last_saved_at' => 'datetime',
         ];
     }
 

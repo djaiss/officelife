@@ -1,0 +1,87 @@
+{{--
+  Inline help. A "?" badge next to a heading or a label that reveals a short
+  explanation. Hovering previews it, clicking pins it open, and escape or a
+  click elsewhere closes it again.
+
+  The copy is given as the slot. There is no help library behind this yet, so
+  every caller writes its own text.
+
+  Usage: <x-help :title="__('Details')">What this box is for.</x-help>
+  Pass align="right" when the badge sits near the right edge of its container.
+
+  @var string|null $title
+  @var string $align
+--}}
+@props([
+  'title' => null,
+  'align' => 'left',
+])
+
+<span
+  x-data="{
+    hovering: false,
+    pinned: false,
+    timer: null,
+    canHover: false,
+    init() { this.canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches },
+    get open() { return this.hovering || this.pinned },
+    enter() { if (! this.canHover) return; clearTimeout(this.timer); this.hovering = true },
+    leave() { if (! this.canHover) return; clearTimeout(this.timer); this.timer = setTimeout(() => { this.hovering = false }, 130) },
+    toggle() { this.pinned = ! this.pinned; this.hovering = false },
+    close() { this.pinned = false; this.hovering = false },
+  }"
+  @mouseenter="enter()"
+  @mouseleave="leave()"
+  @mousedown.outside="close()"
+  @keydown.escape.window="close()"
+  {{ $attributes->class(['relative inline-flex align-middle leading-none']) }}
+>
+  <button
+    type="button"
+    @click="toggle()"
+    :aria-expanded="open ? 'true' : 'false'"
+    aria-haspopup="dialog"
+    aria-label="{{ __('Help') }}"
+    :class="open ? 'border-brand text-brand' : 'border-hairline-strong text-muted-soft'"
+    class="flex size-[17px] cursor-pointer items-center justify-center rounded-full border bg-canvas text-[11px] leading-none font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+  >?</button>
+
+  <div
+    x-cloak
+    x-show="open"
+    x-transition
+    role="dialog"
+    @if ($title) aria-label="{{ $title }}" @endif
+    class="absolute top-full z-70 w-[330px] max-w-[calc(100vw-2rem)] pt-[11px] text-left {{ $align === 'right' ? 'right-[-7px]' : 'left-[-7px]' }}"
+  >
+    {{-- The caret pointing back at the badge. --}}
+    <div class="absolute top-[5px] size-3 rotate-45 border-t border-l border-hairline bg-canvas {{ $align === 'right' ? 'right-4' : 'left-4' }}" aria-hidden="true"></div>
+
+    <div class="relative overflow-hidden rounded-xl border border-hairline bg-canvas shadow-xl">
+      <div class="flex items-center gap-[11px] px-4 pt-[15px] pb-3">
+        <span class="flex size-7 shrink-0 items-center justify-center rounded-lg border border-hairline-strong bg-sunken text-[13px] font-bold text-brand" aria-hidden="true">?</span>
+
+        @if ($title)
+          <span class="min-w-0 flex-1 text-[15px] leading-tight font-semibold tracking-[-0.2px] text-ink">{{ $title }}</span>
+        @endif
+
+        <button
+          type="button"
+          x-show="pinned"
+          @click="close()"
+          aria-label="{{ __('Close') }}"
+          class="flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-soft transition-colors hover:text-ink"
+        >
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="4" y1="4" x2="12" y2="12"></line>
+            <line x1="12" y1="4" x2="4" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="px-4 pb-4 text-[13.5px] leading-relaxed text-muted">
+        {{ $slot }}
+      </div>
+    </div>
+  </div>
+</span>

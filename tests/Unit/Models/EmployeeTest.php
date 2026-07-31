@@ -99,4 +99,20 @@ class EmployeeTest extends TestCase
 
         $this->assertFalse($employee->isEmployed());
     }
+
+    #[Test]
+    public function it_casts_the_date_the_record_was_last_saved(): void
+    {
+        $employee = Employee::factory()->create(['last_saved_at' => '2026-07-31 09:30:00']);
+
+        $this->assertInstanceOf(Carbon::class, $employee->last_saved_at);
+    }
+
+    #[Test]
+    public function it_has_never_been_saved_by_default(): void
+    {
+        $employee = Employee::factory()->create();
+
+        $this->assertNull($employee->last_saved_at);
+    }
 }
