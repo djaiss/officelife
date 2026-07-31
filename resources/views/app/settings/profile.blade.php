@@ -164,4 +164,29 @@
       </x-form>
     </div>
   </x-box>
+
+  {{-- Emails sent --}}
+  <x-box :title="__('Emails sent')" padding="p-0">
+    <x-slot:help>
+      <x-help :title="__('Emails sent')">
+        {{ __('Every email we sent you, most recent first. If one you expected never arrived, look here first: an entry that is still on its way means the mail service has not confirmed it yet, and no entry at all means the email was never sent.') }}
+      </x-help>
+    </x-slot:help>
+
+    <x-slot:description>
+      <p>{{ __('The emails we sent to your account.') }}</p>
+    </x-slot:description>
+
+    @forelse ($viewModel->emailsSent() as $emailSent)
+      <x-email-sent-entry :email-sent="$emailSent" />
+    @empty
+      <p class="px-4 py-[13px] text-[13px] text-muted">{{ __('Nothing yet. The emails we send you show up here.') }}</p>
+    @endforelse
+
+    @if ($viewModel->hasMoreEmailsSent())
+      <div class="border-t border-hairline-soft p-[13px] text-center text-[13px]">
+        <x-link :href="route('settings.emailsSent.index')" turbo>{{ __('Browse all emails') }}</x-link>
+      </div>
+    @endif
+  </x-box>
 </x-app-layout>

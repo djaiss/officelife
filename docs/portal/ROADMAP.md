@@ -154,7 +154,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `getting.what-works-today`
 - **Purpose.** Set honest expectations for somebody who just got in and is looking at a bare page.
 - **Audience.** New owners.
-- **Summary.** A short, factual page. What exists: your company, your account, your employee record, the profile screen where you edit it, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
+- **Summary.** A short, factual page. What exists: your company, your account, your employee record, the profile screen where you edit it, the list of emails the product has sent you, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
 - **Prerequisites.** `getting.create-account`.
 - **Complexity.** Low, but must be revisited every time a feature ships. Flag it in the page as the portal's "what is built" page.
 - **Related pages.** `portal.introduction`, `concepts.introduction`.
@@ -303,7 +303,7 @@ The screen also carries a line telling people joining an existing company to ask
 
 ## Section 5: Your profile
 
-**Why this section exists.** The profile screen is the first and, so far, the only place in the signed in application where somebody changes something about themselves. It is what a new user reaches for once they are in, and it is where the abstract distinction between an employee and an account finally becomes something you can click. It also holds the one piece of genuinely private information the product asks for, which deserves its own page rather than a paragraph.
+**Why this section exists.** The profile screen is the first and, so far, the only place in the signed in application where somebody changes something about themselves. It is what a new user reaches for once they are in, and it is where the abstract distinction between an employee and an account finally becomes something you can click. It also holds the one piece of genuinely private information the product asks for, which deserves its own page rather than a paragraph, and the one place where somebody can read what the product did on their behalf: the emails it sent them.
 
 **Who it is for.** Every employee with an account.
 
@@ -314,7 +314,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `profile.introduction`
 - **Purpose.** Section index, and the reader's first tour of a screen inside the application.
 - **Audience.** All.
-- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Preferences** is listed but cannot be opened, because that screen does not exist yet.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, your emergency contact, which they cannot, and the emails the product has sent you. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Preferences** is listed but cannot be opened, because that screen does not exist yet.
 - **Prerequisites.** `concepts.employee-vs-user`.
 - **Complexity.** Low.
 - **Related pages.** Both pages below, `concepts.employee-record`, `security.introduction`.
@@ -338,6 +338,16 @@ The screen also carries a line telling people joining an existing company to ask
 - **Prerequisites.** `profile.introduction`.
 - **Complexity.** Medium, because the privacy claim has to be worded carefully.
 - **Related pages.** `security.privacy`, `concepts.employee-record`, `concepts.activity-log`.
+
+### Read the emails we sent you
+
+- **id.** `profile.emails`
+- **Purpose.** Show somebody where to check what the product sent them, and teach them to read the delivery state, which is the reason most people open this box in the first place.
+- **Audience.** All, and in practice anybody who was expecting an email that never arrived.
+- **Summary.** Where it is: the **Emails sent** box at the bottom of the profile, the six most recent first, with **Browse all emails** leading to the whole list at `/settings/account/profile/emails`, ten at a time behind a **Load more** link. What a row shows: who it went to, the subject, and how long ago it left. What the coloured dot means, and this is the part worth being exact about: amber means the email left but the mail service has not confirmed it arrived, green means it was delivered, red means it bounced. Say plainly that on most instances the dot stays amber for good, because delivery and bounce reporting only arrives from a provider that reports it back, and that amber therefore is not a sign of a problem. What happens when a row is opened: the copy of the email as it was sent, minus its links. Explain that omission honestly rather than as a footnote, since a reader who wanted to click the link will be looking for it: sign in links are stored nowhere, because a stored link is a stored way into the account, and any link in an old email has almost certainly expired anyway. Close with the diagnostic use: no entry at all means the email was never sent, which is a different problem from one that was sent and never arrived, and point at the troubleshooting page for both.
+- **Prerequisites.** `profile.introduction`.
+- **Complexity.** Medium, because the delivery states have to be explained without alarming anybody.
+- **Related pages.** `email.record`, `email.introduction`, `troubleshoot.no-email`, `security.privacy`.
 
 ---
 
@@ -538,10 +548,10 @@ There is no screen, route or command to **turn two factor authentication on**. T
 - **id.** `email.record`
 - **Purpose.** Explain that the product keeps a copy of every email it sends.
 - **Audience.** Owners and privacy conscious employees.
-- **Summary.** What is kept: the type of email, the address it went to, the subject, the body, and when it was sent, delivered, or bounced. Why: so a company can see exactly what was sent on its behalf, and to whom. The one deliberate omission: links are stripped out of the stored copy, because a stored sign in link would be a stored way into somebody's account. That delivery and bounce information is only filled in on instances using a mail provider that reports it back. That no screen displays this yet.
+- **Summary.** What is kept: the type of email, the address it went to, the subject, the body, and when it was sent, delivered, or bounced. Why: so a company can see exactly what was sent on its behalf, and to whom. The one deliberate omission: links are stripped out of the stored copy, because a stored sign in link would be a stored way into somebody's account. That delivery and bounce information is only filled in on instances using a mail provider that reports it back. Where to read it, in one line, with the walkthrough left to the profile section: the **Emails sent** box on your profile.
 - **Prerequisites.** `security.privacy`.
 - **Complexity.** Medium.
-- **Related pages.** `security.privacy`, `hosting.email`.
+- **Related pages.** `profile.emails`, `security.privacy`, `hosting.email`.
 
 ---
 
@@ -763,11 +773,11 @@ Each entry names the evidence, what is missing, and the page it should become.
 
 - **Editing your company, your account, or somebody else's employee record.** The business logic for all three exists and is tested. Only your own employee record has a screen, covered by Section 5; nothing reaches the other three. Several pages above are shaped around this absence and say so; when the screens land, those caveats come out and the pages become how-tos.
 
-- **Viewing the activity log, and the record of emails sent.** Both are written and stored. Neither is displayed anywhere. `concepts.activity-log` and `email.record` describe what is recorded, not how to read it.
+- **Viewing the activity log.** It is written and stored, and nothing displays it. `concepts.activity-log` describes what is recorded, not how to read it. The record of emails sent used to sit here too; it now has a screen, and `profile.emails` is its page.
 
 - **Ending your other sessions.** Sessions are stored per device, but nothing lists or revokes them. Mentioned as a limitation in `signin.sign-out` only.
 
-- **Delivery and bounce reporting.** The record of sent emails has columns for delivery and bounce times, and the identifier a provider returns is captured when Resend is enabled, but no webhook endpoint exists to fill them in. `hosting.email` must say the columns stay empty.
+- **Delivery and bounce reporting.** The record of sent emails has columns for delivery and bounce times, and the identifier a provider returns is captured when Resend is enabled, but no webhook endpoint exists to fill them in. `hosting.email` must say the columns stay empty, and `profile.emails` must say what that looks like on the screen: every email keeps the amber "on its way" dot, and neither the green nor the red one appears on an instance nothing reports back to.
 
 - **Any API.** There is no API route file, no API controller, no resource, no token authentication. The application's own conventions describe an `Api` controller namespace and versioning, but nothing is built. **The portal must not contain an API section.**
 

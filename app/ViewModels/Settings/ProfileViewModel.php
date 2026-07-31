@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings;
 
+use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * What the profile screen shows: who is signed in, the record they are editing,
@@ -13,6 +15,12 @@ use App\Models\User;
  */
 class ProfileViewModel
 {
+    /**
+     * How many emails the box on the profile shows before it sends somebody to
+     * the screen that lists them all.
+     */
+    private const int EMAILS_SHOWN = 6;
+
     public function __construct(
         private readonly User $user,
         private readonly ?Employee $employee,
@@ -45,6 +53,29 @@ class ProfileViewModel
             'phone' => old('phone', $this->employee?->emergency_contact_phone),
             'relationship' => old('relationship', $this->employee?->emergency_contact_relationship),
         ];
+    }
+
+    /**
+     * The last few emails the application sent to the person signed in, newest
+     * first.
+     *
+     * @return Collection<int, EmailSent>
+     */
+    public function emailsSent(): Collection
+    {
+        return $this->user->emailsSent()
+            ->latest('sent_at')
+            ->take(self::EMAILS_SHOWN)
+            ->get();
+    }
+
+    /**
+     * Whether there are more emails than the box shows, so the screen knows
+     * whether the link to the whole list is worth offering.
+     */
+    public function hasMoreEmailsSent(): bool
+    {
+        return $this->user->emailsSent()->count() > self::EMAILS_SHOWN;
     }
 
     /**

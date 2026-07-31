@@ -127,6 +127,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the emails the application sent to the user.
+     *
+     * @return HasMany<EmailSent, $this>
+     */
+    public function emailsSent(): HasMany
+    {
+        return $this->hasMany(EmailSent::class);
+    }
+
+    /**
      * Get the password of the user. The column is named password_hash, so the
      * guard needs to be told where to look.
      */

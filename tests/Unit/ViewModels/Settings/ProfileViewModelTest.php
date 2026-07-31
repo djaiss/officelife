@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\ViewModels\Settings;
 
 use App\Models\Company;
+use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
 use App\ViewModels\Settings\ProfileViewModel;
@@ -154,5 +155,54 @@ class ProfileViewModelTest extends TestCase
 
         $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
         $this->assertEquals('dwight.schrute@dundermifflin.com', $viewModel->email());
+    }
+
+    #[Test]
+    public function it_gives_the_last_six_emails_sent_newest_first(): void
+    {
+        $user = User::factory()->create();
+        EmailSent::factory()->count(7)->sequence(fn ($sequence): array => [
+            'subject' => 'Email '.$sequence->index,
+            'sent_at' => now()->subDays(7 - $sequence->index),
+        ])->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+
+        $this->assertCount(6, $viewModel->emailsSent());
+        $this->assertEquals('Email 6', $viewModel->emailsSent()->first()->subject);
+        $this->assertTrue($viewModel->hasMoreEmailsSent());
+    }
+
+    #[Test]
+    public function it_says_there_is_nothing_more_to_read_when_there_are_six_emails_or_fewer(): void
+    {
+        $user = User::factory()->create();
+        EmailSent::factory()->count(6)->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+
+        $this->assertFalse($viewModel->hasMoreEmailsSent());
+    }
+
+    #[Test]
+    public function it_hides_the_emails_sent_to_somebody_else(): void
+    {
+        $user = User::factory()->create();
+        $colleague = User::factory()->create(['company_id' => $user->company_id]);
+        EmailSent::factory()->create([
+            'company_id' => $user->company_id,
+            'user_id' => $colleague->id,
+        ]);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: null);
+
+        $this->assertCount(0, $viewModel->emailsSent());
+        $this->assertFalse($viewModel->hasMoreEmailsSent());
     }
 }
