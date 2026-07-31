@@ -65,21 +65,23 @@
         x-target="details-form profile-avatar sidebar-identity"
         class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
       >
-        <x-input
-          id="first_name"
-          :label="__('First name')"
-          :value="$viewModel->details()['first_name']"
-          :error="$errors->get('first_name')"
-          required
-        />
+        <div class="grid grid-cols-2 gap-3">
+          <x-input
+            id="first_name"
+            :label="__('First name')"
+            :value="$viewModel->details()['first_name']"
+            :error="$errors->get('first_name')"
+            required
+          />
 
-        <x-input
-          id="last_name"
-          :label="__('Last name')"
-          :value="$viewModel->details()['last_name']"
-          :error="$errors->get('last_name')"
-          required
-        />
+          <x-input
+            id="last_name"
+            :label="__('Last name')"
+            :value="$viewModel->details()['last_name']"
+            :error="$errors->get('last_name')"
+            required
+          />
+        </div>
 
         <x-input
           id="display_name"
@@ -132,19 +134,21 @@
         x-target="emergency-contact-form last-saved"
         class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
       >
-        <x-input
-          id="name"
-          :label="__('Name')"
-          :value="$viewModel->emergencyContact()['name']"
-          :error="$errors->get('name')"
-        />
+        <div class="grid grid-cols-2 gap-3">
+          <x-input
+            id="name"
+            :label="__('Name')"
+            :value="$viewModel->emergencyContact()['name']"
+            :error="$errors->get('name')"
+          />
 
-        <x-input
-          id="phone"
-          :label="__('Phone number')"
-          :value="$viewModel->emergencyContact()['phone']"
-          :error="$errors->get('phone')"
-        />
+          <x-input
+            id="phone"
+            :label="__('Phone number')"
+            :value="$viewModel->emergencyContact()['phone']"
+            :error="$errors->get('phone')"
+          />
+        </div>
 
         <x-input
           id="relationship"
