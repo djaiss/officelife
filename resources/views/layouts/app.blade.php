@@ -28,7 +28,7 @@
           <span class="ml-auto text-[13px] text-muted">{{ auth()->user()?->email }}</span>
         </header>
 
-        <div class="max-w-[960px] space-y-[34px] px-7 pt-[30px] pb-[70px]">
+        <div class="mx-auto max-w-240 space-y-8.5 px-7 pt-7.5 pb-17.5">
           {{ $slot }}
         </div>
       </main>
