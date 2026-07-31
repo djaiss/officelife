@@ -128,7 +128,7 @@
 
         <x-box padding="p-[15px]" class="rounded-lg text-center text-[13.5px] text-body">
           {{ __('Already have an account?') }}
-          <x-link href="#" class="font-semibold text-ink">{{ __('Sign in instead') }}</x-link>
+          <x-link :href="route('auth.login.new')" class="font-semibold text-ink">{{ __('Sign in instead') }}</x-link>
         </x-box>
 
         <x-notice>

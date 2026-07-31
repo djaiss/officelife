@@ -21,6 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'set.locale' => SetLocale::class,
         ]);
+
+        // The framework looks for routes literally named `login` and `home`.
+        // Ours are named after the domain they belong to, so it has to be told
+        // where to send somebody who is signed in when they should not be, and
+        // somebody who is not when they should be.
+        $middleware->redirectGuestsTo(fn (): string => route('auth.login.new'));
+        $middleware->redirectUsersTo(fn (): string => route('home.index'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

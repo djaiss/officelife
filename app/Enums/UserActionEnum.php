@@ -13,4 +13,6 @@ enum UserActionEnum: string
     case UserDeletion = 'user_deleted';
     case EmployeeCreation = 'employee_created';
     case EmailConfirmation = 'email_confirmed';
+    case UserLogin = 'user_logged_in';
+    case MagicLinkCreation = 'magic_link_created';
 }

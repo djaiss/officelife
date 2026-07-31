@@ -30,6 +30,7 @@ description: Adds a new model to the Laravel application. Use when the user want
 - You MUST expose computed values through accessors using `Attribute::make()` with an `@return Attribute<string, never>` docblock.
 - For translatable names, you MUST store both `name` and `name_translation_key`, and fall back to the translated key via `__()` when the value is null.
 - You MUST add a short docblock to every relationship, accessor and method.
+- You MUST group all the relationships together, before any other method of the model.
 - You MUST not add any business logic to the model; use Actions for that.
 
 ## Factory
