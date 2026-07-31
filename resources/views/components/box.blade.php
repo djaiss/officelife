@@ -3,6 +3,9 @@
   given either as an attribute or as a named slot. Attributes land on the panel
   itself, not on the wrapper, so <x-box class="text-center"> styles the content.
 
+  The title is a plain escaped string, so the "?" that explains the box cannot
+  ride inside it. It goes in the `help` slot instead, and lands beside the title.
+
   @var string|null $title
   @var string|null $description
   @var string|null $additionalInfo
@@ -18,7 +21,13 @@
 <div class="space-y-2">
   @isset($title)
     <div class="flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-ink">{{ $title }}</h2>
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-ink">{{ $title }}</h2>
+
+        @isset($help)
+          {{ $help }}
+        @endisset
+      </div>
 
       @isset($actions)
         <div>{{ $actions }}</div>
