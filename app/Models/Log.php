@@ -90,7 +90,7 @@ class Log extends Model
     protected function author(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->user?->employee?->name ?? $this->user_email,
+            get: fn (): string => $this->user->employee->name ?? $this->user_email,
         );
     }
 

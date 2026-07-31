@@ -132,7 +132,7 @@
     @endforelse
 
     @if ($viewModel->hasMoreLogs())
-      <div class="border-t border-hairline-soft p-[13px] text-center text-[13px]">
+      <div class="p-[13px] text-center text-[13px]">
         <x-link :href="route('settings.logs.index')" turbo>{{ __('Browse all activity') }}</x-link>
       </div>
     @endif

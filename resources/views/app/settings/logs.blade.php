@@ -36,7 +36,7 @@
     @endforelse
 
     @if ($viewModel->logs()->hasMorePages())
-      <div id="pagination" class="border-t border-hairline-soft p-[13px] text-center text-[13px]">
+      <div id="pagination" class="p-[13px] text-center text-[13px]">
         <x-link x-target="logs-container pagination" :href="$viewModel->logs()->nextPageUrl()">{{ __('Load more') }}</x-link>
       </div>
     @endif
