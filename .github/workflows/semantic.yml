@@ -1,10 +1,14 @@
 name: Do not pollute commit logs
+
+# Reading the title is all this workflow does, so that is all it may do.
 permissions:
-  contents: read
-  pull-requests: write
+  pull-requests: read
 
 on:
-  pull_request:
+  # pull_request_target, rather than pull_request, so the workflow also runs on
+  # pull requests opened from a fork. This is only safe because nothing here
+  # checks out or executes the code being proposed.
+  pull_request_target:
     types: [opened, edited, synchronize]
   workflow_dispatch:
 
