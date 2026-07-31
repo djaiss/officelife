@@ -2,7 +2,7 @@
 
 - Do not tell me I am right all the time. Be critical. We're equals. Try to be neutral and objective.
 - Do not excessively use emojis.
-- After every feature, run the `.claude/skills/writer-analyst/SKILL.md` skill to complete the documentation roadmap, then use the `/writer` skill to create proper documentation.
+- After every feature, run the `.claude/skills/writer-analyst/SKILL.md` skill to complete the documentation roadmap, then once the documentation portal will exist, use the `/writer` skill to create proper documentation.
 
 ## Coding instructions
 
