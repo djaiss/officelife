@@ -11,7 +11,6 @@
 
 <x-guest-layout :title="__('Create your account')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
-    {{-- The form --}}
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
       <div class="mx-auto w-full max-w-md space-y-6">
         <div class="space-y-2">
@@ -29,8 +28,8 @@
         <x-status :message="session('status')" />
 
         {{-- The submit button stays greyed out until the terms are ticked. The
-             server refuses the form all the same, so a browser without
-             javascript still gets a working page and a clear error. --}}
+             server refuses the form all the same, so a browser without javascript
+             still gets a working page and a clear error. --}}
         <div x-data="{ terms: @js((bool) old('terms')) }">
           <x-box>
             <x-form method="post" :action="route('auth.register.create')" class="space-y-4">
@@ -147,7 +146,6 @@
       </p>
     </main>
 
-    {{-- The quote --}}
     @include('app.auth._quote', ['quote' => $viewModel->quote()])
   </div>
 </x-guest-layout>

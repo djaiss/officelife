@@ -1,14 +1,13 @@
 {{--
   The shell of every screen somebody sees once they are signed in: a sidebar on
   the left that stays put, and the screen itself on the right under a bar that
-  says where you are.
+  says where you are. On a narrow screen the sidebar slides in over the page
+  instead, from the button in the bar.
 
-  On a narrow screen there is no room for a column beside the page, so the
-  sidebar slides in over it instead, from the button in the bar. `navOpen` is
-  read by the sidebar as well as by the backdrop, which is why it is opened
-  here, on their common parent, and why that parent is inside <body>: alpine is
-  re-initialised from the body after a turbo navigation, so state declared above
-  it would never be walked again.
+  `navOpen` is declared here, on the common parent of the sidebar and the
+  backdrop, and that parent is inside <body>: alpine is re-initialised from the
+  body after a turbo navigation, so state declared above it would never be
+  walked again.
 
   @var string|null $title
   @var \Illuminate\View\ComponentSlot $sidebar
@@ -31,7 +30,6 @@
     >
       {{ $sidebar }}
 
-      {{-- What the sidebar is drawn over, and what closes it when tapped. --}}
       <div
         x-cloak
         x-show="navOpen"
@@ -62,7 +60,6 @@
             {{ $breadcrumb }}
           @endisset
 
-          {{-- Who is signed in is already at the foot of the sidebar, so a narrow bar can do without it. --}}
           <span class="ml-auto hidden text-sm text-muted sm:block">{{ auth()->user()?->email }}</span>
         </header>
 

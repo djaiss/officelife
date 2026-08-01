@@ -3,13 +3,8 @@
   was turned on, the way back out, and the codes that get them in if they ever
   lose the phone.
 
-  The two destructive buttons ask before they act rather than after: each one
-  swaps itself for a short sentence saying what is about to be lost, and the
-  button that goes through with it.
-
-  Both sit beside what they act on until there is no width to sit beside it, and
-  then below it, filling the line rather than hugging the right hand edge on
-  their own. The same goes for the pair that replaces them.
+  Each destructive button swaps itself for what is about to be lost and the
+  button that goes through with it, so nothing here acts on the first click.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}

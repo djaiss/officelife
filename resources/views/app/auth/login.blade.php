@@ -5,7 +5,6 @@
 --}}
 <x-guest-layout :title="__('Welcome back')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
-    {{-- The form --}}
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
       <div class="mx-auto w-full max-w-md space-y-6">
         <div class="flex items-center gap-3">
@@ -93,7 +92,6 @@
       </p>
     </main>
 
-    {{-- The quote --}}
     @include('app.auth._quote', ['quote' => $viewModel->quote()])
   </div>
 </x-guest-layout>

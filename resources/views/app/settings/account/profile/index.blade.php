@@ -22,7 +22,6 @@
     :description="__('Manage your personal details and how colleagues see you.')"
   />
 
-  {{-- Avatar --}}
   <x-box :title="__('Avatar')">
     <x-slot:help>
       <x-help :title="__('Avatar')">
@@ -98,7 +97,6 @@
     </div>
   </x-box>
 
-  {{-- Details --}}
   <x-box :title="__('Details')">
     <x-slot:help>
       <x-help :title="__('Details')">
@@ -167,7 +165,6 @@
     </div>
   </x-box>
 
-  {{-- Emergency contact --}}
   <x-box :title="__('Emergency contact')">
     <x-slot:help>
       <x-help :title="__('Emergency contact')">
