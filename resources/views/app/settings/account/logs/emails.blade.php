@@ -1,10 +1,4 @@
 {{--
-  Every email we sent to the person signed in, a page at a time.
-
-  The list grows in place: the link at the bottom asks for the next page and
-  alpine-ajax appends the rows that come back, then swaps the link for the one
-  that came with them, or drops it on the last page.
-
   @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel
 --}}
 <x-app-layout :title="__('Emails sent')">

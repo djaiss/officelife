@@ -1,6 +1,4 @@
 {{--
-  The shell of every screen a visitor sees before they sign in.
-
   @var string|null $title
 --}}
 <!DOCTYPE html>

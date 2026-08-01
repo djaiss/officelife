@@ -1,10 +1,4 @@
 {{--
-  Setting up two factor authentication: pair an authenticator app with the
-  account, then prove it worked by typing back what the app is showing.
-
-  Nothing is protected until that code is accepted, which is what the screen
-  says. Somebody who closes the tab here is left as they were.
-
   @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel
 --}}
 <x-app-layout :title="__('Two factor authentication')">

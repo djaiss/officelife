@@ -1,11 +1,4 @@
 {{--
-  Everything that has been written down about an account: what its owner has
-  done, and what we have sent them.
-
-  The next page of logs is loaded in place: the link asks for it, the rows are
-  appended to the ones already on screen, and the link itself is replaced by the
-  one that came back, or removed when there is nothing left to read.
-
   @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel
 --}}
 <x-app-layout :title="__('Logs')">
@@ -26,7 +19,6 @@
     :description="__('What we recorded about your account, and what we sent you.')"
   />
 
-  {{-- Logs --}}
   <x-box :title="__('Logs')" id="logs-container" x-merge="append" padding="p-0">
     <x-slot:help>
       <x-help :title="__('Logs')">
@@ -38,23 +30,6 @@
       <p>{{ __('Sensitive actions performed with your account are recorded here.') }}</p>
     </x-slot:description>
 
-    {{--
-      One line of the log: who acted, what they did and how long ago.
-
-      The raw name of the action is shown beside the sentence, in a monospaced
-      face, because it is what somebody quotes when they ask us what happened.
-
-      The row is written for the width it has. Above sm it reads across: the
-      name and the action on one line, the sentence under them, the time out to
-      the right. Below sm there is not enough width for any of that, so it reads
-      down instead: the action takes a line of its own, and so does the time,
-      indented to line up under the words rather than stranded against the right
-      hand edge. The bar between the name and the action goes with it, having
-      nothing left to separate.
-
-      The mark sits against the first line rather than in the middle, since the
-      middle of a row three lines tall is beside nothing in particular.
-    --}}
     @forelse ($viewModel->logs() as $log)
       <x-box.row class="flex items-start gap-x-3">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="mt-1 shrink-0 text-placeholder" aria-hidden="true">
@@ -100,7 +75,6 @@
     @endif
   </x-box>
 
-  {{-- Emails sent --}}
   <x-box :title="__('Emails sent')" padding="p-0">
     <x-slot:help>
       <x-help :title="__('Emails sent')">

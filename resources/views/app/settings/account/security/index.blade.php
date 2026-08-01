@@ -1,10 +1,4 @@
 {{--
-  What somebody can change about the way they sign in: their password, and
-  whether a code is asked for on top of it.
-
-  Each panel holds a section of its own, kept in a partial beside this file, so
-  what this screen is made of can be read in one go.
-
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
 <x-app-layout :title="__('Security')">

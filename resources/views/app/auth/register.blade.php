@@ -1,6 +1,4 @@
 {{--
-  Where somebody creates a company and the account that administers it.
-
   @var \App\ViewModels\Auth\RegisterViewModel $viewModel
 --}}
 @php
@@ -11,7 +9,6 @@
 
 <x-guest-layout :title="__('Create your account')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
-    {{-- The form --}}
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
       <div class="mx-auto w-full max-w-md space-y-6">
         <div class="space-y-2">
@@ -28,9 +25,8 @@
 
         <x-status :message="session('status')" />
 
-        {{-- The submit button stays greyed out until the terms are ticked. The
-             server refuses the form all the same, so a browser without
-             javascript still gets a working page and a clear error. --}}
+        {{-- The greyed out button is a courtesy: the server refuses an unticked
+             form all the same, so a browser without javascript still works. --}}
         <div x-data="{ terms: @js((bool) old('terms')) }">
           <x-box>
             <x-form method="post" :action="route('auth.register.create')" class="space-y-4">
@@ -84,9 +80,8 @@
                 required
               />
 
-              {{-- new-password on both, and passwordrules stating the floor the server
-                   actually enforces, so a password manager offers to generate one that
-                   will pass rather than filling an existing password in. --}}
+              {{-- passwordrules states the floor the server enforces, so a password
+                   manager generates one that will pass. --}}
               <div class="space-y-1.5">
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <x-input
@@ -147,7 +142,6 @@
       </p>
     </main>
 
-    {{-- The quote --}}
     @include('app.auth._quote', ['quote' => $viewModel->quote()])
   </div>
 </x-guest-layout>

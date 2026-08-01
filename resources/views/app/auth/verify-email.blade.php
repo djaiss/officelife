@@ -1,6 +1,4 @@
 {{--
-  The step right after signing up: go and click the link we just sent.
-
   @var \App\ViewModels\Auth\VerifyEmailViewModel $viewModel
 --}}
 <x-guest-layout :title="__('Confirm your email address')">

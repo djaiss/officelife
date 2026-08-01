@@ -1,6 +1,4 @@
 {{--
-  Where somebody who followed a reset link chooses a new password.
-
   @var \App\ViewModels\Auth\NewPasswordViewModel $viewModel
 --}}
 <x-guest-layout :title="__('Choose a new password')">

@@ -1,6 +1,4 @@
 {{--
-  Where somebody asks for a link that signs them in without a password.
-
   @var \App\ViewModels\Auth\MagicLinkViewModel $viewModel
 --}}
 <x-guest-layout :title="__('Get a link to sign in')">

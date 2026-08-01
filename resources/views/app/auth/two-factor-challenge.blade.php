@@ -1,7 +1,4 @@
 {{--
-  The second step of signing in, for somebody who enrolled in two factor
-  authentication.
-
   @var \App\ViewModels\Auth\TwoFactorViewModel $viewModel
 --}}
 <x-guest-layout :title="__('One more step')">
