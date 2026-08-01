@@ -18,6 +18,9 @@ enum UserActionEnum: string
     case EmployeePhotoDeletion = 'employee_photo_deleted';
     case EmergencyContactUpdate = 'emergency_contact_updated';
     case EmailConfirmation = 'email_confirmed';
+    case TwoFactorEnabled = 'two_factor_enabled';
+    case TwoFactorDisabled = 'two_factor_disabled';
+    case TwoFactorRecoveryCodesRegenerated = 'two_factor_recovery_codes_regenerated';
     case UserLogin = 'user_logged_in';
     case MagicLinkCreation = 'magic_link_created';
 
@@ -41,6 +44,9 @@ enum UserActionEnum: string
             self::EmployeePhotoDeletion => 'Removed the photo of :name',
             self::EmergencyContactUpdate => 'Updated their emergency contact',
             self::EmailConfirmation => 'Confirmed their email address',
+            self::TwoFactorEnabled => 'Turned two factor authentication on',
+            self::TwoFactorDisabled => 'Turned two factor authentication off',
+            self::TwoFactorRecoveryCodesRegenerated => 'Asked for new recovery codes',
             self::UserLogin => 'Signed in',
             self::MagicLinkCreation => 'Asked for a sign-in link',
         };

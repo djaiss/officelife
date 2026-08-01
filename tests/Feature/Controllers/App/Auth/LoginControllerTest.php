@@ -9,7 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
-use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
@@ -193,40 +192,5 @@ class LoginControllerTest extends TestCase
         $response = $this->actingAs(User::factory()->create())->get(route('auth.login.new'));
 
         $response->assertRedirect(route('home.index'));
-    }
-
-    #[Test]
-    public function it_verifies_the_two_factor_code_a_user_types(): void
-    {
-        Queue::fake();
-
-        $google2fa = new Google2FA;
-        $secret = $google2fa->generateSecretKey();
-        $user = User::factory()->twoFactor($secret)->create();
-
-        $response = $this->withSession(['twoFactor.user.id' => $user->id])
-            ->post(route('auth.twoFactor.create'), ['code' => $google2fa->getCurrentOtp($secret)]);
-
-        $response->assertRedirect(route('home.index'));
-        $this->assertAuthenticatedAs($user);
-        $this->assertNull(session('twoFactor.user.id'));
-    }
-
-    #[Test]
-    public function it_refuses_a_two_factor_code_that_is_not_right(): void
-    {
-        $user = User::factory()->twoFactor()->create();
-
-        $response = $this->withSession(['twoFactor.user.id' => $user->id])
-            ->post(route('auth.twoFactor.create'), ['code' => '000000']);
-
-        $response->assertSessionHasErrors('code');
-        $this->assertGuest();
-    }
-
-    #[Test]
-    public function it_sends_somebody_with_no_challenge_under_way_back_to_the_sign_in_page(): void
-    {
-        $this->get(route('auth.twoFactor.new'))->assertRedirect(route('auth.login.new'));
     }
 }

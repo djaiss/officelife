@@ -38,6 +38,34 @@ class SecurityViewModel
     }
 
     /**
+     * Whether the account answers a challenge on top of its password.
+     */
+    public function usesTwoFactorAuthentication(): bool
+    {
+        return $this->user->usesTwoFactorAuthentication();
+    }
+
+    /**
+     * How long ago two factor authentication was turned on, in words, or null
+     * when it is not in use.
+     */
+    public function twoFactorConfirmedAt(): ?string
+    {
+        return $this->user->two_factor_confirmed_at?->diffForHumans();
+    }
+
+    /**
+     * The recovery codes that have not been spent yet, so somebody can copy
+     * them somewhere safe and see how many they have left.
+     *
+     * @return array<int, string>
+     */
+    public function recoveryCodes(): array
+    {
+        return $this->user->two_factor_recovery_codes ?? [];
+    }
+
+    /**
      * The name to show and to draw initials from. Somebody whose account is not
      * attached to an employee record has only an email address to go by.
      */

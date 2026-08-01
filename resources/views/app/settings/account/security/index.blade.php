@@ -1,11 +1,9 @@
 {{--
-  What somebody can change about the way they sign in. For now that is the
-  password, and the boxes that come later sit under it.
+  What somebody can change about the way they sign in: their password, and
+  whether a code is asked for on top of it.
 
-  The form saves in place: it asks for the screen again and swaps itself for the
-  one that comes back, so a mistyped current password lands under its field
-  without the page moving, and a save that works comes back with empty fields
-  and the toast the redirect carries.
+  Each panel holds a section of its own, kept in a partial beside this file, so
+  what this screen is made of can be read in one go.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
@@ -27,7 +25,6 @@
     :description="__('How you sign in to your account.')"
   />
 
-  {{-- Change password --}}
   <x-box :title="__('Change password')">
     <x-slot:help>
       <x-help :title="__('Change password')">
@@ -35,71 +32,20 @@
       </x-help>
     </x-slot:help>
 
-    <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <div class="space-y-2.5 text-sm leading-relaxed text-body">
-        <p>{{ __('Choose a password you use nowhere else. Long beats complicated.') }}</p>
-        <p>{{ __('You stay signed in here, and your new password is what you type the next time.') }}</p>
-      </div>
+    @include('app.settings.account.security._change-password', ['viewModel' => $viewModel])
+  </x-box>
 
-      @if ($viewModel->usesSingleSignOn())
-        <p class="text-sm leading-relaxed text-muted">{{ __('You sign in through your identity provider, so there is no password to change here.') }}</p>
-      @else
-        <x-form
-          method="put"
-          :action="route('settings.password.update')"
-          id="password-form"
-          x-target="password-form"
-          class="space-y-3.5 transition-opacity [&[aria-busy]]:opacity-60"
-        >
-          <x-input
-            type="password"
-            id="current_password"
-            :label="__('Current password')"
-            autocomplete="current-password"
-            :error="$errors->get('current_password')"
-            allowPasswordManager
-            required
-          />
+  <x-box :title="__('Two factor authentication')">
+    <x-slot:help>
+      <x-help :title="__('Two factor authentication')">
+        {{ __('A password can be guessed, reused or stolen. A code that changes every thirty seconds, on a phone in your pocket, cannot be any of those things from a distance. Turning this on means somebody who knows your password still cannot get in.') }}
+      </x-help>
+    </x-slot:help>
 
-          <div class="space-y-1.5">
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <x-input
-                type="password"
-                id="new_password"
-                :label="__('New password')"
-                autocomplete="new-password"
-                passwordrules="minlength: 8"
-                :error="$errors->get('new_password')"
-                allowPasswordManager
-                required
-              />
-
-              <x-input
-                type="password"
-                id="new_password_confirmation"
-                :label="__('Confirm new password')"
-                autocomplete="new-password"
-                passwordrules="minlength: 8"
-                :error="$errors->get('new_password_confirmation')"
-                allowPasswordManager
-                required
-              />
-            </div>
-
-            <p class="text-xs text-muted">{{ __('Minimum 8 characters.') }}</p>
-          </div>
-
-          <div class="flex items-center gap-3 pt-1">
-            <span @class(['text-xs text-muted-soft', 'hidden' => ! $viewModel->passwordChangedAt()])>
-              @if ($viewModel->passwordChangedAt())
-                {{ __('Last changed :time', ['time' => $viewModel->passwordChangedAt()]) }}
-              @endif
-            </span>
-
-            <x-button class="ml-auto">{{ __('Save') }}</x-button>
-          </div>
-        </x-form>
-      @endif
-    </div>
+    @if ($viewModel->usesTwoFactorAuthentication())
+      @include('app.settings.account.security._two-factor-on', ['viewModel' => $viewModel])
+    @else
+      @include('app.settings.account.security._two-factor-off')
+    @endif
   </x-box>
 </x-app-layout>

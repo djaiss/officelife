@@ -102,6 +102,24 @@ class MagicLinkControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_sends_somebody_who_uses_two_factor_to_the_challenge(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->twoFactor()->create();
+        MagicLink::factory()->create([
+            'user_id' => $user->id,
+            'token' => hash('sha256', self::TOKEN),
+        ]);
+
+        $response = $this->get(route('auth.magicLink.show', ['token' => self::TOKEN]));
+
+        $response->assertRedirect(route('auth.twoFactor.new'));
+        $response->assertSessionHas('twoFactor.user.id', $user->id);
+        $this->assertGuest();
+    }
+
+    #[Test]
     public function it_refuses_a_link_that_was_already_used(): void
     {
         Queue::fake();
