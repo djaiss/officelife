@@ -27,6 +27,7 @@ class EmergencyContactControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->put(route('settings.emergencyContact.update'), [
             'name' => 'Mose Schrute',
@@ -64,6 +65,7 @@ class EmergencyContactControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->put(route('settings.emergencyContact.update'), [
             'name' => str_repeat('a', 256),

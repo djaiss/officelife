@@ -29,6 +29,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->get(route('settings.profile.index'));
 
@@ -47,6 +48,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)
             ->withSession([
@@ -70,6 +72,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->get(route('settings.profile.index'));
 
@@ -96,6 +99,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->put(route('settings.profile.update'), [
             'first_name' => 'Michael',
@@ -125,6 +129,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->put(route('settings.profile.update'), [
             'first_name' => '',
@@ -143,6 +148,7 @@ class ProfileControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->put(route('settings.profile.update'), [
             'first_name' => 'Angela',

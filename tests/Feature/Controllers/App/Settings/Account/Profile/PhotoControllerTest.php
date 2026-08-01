@@ -31,6 +31,7 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->post(route('settings.photo.update'), [
             'photo' => UploadedFile::fake()->image('dwight.jpg', 400, 400),
@@ -60,9 +61,11 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('pam.jpg', 400, 400),
         )->execute();
 
@@ -83,6 +86,7 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->post(route('settings.photo.update'), [
             'photo' => UploadedFile::fake()->create('beets.pdf', 10, 'application/pdf'),
@@ -100,6 +104,7 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->post(route('settings.photo.update'), [
             'photo' => UploadedFile::fake()->image('creed.jpg')->size(6 * 1024),
@@ -128,9 +133,11 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('jim.jpg', 400, 400),
         )->execute();
 
@@ -153,15 +160,45 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('holly.jpg', 400, 400),
         )->execute();
 
-        $stranger = User::factory()->create();
+        $stranger = $this->makeMember(User::factory()->create());
 
         $response = $this->actingAs($stranger)
+            ->get(route('settings.photo.show', ['employee' => $employee, 'size' => 96]));
+
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_does_not_serve_the_photo_to_somebody_who_may_not_see_the_employee(): void
+    {
+        Queue::fake();
+        Storage::fake('local');
+
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+        $this->makeMember($user);
+
+        new UpdateEmployeePhoto(
+            author: $user,
+            employee: $employee,
+            file: UploadedFile::fake()->image('kelly.jpg', 400, 400),
+        )->execute();
+
+        $colleagueWithNoRole = User::factory()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($colleagueWithNoRole)
             ->get(route('settings.photo.show', ['employee' => $employee, 'size' => 96]));
 
         $response->assertNotFound();
@@ -179,9 +216,11 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('toby.jpg', 400, 400),
         )->execute();
 
@@ -207,9 +246,11 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('stanley.jpg', 400, 400),
         )->execute();
 
@@ -234,6 +275,7 @@ class PhotoControllerTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->makeMember($user);
 
         $response = $this->actingAs($user)->get(route('settings.profile.index'));
 

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateEmergencyContact;
+use App\Enums\PermissionEnum;
+use App\Enums\ScopeEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
@@ -31,9 +33,11 @@ class UpdateEmergencyContactTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdatePrivate, ScopeEnum::Self);
 
         $result = new UpdateEmergencyContact(
-            user: $user,
+            author: $user,
+            employee: $employee,
             name: 'Mose Schrute',
             phone: '+1 570 555 0182',
             relationship: 'Cousin',
@@ -70,9 +74,11 @@ class UpdateEmergencyContactTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdatePrivate, ScopeEnum::Self);
 
         new UpdateEmergencyContact(
-            user: $user,
+            author: $user,
+            employee: $employee,
             name: 'Bob Vance',
         )->execute();
 
@@ -94,8 +100,9 @@ class UpdateEmergencyContactTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdatePrivate, ScopeEnum::Self);
 
-        new UpdateEmergencyContact(user: $user)->execute();
+        new UpdateEmergencyContact(author: $user, employee: $employee)->execute();
 
         $employee->refresh();
 
@@ -105,14 +112,60 @@ class UpdateEmergencyContactTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_when_the_user_has_no_employee_record(): void
+    public function it_throws_when_the_author_may_only_edit_the_public_details(): void
     {
         $this->expectException(ModelNotFoundException::class);
 
-        $user = User::factory()->create(['employee_id' => null]);
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $author = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+        $this->grant($author, PermissionEnum::EmployeeUpdate, ScopeEnum::Company);
 
         new UpdateEmergencyContact(
-            user: $user,
+            author: $author,
+            employee: $employee,
+            name: 'Toby Flenderson',
+        )->execute();
+    }
+
+    #[Test]
+    public function it_throws_when_the_author_may_only_edit_themselves(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $company = Company::factory()->create();
+        $angela = Employee::factory()->create(['company_id' => $company->id]);
+        $oscar = Employee::factory()->create(['company_id' => $company->id]);
+        $author = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $angela->id,
+        ]);
+        $this->grant($author, PermissionEnum::EmployeeUpdatePrivate, ScopeEnum::Self);
+
+        new UpdateEmergencyContact(
+            author: $author,
+            employee: $oscar,
+            name: 'Toby Flenderson',
+        )->execute();
+    }
+
+    #[Test]
+    public function it_throws_when_the_employee_belongs_to_another_company(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $dunderMifflin = Company::factory()->create();
+        $michaelScottPaperCompany = Company::factory()->create();
+        $stranger = Employee::factory()->create(['company_id' => $michaelScottPaperCompany->id]);
+        $author = User::factory()->create(['company_id' => $dunderMifflin->id]);
+        $this->grant($author, PermissionEnum::EmployeeUpdatePrivate, ScopeEnum::Company);
+
+        new UpdateEmergencyContact(
+            author: $author,
+            employee: $stranger,
             name: 'Toby Flenderson',
         )->execute();
     }

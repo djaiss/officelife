@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Update who to call about an employee when something happens to them. Somebody
- * may only do this to their own record, so the action takes the user and edits
- * whoever is signed in.
+ * Update who to call about an employee when something happens to them. This is
+ * private information, so being allowed to edit somebody's profile is not
+ * enough on its own to change it.
  *
  * The details themselves are not logged, only that they changed. Who somebody
  * lives with is not something to leave lying in a log.
  */
 class UpdateEmergencyContact
 {
-    private Employee $employee;
-
     public function __construct(
-        private readonly User $user,
+        private readonly User $author,
+        private readonly Employee $employee,
         private ?string $name = null,
         private ?string $phone = null,
         private ?string $relationship = null,
@@ -32,7 +31,7 @@ class UpdateEmergencyContact
 
     public function execute(): Employee
     {
-        $this->validate();
+        $this->authorize();
         $this->sanitize();
         $this->update();
         $this->log();
@@ -40,19 +39,12 @@ class UpdateEmergencyContact
         return $this->employee;
     }
 
-    /**
-     * An account does not always belong to somebody who works for the company,
-     * and one that does not has no record to edit.
-     */
-    private function validate(): void
+    private function authorize(): void
     {
-        $employee = $this->user->employee;
-
-        if ($employee === null) {
-            throw new ModelNotFoundException('Employee not found');
-        }
-
-        $this->employee = $employee;
+        $this->author
+            ->permission(PermissionEnum::EmployeeUpdatePrivate)
+            ->forEmployee($this->employee)
+            ->authorize();
     }
 
     private function sanitize(): void
@@ -74,8 +66,8 @@ class UpdateEmergencyContact
     private function log(): void
     {
         LogUserAction::dispatch(
-            company: $this->user->company,
-            user: $this->user,
+            company: $this->author->company,
+            user: $this->author,
             action: UserActionEnum::EmergencyContactUpdate,
         )->onQueue('low');
     }

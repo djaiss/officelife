@@ -17,6 +17,11 @@ enum UserActionEnum: string
     case EmployeePhotoUpdate = 'employee_photo_updated';
     case EmployeePhotoDeletion = 'employee_photo_deleted';
     case EmergencyContactUpdate = 'emergency_contact_updated';
+    case RoleCreation = 'role_created';
+    case RoleUpdate = 'role_updated';
+    case RoleDeletion = 'role_deleted';
+    case RoleAssignment = 'role_assigned';
+    case RoleRemoval = 'role_removed';
     case EmailConfirmation = 'email_confirmed';
     case TwoFactorEnabled = 'two_factor_enabled';
     case TwoFactorDisabled = 'two_factor_disabled';
@@ -45,6 +50,11 @@ enum UserActionEnum: string
             self::EmployeePhotoUpdate => 'Changed the photo of :name',
             self::EmployeePhotoDeletion => 'Removed the photo of :name',
             self::EmergencyContactUpdate => 'Updated their emergency contact',
+            self::RoleCreation => 'Created the role called :name',
+            self::RoleUpdate => 'Changed the role called :name',
+            self::RoleDeletion => 'Deleted the role called :name',
+            self::RoleAssignment => 'Gave the :name role to :email',
+            self::RoleRemoval => 'Took the :name role away from :email',
             self::EmailConfirmation => 'Confirmed their email address',
             self::TwoFactorEnabled => 'Turned two factor authentication on',
             self::TwoFactorDisabled => 'Turned two factor authentication off',

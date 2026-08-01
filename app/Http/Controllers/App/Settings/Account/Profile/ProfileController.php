@@ -32,8 +32,15 @@ class ProfileController extends Controller
             'work_email' => ['nullable', 'string', 'email', 'max:255'],
         ]);
 
+        $employee = $request->user()->employee;
+
+        if ($employee === null) {
+            abort(404);
+        }
+
         new UpdateEmployeeInformation(
-            user: $request->user(),
+            author: $request->user(),
+            employee: $employee,
             firstName: $validated['first_name'],
             lastName: $validated['last_name'],
             displayName: $validated['display_name'] ?? null,
