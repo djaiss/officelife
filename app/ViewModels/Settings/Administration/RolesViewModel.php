@@ -11,6 +11,8 @@ use App\Models\Employee;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\User;
+use App\Models\UserRole;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -180,6 +182,8 @@ class RolesViewModel
             return [];
         }
 
+        $heldSince = $this->heldSince($this->role);
+
         return $this->role->users()
             ->with('employee')
             ->get()
@@ -188,9 +192,25 @@ class RolesViewModel
                 'name' => $user->employee->name ?? $user->email,
                 'email' => $user->email,
                 'employee' => $user->employee,
-                'since' => __('since :date', ['date' => $user->pivot->created_at->isoFormat('MMM YYYY')]),
+                'since' => __('since :date', ['date' => $heldSince[$user->id]->isoFormat('MMM YYYY')]),
                 'removeUrl' => route('settings.rolePeople.destroy', [$this->role->id, $user->id]),
             ])
+            ->all();
+    }
+
+    /**
+     * The day each holder of the role was given it, keyed by who they are. It is
+     * read off the row that joins the two rather than through the relation,
+     * since the day a role was handed out belongs to neither of them.
+     *
+     * @return array<int, Carbon>
+     */
+    private function heldSince(Role $role): array
+    {
+        return UserRole::query()
+            ->where('role_id', $role->id)
+            ->get()
+            ->mapWithKeys(fn (UserRole $held): array => [$held->user_id => $held->created_at])
             ->all();
     }
 
