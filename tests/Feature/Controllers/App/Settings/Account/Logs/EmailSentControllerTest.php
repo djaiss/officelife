@@ -46,14 +46,15 @@ class EmailSentControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_a_word_when_nothing_was_ever_sent(): void
+    public function it_shows_a_blank_state_when_nothing_was_ever_sent(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get(route('settings.emailsSent.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Nothing yet. The emails we send you show up here.', escape: false);
+        $response->assertSee('No emails yet', escape: false);
+        $response->assertSee('Nothing has left our hands yet.', escape: false);
     }
 
     #[Test]

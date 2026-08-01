@@ -31,7 +31,16 @@
     @forelse ($viewModel->emailsSent() as $emailSent)
       <x-email-sent-entry :email-sent="$emailSent" />
     @empty
-      <p class="px-4 py-3 text-sm text-muted">{{ __('Nothing yet. The emails we send you show up here.') }}</p>
+      <x-empty-state :title="__('No emails yet')">
+        <x-slot:icon>
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1.5" y="3.5" width="13" height="9" rx="1.5"></rect>
+            <path d="m2 4.5 6 4.5 6-4.5"></path>
+          </svg>
+        </x-slot:icon>
+
+        {{ __('Nothing has left our hands yet. The emails we send you, such as sign-in links and password changes, show up here once they do.') }}
+      </x-empty-state>
     @endforelse
 
     @if ($viewModel->emailsSent()->hasMorePages())
