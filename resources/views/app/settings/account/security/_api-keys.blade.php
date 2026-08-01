@@ -15,9 +15,20 @@
   button swaps itself for what is about to be lost and the button that goes
   through with it.
 
+  Both forms ask for the screen again and swap this block for what comes back,
+  so making a key and revoking one leave the rest of the page where it was. The
+  swap replaces the block rather than morphing it, the way the rest of the app
+  does, because `creating` has to come back from the server: morphing keeps the
+  flag that was set when the field was opened, and the field never closes.
+
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
-<div x-data="{ creating: {{ $errors->has('name') ? 'true' : 'false' }} }">
+<div
+  id="api-keys"
+  x-merge="replace"
+  x-data="{ creating: {{ $errors->has('name') ? 'true' : 'false' }} }"
+  class="transition-opacity [&[aria-busy]]:opacity-60"
+>
   @if (session('apiKey'))
     <div class="space-y-2 rounded-t-xl border-b border-hairline-soft bg-sunken px-4 py-3.5">
       <p class="text-sm font-semibold text-ink">{{ __('Your new API key') }}</p>
@@ -40,7 +51,7 @@
   </x-box.row>
 
   <div x-cloak x-show="creating" class="border-b border-hairline-soft px-4 py-3.5">
-    <x-form method="post" :action="route('settings.apiKeys.create')" class="space-y-3.5">
+    <x-form method="post" :action="route('settings.apiKeys.create')" x-target="api-keys" class="space-y-3.5">
       <x-input
         id="name"
         x-ref="name"
@@ -92,7 +103,7 @@
 
           <x-button.secondary type="button" @click="confirming = false">{{ __('Keep it') }}</x-button.secondary>
 
-          <x-form method="delete" :action="route('settings.apiKeys.destroy', $apiKey['id'])">
+          <x-form method="delete" :action="route('settings.apiKeys.destroy', $apiKey['id'])" x-target="api-keys">
             <x-button class="bg-error hover:bg-error/88 max-sm:w-full">{{ __('Revoke') }}</x-button>
           </x-form>
         </div>
