@@ -36,3 +36,4 @@ A chronological list of every feature and improvement shipped during development
 * Permissions: Added actions to create, change, delete, hand out and take back a role.
 * Permissions: Checked every action that touches an employee or the company against the roles of whoever asked.
 * Permissions: Kept the private details of a colleague off the screen for anybody not allowed to see them.
+* App-wide: Switched the interface to the fonts already on the reader's machine, so nothing is downloaded before the page reads.

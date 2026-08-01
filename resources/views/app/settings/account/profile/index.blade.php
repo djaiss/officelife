@@ -30,7 +30,7 @@
     </x-slot:help>
 
     <div class="grid items-center gap-7 md:grid-cols-[minmax(0,1fr)_auto]">
-      <div class="space-y-2.5 text-sm leading-relaxed text-body">
+      <div class="space-y-1 text-sm leading-relaxed text-body">
         <p>{{ __('Your avatar appears next to your name across :app.', ['app' => config('app.name')]) }}</p>
         <p>{{ __('Use a square image for the best result. JPEG, PNG and WebP up to 5 MB.') }}</p>
         <p>{{ __('Without an avatar, we show your initials instead.') }}</p>
@@ -105,7 +105,7 @@
     </x-slot:help>
 
     <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <div class="space-y-2.5 text-sm leading-relaxed text-body">
+      <div class="space-y-1 text-sm leading-relaxed text-body">
         <p>{{ __('These details are shown on your profile. Everyone in your company can see them.') }}</p>
         <p>{{ __('The details you keep private, such as your emergency contact, are never shown to your colleagues.') }}</p>
       </div>
@@ -174,7 +174,7 @@
     </x-slot:help>
 
     <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <div class="space-y-2.5 text-sm leading-relaxed text-body">
+      <div class="space-y-1 text-sm leading-relaxed text-body">
         <p>{{ __('Who we should call if something happens to you at work.') }}</p>
         <p>{{ __('Only you and your company administrators can see this.') }}</p>
       </div>
