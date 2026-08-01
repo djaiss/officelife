@@ -85,4 +85,69 @@ class SecurityViewModelTest extends TestCase
 
         $this->assertTrue($singleSignOnViewModel->usesSingleSignOn());
     }
+
+    #[Test]
+    public function it_gives_an_empty_list_when_no_api_key_has_been_made(): void
+    {
+        $user = User::factory()->create();
+
+        $viewModel = new SecurityViewModel(user: $user, employee: null);
+
+        $this->assertSame([], $viewModel->apiKeys());
+        $this->assertEquals('Active · no API keys', $viewModel->apiKeysHeader());
+    }
+
+    #[Test]
+    public function it_gives_the_api_keys_newest_first(): void
+    {
+        $user = User::factory()->create();
+
+        $older = $user->createToken('Beet farm sync')->accessToken;
+        $older->forceFill(['created_at' => now()->subDays(3)])->save();
+
+        $user->createToken('Dundie awards bot');
+
+        $apiKeys = new SecurityViewModel(user: $user, employee: null)->apiKeys();
+
+        $this->assertCount(2, $apiKeys);
+        $this->assertEquals('Dundie awards bot', $apiKeys[0]['name']);
+        $this->assertEquals('Beet farm sync', $apiKeys[1]['name']);
+        $this->assertEquals('3 days ago', $apiKeys[1]['createdAt']);
+    }
+
+    #[Test]
+    public function it_gives_nothing_for_the_last_use_until_something_uses_the_key(): void
+    {
+        $user = User::factory()->create();
+        $user->createToken('Dundie awards bot');
+
+        $apiKeys = new SecurityViewModel(user: $user, employee: null)->apiKeys();
+
+        $this->assertNull($apiKeys[0]['lastUsedAt']);
+    }
+
+    #[Test]
+    public function it_gives_how_long_ago_the_api_key_was_last_used(): void
+    {
+        $user = User::factory()->create();
+        $apiKey = $user->createToken('Dundie awards bot')->accessToken;
+        $apiKey->forceFill(['last_used_at' => now()->subHours(5)])->save();
+
+        $apiKeys = new SecurityViewModel(user: $user, employee: null)->apiKeys();
+
+        $this->assertEquals('5 hours ago', $apiKeys[0]['lastUsedAt']);
+    }
+
+    #[Test]
+    public function it_counts_the_api_keys_in_the_header(): void
+    {
+        $user = User::factory()->create();
+        $user->createToken('Dundie awards bot');
+
+        $this->assertEquals('Active · 1 API key', new SecurityViewModel(user: $user, employee: null)->apiKeysHeader());
+
+        $user->createToken('Beet farm sync');
+
+        $this->assertEquals('Active · 2 API keys', new SecurityViewModel(user: $user, employee: null)->apiKeysHeader());
+    }
 }

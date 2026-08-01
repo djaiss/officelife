@@ -8,6 +8,7 @@ use App\Http\Controllers\App\Settings\Account\Preferences\PreferenceController;
 use App\Http\Controllers\App\Settings\Account\Profile\EmergencyContactController;
 use App\Http\Controllers\App\Settings\Account\Profile\PhotoController;
 use App\Http\Controllers\App\Settings\Account\Profile\ProfileController;
+use App\Http\Controllers\App\Settings\Account\Security\ApiKeyController;
 use App\Http\Controllers\App\Settings\Account\Security\PasswordController;
 use App\Http\Controllers\App\Settings\Account\Security\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\Account\Security\SecurityController;
@@ -37,6 +38,9 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::delete('settings/account/security/two-factor', [TwoFactorController::class, 'destroy'])->name('settings.twoFactor.destroy');
 
     Route::post('settings/account/security/recovery-codes', [RecoveryCodeController::class, 'create'])->name('settings.recoveryCodes.create');
+
+    Route::post('settings/account/security/api-keys', [ApiKeyController::class, 'create'])->name('settings.apiKeys.create');
+    Route::delete('settings/account/security/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->whereNumber('apiKey')->name('settings.apiKeys.destroy');
 
     Route::put('settings/account/profile/emergency-contact', [EmergencyContactController::class, 'update'])->name('settings.emergencyContact.update');
 

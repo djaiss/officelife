@@ -1,13 +1,14 @@
 {{--
-  What somebody can change about the way they sign in: their password, and
-  whether a code is asked for on top of it.
+  What somebody can change about the way they sign in: their password, whether a
+  code is asked for on top of it, and the API keys that let something other than
+  a browser act as them.
 
   Each panel holds a section of its own, kept in a partial beside this file, so
   what this screen is made of can be read in one go.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
-<x-app-layout :title="__('Security')">
+<x-app-layout :title="__('Security and access')">
   <x-slot:sidebar>
     <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="security" />
   </x-slot:sidebar>
@@ -16,13 +17,13 @@
     <nav class="text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
       {{ __('Settings') }}
       <span class="px-1 text-placeholder" aria-hidden="true">/</span>
-      <span class="text-ink" aria-current="page">{{ __('Security') }}</span>
+      <span class="text-ink" aria-current="page">{{ __('Security and access') }}</span>
     </nav>
   </x-slot:breadcrumb>
 
   <x-page-header
-    :title="__('Security')"
-    :description="__('How you sign in to your account.')"
+    :title="__('Security and access')"
+    :description="__('How you sign in to your account, and what else may act as you.')"
   />
 
   <x-box :title="__('Change password')">
@@ -47,5 +48,23 @@
     @else
       @include('app.settings.account.security._two-factor-off')
     @endif
+  </x-box>
+
+  <x-box :title="__('API keys')" padding="p-0">
+    <x-slot:help>
+      <x-help :title="__('API keys')">
+        {{ __('A key is a password for machines. It is shown once, when you make it, and only a hash of it is kept afterwards, so a key you mislay is replaced rather than looked up. Revoking one stops it working straight away.') }}
+      </x-help>
+    </x-slot:help>
+
+    <x-slot:description>
+      <p>{{ __('A key lets a script or another system act as you, with exactly the access you have.') }}</p>
+    </x-slot:description>
+
+    <x-slot:additionalInfo>
+      <x-notice>{{ __('There is nothing to point a key at yet. The API that accepts them is still being built, and a key you make now works the moment it lands.') }}</x-notice>
+    </x-slot:additionalInfo>
+
+    @include('app.settings.account.security._api-keys', ['viewModel' => $viewModel])
   </x-box>
 </x-app-layout>

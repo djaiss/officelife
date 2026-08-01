@@ -34,11 +34,40 @@ class SecurityControllerTest extends TestCase
         $response = $this->actingAs($user)->get(route('settings.security.index'));
 
         $response->assertStatus(200);
+        $response->assertSee('Security and access', escape: false);
         $response->assertSee('Change password', escape: false);
         $response->assertSee('Current password', escape: false);
         $response->assertSee('Dwight Schrute', escape: false);
         $response->assertSee('Dunder Mifflin', escape: false);
         $response->assertSee('Last changed 2 days ago', escape: false);
+    }
+
+    #[Test]
+    public function it_says_there_are_no_api_keys_when_none_have_been_made(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('API keys', escape: false);
+        $response->assertSee('Active · no API keys', escape: false);
+        $response->assertSee('No API keys yet', escape: false);
+    }
+
+    #[Test]
+    public function it_lists_the_api_keys(): void
+    {
+        $user = User::factory()->create();
+        $user->createToken('Dundie awards bot');
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Active · 1 API key', escape: false);
+        $response->assertSee('Dundie awards bot', escape: false);
+        $response->assertSee('never used', escape: false);
+        $response->assertDontSee('No API keys yet', escape: false);
     }
 
     #[Test]

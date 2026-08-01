@@ -94,7 +94,7 @@
         <rect x="3.4" y="7" width="9.2" height="6.6" rx="1.5"></rect>
         <path d="M5.6 7V5.2a2.4 2.4 0 0 1 4.8 0V7"></path>
       </svg>
-      {{ __('Security') }}
+      {{ __('Security and access') }}
     </a>
 
     <a
