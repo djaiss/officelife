@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ViewModels\Settings\Account;
+namespace App\ViewModels\Settings\Account\Profile;
 
 use App\Models\Employee;
 use App\Models\User;

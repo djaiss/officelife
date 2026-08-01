@@ -2,7 +2,7 @@
   Where somebody edits their own employee record: how colleagues see them, and
   who to call if something happens to them.
 
-  @var \App\ViewModels\Settings\Account\ProfileViewModel $viewModel
+  @var \App\ViewModels\Settings\Account\Profile\ProfileViewModel $viewModel
 --}}
 <x-app-layout :title="__('Profile')">
   <x-slot:sidebar>

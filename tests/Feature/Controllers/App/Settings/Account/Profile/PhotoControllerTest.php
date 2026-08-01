@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Controllers\App\Settings\Account;
+namespace Tests\Feature\Controllers\App\Settings\Account\Profile;
 
 use App\Actions\UpdateEmployeePhoto;
 use App\Models\Company;

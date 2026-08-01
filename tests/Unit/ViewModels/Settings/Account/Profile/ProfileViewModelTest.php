@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\ViewModels\Settings\Account;
+namespace Tests\Unit\ViewModels\Settings\Account\Profile;
 
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
-use App\ViewModels\Settings\Account\ProfileViewModel;
+use App\ViewModels\Settings\Account\Profile\ProfileViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
