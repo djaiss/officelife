@@ -29,7 +29,7 @@
 
   <x-box id="emails-sent-container" x-merge="append" padding="p-0">
     @forelse ($viewModel->emailsSent() as $emailSent)
-      <x-email-sent-entry :email-sent="$emailSent" />
+      @include('app.settings.account.logs._email-sent-row', ['emailSent' => $emailSent])
     @empty
       <x-empty-state :title="__('No emails yet')">
         <x-slot:icon>

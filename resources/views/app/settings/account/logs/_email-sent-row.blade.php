@@ -3,6 +3,9 @@
   sent, so somebody can tell what an email actually said rather than only that
   it left.
 
+  Two screens show this list, the logs and the page that holds every email, so
+  the markup sits here rather than being written twice.
+
   The dot on the left is the delivery: still on its way, delivered, or bounced.
   Colour alone would say nothing to a screen reader, so the same three words are
   written out beside it.
@@ -13,8 +16,6 @@
 
   @var \App\Models\EmailSent $emailSent
 --}}
-@props(['emailSent'])
-
 @php
   [$delivery, $deliveryLabel] = match (true) {
     $emailSent->bounced_at !== null => ['bg-error', __('Bounced')],
