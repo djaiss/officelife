@@ -6,18 +6,22 @@
   The raw name of the action is shown beside the sentence, in a monospaced face,
   because it is what somebody quotes when they ask us what happened.
 
+  The row wraps rather than squeezing: when there is not enough width left for
+  the sentence, the time drops onto a line of its own instead of shaving the
+  sentence down to nothing.
+
   @var \App\Models\Log $log
 --}}
 @props([
   'log',
 ])
 
-<div class="flex items-center gap-3 border-b border-hairline-soft px-4 py-3 last:border-b-0">
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-hairline-soft px-4 py-3 last:border-b-0">
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0 text-placeholder" aria-hidden="true">
     <path d="M1.5 8h3L6 5l2 6 2-4 1.4 1h3.1"></path>
   </svg>
 
-  <div class="min-w-0">
+  <div class="min-w-50 flex-1">
     <p class="flex flex-wrap items-baseline gap-x-2 text-sm">
       <span class="font-semibold text-ink">{{ $log->author }}</span>
 

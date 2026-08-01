@@ -7,6 +7,10 @@
   Colour alone would say nothing to a screen reader, so the same three words are
   written out beside it.
 
+  The row wraps rather than squeezing: when there is not enough width left for
+  the address and the subject, the time and the chevron drop onto a line of
+  their own together.
+
   @var \App\Models\EmailSent $emailSent
 --}}
 @props(['emailSent'])
@@ -24,13 +28,14 @@
     type="button"
     @click="open = ! open"
     :aria-expanded="open ? 'true' : 'false'"
-    class="flex w-full cursor-pointer items-start gap-3 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-hover focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+    class="flex w-full cursor-pointer flex-wrap items-start gap-x-3 gap-y-1 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-hover focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
   >
     <span class="mt-1 size-2 shrink-0 rounded-full {{ $delivery }}" aria-hidden="true"></span>
     <span class="sr-only">{{ $deliveryLabel }}</span>
 
-    <span class="min-w-0 text-sm leading-relaxed">
-      <span class="block text-muted">{{ __('To:') }} {{ $emailSent->email_address }}</span>
+    <span class="min-w-50 flex-1 text-sm leading-relaxed">
+      {{-- An address has no break of its own, so it is told it may break anywhere rather than push the row wide. --}}
+      <span class="block wrap-anywhere text-muted">{{ __('To:') }} {{ $emailSent->email_address }}</span>
       <span class="block text-ink">{{ __('Subject:') }} <span class="font-semibold">{{ $emailSent->subject }}</span></span>
     </span>
 

@@ -13,7 +13,7 @@
 --}}
 @props([
   'title' => null,
-  'padding' => 'p-6',
+  'padding' => 'p-4 sm:p-6',
   'description' => null,
   'additionalInfo' => null,
 ])

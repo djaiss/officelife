@@ -24,10 +24,11 @@
   $errorId = $error ? $id.'-error' : null;
   $describedBy = trim(($helpId ?? '').' '.($errorId ?? ''));
 
+  /* 16px on a phone, the way x-input is, so tapping it does not zoom the page in. */
   $classes = [
-    'block w-full cursor-pointer text-sm text-muted',
+    'block w-full cursor-pointer text-base text-muted sm:text-sm',
     'file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-hairline-strong',
-    'file:bg-canvas file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink',
+    'file:bg-canvas file:px-3 file:py-2 file:text-base file:font-semibold file:text-ink sm:file:text-sm',
     'hover:file:bg-hover',
   ];
 @endphp
