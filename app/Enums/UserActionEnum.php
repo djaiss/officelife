@@ -23,6 +23,8 @@ enum UserActionEnum: string
     case TwoFactorRecoveryCodesRegenerated = 'two_factor_recovery_codes_regenerated';
     case UserLogin = 'user_logged_in';
     case MagicLinkCreation = 'magic_link_created';
+    case ApiKeyCreation = 'api_key_created';
+    case ApiKeyDeletion = 'api_key_deleted';
 
     /**
      * What the action reads as in the logs, written about whoever performed it.
@@ -49,6 +51,8 @@ enum UserActionEnum: string
             self::TwoFactorRecoveryCodesRegenerated => 'Asked for new recovery codes',
             self::UserLogin => 'Signed in',
             self::MagicLinkCreation => 'Asked for a sign-in link',
+            self::ApiKeyCreation => 'Created the API key called :name',
+            self::ApiKeyDeletion => 'Revoked the API key called :name',
         };
     }
 }

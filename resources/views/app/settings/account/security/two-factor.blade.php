@@ -16,7 +16,7 @@
     <nav class="text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
       {{ __('Settings') }}
       <span class="px-1 text-placeholder" aria-hidden="true">/</span>
-      <x-link :href="route('settings.security.index')" turbo>{{ __('Security') }}</x-link>
+      <x-link :href="route('settings.security.index')" turbo>{{ __('Security and access') }}</x-link>
       <span class="px-1 text-placeholder" aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{{ __('Two factor authentication') }}</span>
     </nav>

@@ -6,6 +6,7 @@ namespace App\ViewModels\Settings\Account\Security;
 
 use App\Models\Employee;
 use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
 
 /**
  * What the security screen shows: what somebody can change about the way they
@@ -63,6 +64,46 @@ class SecurityViewModel
     public function recoveryCodes(): array
     {
         return $this->user->two_factor_recovery_codes ?? [];
+    }
+
+    /**
+     * The API keys this account has minted, newest first, each with the two
+     * dates the screen shows: when it was made, and when it last let something
+     * in, which is null for a key nothing has used yet.
+     *
+     * @return array<int, array{id: int, name: string, createdAt: string, lastUsedAt: ?string}>
+     */
+    public function apiKeys(): array
+    {
+        return $this->user->tokens()
+            ->latest()
+            ->get()
+            ->map(fn (PersonalAccessToken $apiKey): array => [
+                'id' => $apiKey->id,
+                'name' => $apiKey->name,
+                'createdAt' => $apiKey->created_at->diffForHumans(),
+                'lastUsedAt' => $apiKey->last_used_at?->diffForHumans(),
+            ])
+            ->all();
+    }
+
+    /**
+     * The line at the head of the list, which says how many keys are in force
+     * rather than making somebody count the rows.
+     */
+    public function apiKeysHeader(): string
+    {
+        $count = $this->user->tokens()->count();
+
+        if ($count === 0) {
+            return __('Active · no API keys');
+        }
+
+        if ($count === 1) {
+            return __('Active · 1 API key');
+        }
+
+        return __('Active · :count API keys', ['count' => $count]);
     }
 
     /**
