@@ -37,7 +37,7 @@
         <p>{{ __('Without an avatar, we show your initials instead.') }}</p>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex flex-wrap items-center gap-4">
         <x-avatar id="profile-avatar" :employee="$viewModel->employee()" :name="$viewModel->name()" :size="74" />
 
         {{--
@@ -53,7 +53,7 @@
           and Alpine would refuse the whole expression.
         --}}
         <div
-          class="space-y-3"
+          class="space-y-3 max-sm:w-full"
           x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')) }"
         >
           <x-form
@@ -119,7 +119,7 @@
         x-target="details-form profile-avatar sidebar-identity"
         class="space-y-3.5 transition-opacity [&[aria-busy]]:opacity-60"
       >
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <x-input
             id="first_name"
             :label="__('First name')"
@@ -188,7 +188,7 @@
         x-target="emergency-contact-form last-saved"
         class="space-y-3.5 transition-opacity [&[aria-busy]]:opacity-60"
       >
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <x-input
             id="name"
             :label="__('Name')"

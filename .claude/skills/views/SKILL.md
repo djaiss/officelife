@@ -15,6 +15,7 @@ description: Conventions for defining views. Use when the user wants to create o
 - You SHOULD create and maintain PHPDoc blocks at the top of every view file.
 - You MUST create and maintain PHPDoc blocks for components.
 - When passing variables to a partial using `@include`, you MUST explicitly pass all required variables.
+- You MUST make sure each view is responsive.
 
 ## Example
 ```

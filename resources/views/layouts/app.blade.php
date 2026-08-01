@@ -3,6 +3,13 @@
   the left that stays put, and the screen itself on the right under a bar that
   says where you are.
 
+  On a narrow screen there is no room for a column beside the page, so the
+  sidebar slides in over it instead, from the button in the bar. `navOpen` is
+  read by the sidebar as well as by the backdrop, which is why it is opened
+  here, on their common parent, and why that parent is inside <body>: alpine is
+  re-initialised from the body after a turbo navigation, so state declared above
+  it would never be walked again.
+
   @var string|null $title
   @var \Illuminate\View\ComponentSlot $sidebar
   @var \Illuminate\View\ComponentSlot|null $breadcrumb
@@ -16,19 +23,50 @@
   </head>
 
   <body class="bg-page font-sans text-body antialiased">
-    <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[264px_minmax(0,1fr)]">
+    <div
+      x-data="{ navOpen: false }"
+      @keydown.escape.window="navOpen = false"
+      x-effect="document.body.classList.toggle('overflow-hidden', navOpen)"
+      class="grid min-h-screen grid-cols-1 lg:grid-cols-[264px_minmax(0,1fr)]"
+    >
       {{ $sidebar }}
 
+      {{-- What the sidebar is drawn over, and what closes it when tapped. --}}
+      <div
+        x-cloak
+        x-show="navOpen"
+        x-transition.opacity.duration.150ms
+        @click="navOpen = false"
+        class="fixed inset-0 z-30 bg-black/40 lg:hidden"
+        aria-hidden="true"
+      ></div>
+
       <main class="min-w-0">
-        <header class="sticky top-0 z-5 flex h-13 items-center gap-3.5 border-b border-hairline bg-page/90 px-7 backdrop-blur-md">
+        <header class="sticky top-0 z-5 flex h-13 items-center gap-3.5 border-b border-hairline bg-page/90 px-4 backdrop-blur-md sm:px-7">
+          <button
+            type="button"
+            @click="navOpen = true"
+            :aria-expanded="navOpen ? 'true' : 'false'"
+            aria-controls="settings-nav"
+            aria-label="{{ __('Open the menu') }}"
+            class="-ml-1.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted transition-colors hover:bg-hover hover:text-ink lg:hidden"
+          >
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+              <line x1="2.4" y1="4.4" x2="13.6" y2="4.4"></line>
+              <line x1="2.4" y1="8" x2="13.6" y2="8"></line>
+              <line x1="2.4" y1="11.6" x2="13.6" y2="11.6"></line>
+            </svg>
+          </button>
+
           @isset($breadcrumb)
             {{ $breadcrumb }}
           @endisset
 
-          <span class="ml-auto text-sm text-muted">{{ auth()->user()?->email }}</span>
+          {{-- Who is signed in is already at the foot of the sidebar, so a narrow bar can do without it. --}}
+          <span class="ml-auto hidden text-sm text-muted sm:block">{{ auth()->user()?->email }}</span>
         </header>
 
-        <div class="mx-auto max-w-240 space-y-8.5 px-7 pt-7.5 pb-17.5">
+        <div class="mx-auto max-w-240 space-y-8.5 px-4 pt-6 pb-14 sm:px-7 sm:pt-7.5 sm:pb-17.5">
           {{ $slot }}
         </div>
       </main>
