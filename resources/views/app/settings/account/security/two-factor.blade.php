@@ -66,10 +66,11 @@
           autofocus
         />
 
-        <div class="flex items-center gap-3 pt-1">
-          <x-link :href="route('settings.security.index')" turbo class="text-sm">{{ __('Cancel') }}</x-link>
+        {{-- The pair stacks on a narrow screen, primary first, so the thumb lands on the one that goes through. --}}
+        <div class="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:justify-end">
+          <x-button.secondary :href="route('settings.security.index')" data-turbo="true">{{ __('Cancel') }}</x-button.secondary>
 
-          <x-button class="ml-auto">{{ __('Turn it on') }}</x-button>
+          <x-button>{{ __('Turn it on') }}</x-button>
         </div>
       </x-form>
     </div>
