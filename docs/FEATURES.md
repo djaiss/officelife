@@ -30,3 +30,9 @@ A chronological list of every feature and improvement shipped during development
 * App-wide: Gave cancel and back actions a secondary button.
 * Settings/account/security: Let somebody create and revoke their own API keys.
 * Settings/account/security: Created and revoked an API key without reloading the page.
+* Permissions: Added roles, which grant permissions over either the whole company or somebody's own record.
+* Permissions: Gave every new company an Administrator, a People administrator and a Member role.
+* Permissions: Made the first user of a company an administrator.
+* Permissions: Added actions to create, change, delete, hand out and take back a role.
+* Permissions: Checked every action that touches an employee or the company against the roles of whoever asked.
+* Permissions: Kept the private details of a colleague off the screen for anybody not allowed to see them.

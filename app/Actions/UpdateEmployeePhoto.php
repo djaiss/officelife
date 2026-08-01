@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,8 +18,7 @@ use InvalidArgumentException;
 /**
  * Set the photo an employee shows their colleagues. Two square versions are
  * written, one at the size the app displays and one at twice it, so a dense
- * screen has a sharp one to pick from. Somebody may only do this to their own
- * record, which is why the action takes the user rather than the employee.
+ * screen has a sharp one to pick from.
  *
  * An employee only ever has one photo, so an earlier one is removed once the
  * new one is in place.
@@ -38,19 +37,19 @@ class UpdateEmployeePhoto
 
     private const int MAX_SIZE_IN_BYTES = 5 * 1024 * 1024;
 
-    private Employee $employee;
-
     private ?string $previousPath = null;
 
     private string $path;
 
     public function __construct(
-        private readonly User $user,
+        private readonly User $author,
+        private readonly Employee $employee,
         private readonly UploadedFile $file,
     ) {}
 
     public function execute(): Employee
     {
+        $this->authorize();
         $this->validate();
         $this->store();
         $this->save();
@@ -60,22 +59,20 @@ class UpdateEmployeePhoto
         return $this->employee;
     }
 
+    private function authorize(): void
+    {
+        $this->author
+            ->permission(PermissionEnum::EmployeeUpdate)
+            ->forEmployee($this->employee)
+            ->authorize();
+    }
+
     /**
-     * An account does not always belong to somebody who works for the company,
-     * and one that does not has no record to put a photo on. The file is
-     * checked here as well as in the controller, on what it actually is rather
-     * than on what its name claims.
+     * The file is checked here as well as in the controller, on what it
+     * actually is rather than on what its name claims.
      */
     private function validate(): void
     {
-        $employee = $this->user->employee;
-
-        if ($employee === null) {
-            throw new ModelNotFoundException('Employee not found');
-        }
-
-        $this->employee = $employee;
-
         if (! in_array($this->file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
             throw new InvalidArgumentException('The file must be a jpeg, png or webp image');
         }
@@ -149,8 +146,8 @@ class UpdateEmployeePhoto
     private function log(): void
     {
         LogUserAction::dispatch(
-            company: $this->user->company,
-            user: $this->user,
+            company: $this->author->company,
+            user: $this->author,
             action: UserActionEnum::EmployeePhotoUpdate,
             parameters: ['name' => $this->employee->name],
         )->onQueue('low');

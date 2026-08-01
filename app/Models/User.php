@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PermissionEnum;
+use App\Enums\ScopeEnum;
 use App\Enums\TimeFormatEnum;
+use App\Permissions\PendingPermissionCheck;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,6 +51,14 @@ class User extends Authenticatable
 
     use Notifiable;
     use SoftDeletes;
+
+    /**
+     * Every permission the roles of the user grant, and the scopes each one is
+     * granted at, kept for the rest of the request once it has been read.
+     *
+     * @var array<string, list<ScopeEnum>>|null
+     */
+    private ?array $grants = null;
 
     protected $table = 'users';
 
@@ -127,6 +139,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the roles the user holds, which is the only way they are given any
+     * permission at all.
+     *
+     * @return BelongsToMany<Role, $this>
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles')->withTimestamps();
+    }
+
+    /**
      * Get the magic links issued for the user.
      *
      * @return HasMany<MagicLink, $this>
@@ -154,6 +177,62 @@ class User extends Authenticatable
     public function emailsSent(): HasMany
     {
         return $this->hasMany(EmailSent::class);
+    }
+
+    /**
+     * Start a permission check, to be finished by naming what it is about:
+     *
+     *     $user->permission(PermissionEnum::EmployeeUpdate)
+     *         ->forEmployee($employee)
+     *         ->authorize();
+     */
+    public function permission(PermissionEnum $permission): PendingPermissionCheck
+    {
+        return new PendingPermissionCheck($this, $permission);
+    }
+
+    /**
+     * Get every permission the roles of the user grant, and the scopes each one
+     * is granted at, with the grants of several roles added together.
+     *
+     * It is read once and kept for the rest of the request, since a screen asks
+     * the same question about a great many rows. Anything that changes which
+     * roles the user holds has to say so through forgetGrants(), or the checks
+     * that follow answer from what was true beforehand.
+     *
+     * @return array<string, list<ScopeEnum>>
+     */
+    public function grants(): array
+    {
+        return $this->grants ??= RolePermission::query()
+            ->whereIn('role_id', $this->roles()->select('roles.id'))
+            ->get()
+            ->groupBy(fn (RolePermission $grant): string => $grant->permission->value)
+            ->map(fn ($grants): array => $grants->pluck('scope')->unique()->values()->all())
+            ->all();
+    }
+
+    /**
+     * Throw away the grants read earlier, so the next check reads them again.
+     * Giving somebody a role or taking one away has to do this, otherwise a
+     * role that was just removed still lets them through for the rest of the
+     * request.
+     */
+    public function forgetGrants(): void
+    {
+        $this->grants = null;
+    }
+
+    /**
+     * Reload the user from the database. The grants are not an attribute, so
+     * they survive this unless they are dropped here too, and somebody who
+     * refreshes a user expects to be looking at what the database says.
+     */
+    public function refresh()
+    {
+        $this->forgetGrants();
+
+        return parent::refresh();
     }
 
     /**

@@ -165,6 +165,7 @@
     </div>
   </x-box>
 
+  @if($viewModel->canSeePrivateInformation())
   <x-box :title="__('Emergency contact')">
     <x-slot:help>
       <x-help :title="__('Emergency contact')">
@@ -215,4 +216,5 @@
       </x-form>
     </div>
   </x-box>
+  @endif
 </x-app-layout>

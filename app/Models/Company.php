@@ -108,6 +108,16 @@ class Company extends Model
     }
 
     /**
+     * Get the roles that exist inside the company.
+     *
+     * @return HasMany<Role, $this>
+     */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
+    }
+
+    /**
      * Get whether the company is still within its trial period.
      */
     public function isOnTrial(): bool

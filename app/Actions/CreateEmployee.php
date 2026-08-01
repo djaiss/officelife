@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
@@ -11,19 +12,17 @@ use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Create an employee of a company. Only a member of the company may do so. The
- * information the employee keeps private is not set here, as they fill it in
- * themselves once they have an account.
+ * Create an employee of a company. The information the employee keeps private
+ * is not set here, as they fill it in themselves once they have an account.
  */
 class CreateEmployee
 {
     private Employee $employee;
 
     public function __construct(
-        private readonly User $user,
+        private readonly User $author,
         private readonly Company $company,
         private string $firstName,
         private string $lastName,
@@ -38,7 +37,7 @@ class CreateEmployee
 
     public function execute(): Employee
     {
-        $this->validate();
+        $this->authorize();
         $this->sanitize();
         $this->create();
         $this->log();
@@ -46,11 +45,12 @@ class CreateEmployee
         return $this->employee;
     }
 
-    private function validate(): void
+    private function authorize(): void
     {
-        if ($this->user->company_id !== $this->company->id) {
-            throw new ModelNotFoundException('Company not found');
-        }
+        $this->author
+            ->permission(PermissionEnum::EmployeeCreate)
+            ->forCompany($this->company)
+            ->authorize();
     }
 
     private function sanitize(): void
@@ -89,7 +89,7 @@ class CreateEmployee
     {
         LogUserAction::dispatch(
             company: $this->company,
-            user: $this->user,
+            user: $this->author,
             action: UserActionEnum::EmployeeCreation,
             parameters: ['name' => $this->employee->name],
         )->onQueue('low');

@@ -10,6 +10,7 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -17,6 +18,11 @@ use Illuminate\Support\Str;
 /**
  * Create a company, its first user, who becomes the owner of the company, and
  * the employee that user is.
+ *
+ * The company also gets the roles it starts life with, and the first user is
+ * made an administrator: owning the company is enough to do anything in it, but
+ * the person who signed up should show up as an administrator like anybody else
+ * holding the role.
  */
 class CreateCompany
 {
@@ -43,6 +49,8 @@ class CreateCompany
             $this->createCompany();
             $this->createOwner();
             $this->attachOwner();
+            $this->createDefaultRoles();
+            $this->makeOwnerAnAdministrator();
             $this->createEmployee();
             $this->attachEmployee();
         });
@@ -88,10 +96,28 @@ class CreateCompany
         $this->company->save();
     }
 
+    private function createDefaultRoles(): void
+    {
+        new CreateDefaultRoles(company: $this->company)->execute();
+    }
+
+    /**
+     * The role is looked up rather than kept from the step above, so this reads
+     * the same as it would anywhere else in the application.
+     */
+    private function makeOwnerAnAdministrator(): void
+    {
+        $administrator = $this->company->roles()
+            ->where('slug', Role::ADMINISTRATOR)
+            ->firstOrFail();
+
+        $this->owner->roles()->attach($administrator->id);
+    }
+
     private function createEmployee(): void
     {
         $this->employee = new CreateEmployee(
-            user: $this->owner,
+            author: $this->owner,
             company: $this->company,
             firstName: $this->firstName,
             lastName: $this->lastName,

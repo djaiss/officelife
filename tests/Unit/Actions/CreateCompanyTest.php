@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\CreateCompany;
+use App\Enums\PermissionEnum;
 use App\Enums\PlanEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
+use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
@@ -80,6 +82,46 @@ class CreateCompanyTest extends TestCase
 
         $this->assertNotNull($owner->employee_id);
         $this->assertEquals('Michael Scott', $owner->employee->name);
+    }
+
+    #[Test]
+    public function it_gives_the_company_the_roles_it_starts_with(): void
+    {
+        Queue::fake();
+
+        $company = new CreateCompany(
+            name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
+            email: 'michael.scott@dundermifflin.com',
+            password: 'thatswhatshesaid',
+        )->execute();
+
+        $this->assertEquals(
+            [Role::ADMINISTRATOR, Role::MEMBER, Role::PEOPLE_ADMINISTRATOR],
+            $company->roles()->pluck('slug')->sort()->values()->all(),
+        );
+    }
+
+    #[Test]
+    public function it_makes_the_first_user_an_administrator(): void
+    {
+        Queue::fake();
+
+        $company = new CreateCompany(
+            name: 'Dunder Mifflin',
+            firstName: 'Michael',
+            lastName: 'Scott',
+            email: 'michael.scott@dundermifflin.com',
+            password: 'thatswhatshesaid',
+        )->execute();
+
+        $owner = $company->owner;
+
+        $this->assertEquals([Role::ADMINISTRATOR], $owner->roles->pluck('slug')->all());
+        $this->assertTrue(
+            $owner->permission(PermissionEnum::RoleManage)->forCompany($company)->allowed(),
+        );
     }
 
     #[Test]

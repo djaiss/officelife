@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Profile;
 
+use App\Enums\PermissionEnum;
+use App\Enums\ScopeEnum;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
@@ -56,14 +58,60 @@ class ProfileViewModelTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeViewPrivate, ScopeEnum::Self);
 
         $viewModel = new ProfileViewModel(user: $user, employee: $employee);
 
+        $this->assertTrue($viewModel->canSeePrivateInformation());
         $this->assertEquals([
             'name' => 'Teri Hudson',
             'phone' => '+1 570 555 0110',
             'relationship' => 'Wife',
         ], $viewModel->emergencyContact());
+    }
+
+    #[Test]
+    public function it_leaves_the_emergency_contact_out_without_the_permission(): void
+    {
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create([
+            'company_id' => $company->id,
+            'emergency_contact_name' => 'Teri Hudson',
+            'emergency_contact_phone' => '+1 570 555 0110',
+            'emergency_contact_relationship' => 'Wife',
+        ]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+        $this->grant($user, PermissionEnum::EmployeeView, ScopeEnum::Company);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: $employee);
+
+        $this->assertFalse($viewModel->canSeePrivateInformation());
+        $this->assertEquals([
+            'name' => null,
+            'phone' => null,
+            'relationship' => null,
+        ], $viewModel->emergencyContact());
+    }
+
+    #[Test]
+    public function it_leaves_the_emergency_contact_of_a_colleague_out_at_self_scope(): void
+    {
+        $company = Company::factory()->create();
+        $angela = Employee::factory()->create(['company_id' => $company->id]);
+        $oscar = Employee::factory()->withPrivateInformation()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $angela->id,
+        ]);
+        $this->grant($user, PermissionEnum::EmployeeViewPrivate, ScopeEnum::Self);
+
+        $viewModel = new ProfileViewModel(user: $user, employee: $oscar);
+
+        $this->assertFalse($viewModel->canSeePrivateInformation());
+        $this->assertNull($viewModel->emergencyContact()['name']);
     }
 
     #[Test]

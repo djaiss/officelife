@@ -19,8 +19,15 @@ class EmergencyContactController extends Controller
             'relationship' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $employee = $request->user()->employee;
+
+        if ($employee === null) {
+            abort(404);
+        }
+
         new UpdateEmergencyContact(
-            user: $request->user(),
+            author: $request->user(),
+            employee: $employee,
             name: $validated['name'] ?? null,
             phone: $validated['phone'] ?? null,
             relationship: $validated['relationship'] ?? null,

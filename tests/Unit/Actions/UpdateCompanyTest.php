@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateCompany;
+use App\Enums\PermissionEnum;
 use App\Enums\SizeRangeEnum;
 use App\Enums\UserActionEnum;
 use App\Enums\WorkModeEnum;
@@ -28,9 +29,10 @@ class UpdateCompanyTest extends TestCase
 
         $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
         $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::CompanyManage);
 
         $result = new UpdateCompany(
-            user: $user,
+            author: $user,
             company: $company,
             name: 'Dunder Mifflin Paper Company',
             legalName: 'Dunder Mifflin Inc.',
@@ -75,9 +77,10 @@ class UpdateCompanyTest extends TestCase
 
         $company = Company::factory()->create(['slug' => 'dunder-mifflin']);
         $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::CompanyManage);
 
         new UpdateCompany(
-            user: $user,
+            author: $user,
             company: $company,
             name: 'Michael Scott Paper Company',
         )->execute();
@@ -86,15 +89,32 @@ class UpdateCompanyTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_when_the_user_belongs_to_another_company(): void
+    public function it_throws_when_the_author_belongs_to_another_company(): void
     {
         $this->expectException(ModelNotFoundException::class);
 
         $company = Company::factory()->create();
         $stranger = User::factory()->create();
+        $this->grant($stranger, PermissionEnum::CompanyManage);
 
         new UpdateCompany(
-            user: $stranger,
+            author: $stranger,
+            company: $company,
+            name: 'Michael Scott Paper Company',
+        )->execute();
+    }
+
+    #[Test]
+    public function it_throws_when_the_author_may_not_look_after_the_company(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $company = Company::factory()->create();
+        $member = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($member, PermissionEnum::EmployeeView);
+
+        new UpdateCompany(
+            author: $member,
             company: $company,
             name: 'Michael Scott Paper Company',
         )->execute();

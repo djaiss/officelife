@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateEmployeePhoto;
+use App\Enums\PermissionEnum;
+use App\Enums\ScopeEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
@@ -39,9 +41,11 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         $result = new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('dwight.jpg', 400, 400),
         )->execute();
 
@@ -79,9 +83,11 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         $result = new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('michael.jpg', 800, 200),
         )->execute();
 
@@ -112,16 +118,19 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         $first = new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('pam.jpg', 400, 400),
         )->execute();
 
         $firstPath = (string) $first->photo_path;
 
         $second = new UpdateEmployeePhoto(
-            user: $user->fresh(),
+            author: $user->fresh(),
+            employee: $employee->fresh(),
             file: UploadedFile::fake()->image('jim.jpg', 400, 400),
         )->execute();
 
@@ -148,9 +157,11 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('angela.jpg', 400, 400),
         )->execute();
 
@@ -174,9 +185,11 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->create('beets.pdf', 10, 'application/pdf'),
         )->execute();
     }
@@ -194,22 +207,54 @@ class UpdateEmployeePhotoTest extends TestCase
             'company_id' => $company->id,
             'employee_id' => $employee->id,
         ]);
+        $this->grant($user, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $user,
+            employee: $employee,
             file: UploadedFile::fake()->image('creed.jpg')->size(6 * 1024),
         )->execute();
     }
 
     #[Test]
-    public function it_throws_when_the_user_has_no_employee_record(): void
+    public function it_throws_when_the_author_may_only_change_their_own_photo(): void
     {
         $this->expectException(ModelNotFoundException::class);
 
-        $user = User::factory()->create(['employee_id' => null]);
+        Storage::fake('local');
+
+        $company = Company::factory()->create();
+        $angela = Employee::factory()->create(['company_id' => $company->id]);
+        $oscar = Employee::factory()->create(['company_id' => $company->id]);
+        $author = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $angela->id,
+        ]);
+        $this->grant($author, PermissionEnum::EmployeeUpdate, ScopeEnum::Self);
 
         new UpdateEmployeePhoto(
-            user: $user,
+            author: $author,
+            employee: $oscar,
+            file: UploadedFile::fake()->image('mose.jpg', 400, 400),
+        )->execute();
+    }
+
+    #[Test]
+    public function it_throws_when_the_employee_belongs_to_another_company(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        Storage::fake('local');
+
+        $dunderMifflin = Company::factory()->create();
+        $michaelScottPaperCompany = Company::factory()->create();
+        $stranger = Employee::factory()->create(['company_id' => $michaelScottPaperCompany->id]);
+        $author = User::factory()->create(['company_id' => $dunderMifflin->id]);
+        $this->grant($author, PermissionEnum::EmployeeUpdate, ScopeEnum::Company);
+
+        new UpdateEmployeePhoto(
+            author: $author,
+            employee: $stranger,
             file: UploadedFile::fake()->image('mose.jpg', 400, 400),
         )->execute();
     }

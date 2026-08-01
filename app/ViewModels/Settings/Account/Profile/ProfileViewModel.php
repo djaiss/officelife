@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings\Account\Profile;
 
+use App\Enums\PermissionEnum;
 use App\Models\Employee;
 use App\Models\User;
 
@@ -34,17 +35,43 @@ class ProfileViewModel
     }
 
     /**
-     * The fields of the emergency contact box.
+     * The fields of the emergency contact box. They are private, so they only
+     * leave here when whoever is looking is allowed to see them. Somebody who
+     * may see a profile does not thereby get everything on it.
      *
      * @return array{name: string|null, phone: string|null, relationship: string|null}
      */
     public function emergencyContact(): array
     {
+        if (! $this->canSeePrivateInformation()) {
+            return [
+                'name' => null,
+                'phone' => null,
+                'relationship' => null,
+            ];
+        }
+
         return [
             'name' => old('name', $this->employee?->emergency_contact_name),
             'phone' => old('phone', $this->employee?->emergency_contact_phone),
             'relationship' => old('relationship', $this->employee?->emergency_contact_relationship),
         ];
+    }
+
+    /**
+     * Get whether the private details of the employee may be shown, so the
+     * screen can leave the box out rather than show it empty.
+     */
+    public function canSeePrivateInformation(): bool
+    {
+        if ($this->employee === null) {
+            return false;
+        }
+
+        return $this->user
+            ->permission(PermissionEnum::EmployeeViewPrivate)
+            ->forEmployee($this->employee)
+            ->allowed();
     }
 
     /**

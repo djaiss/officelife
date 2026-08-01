@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Update the information an employee shows their colleagues. Somebody may only
- * do this to their own record, which is why the action takes the user rather
- * than the employee: it edits whoever is signed in.
+ * Update the information an employee shows their colleagues. Who may do it to
+ * whom comes from the roles of the author: a member gets their own record and
+ * nobody else's, while somebody who looks after people gets everybody.
  */
 class UpdateEmployeeInformation
 {
-    private Employee $employee;
-
     public function __construct(
-        private readonly User $user,
+        private readonly User $author,
+        private readonly Employee $employee,
         private string $firstName,
         private string $lastName,
         private ?string $displayName = null,
@@ -30,7 +29,7 @@ class UpdateEmployeeInformation
 
     public function execute(): Employee
     {
-        $this->validate();
+        $this->authorize();
         $this->sanitize();
         $this->update();
         $this->log();
@@ -38,19 +37,12 @@ class UpdateEmployeeInformation
         return $this->employee;
     }
 
-    /**
-     * An account does not always belong to somebody who works for the company,
-     * and one that does not has no record to edit.
-     */
-    private function validate(): void
+    private function authorize(): void
     {
-        $employee = $this->user->employee;
-
-        if ($employee === null) {
-            throw new ModelNotFoundException('Employee not found');
-        }
-
-        $this->employee = $employee;
+        $this->author
+            ->permission(PermissionEnum::EmployeeUpdate)
+            ->forEmployee($this->employee)
+            ->authorize();
     }
 
     private function sanitize(): void
@@ -76,8 +68,8 @@ class UpdateEmployeeInformation
     private function log(): void
     {
         LogUserAction::dispatch(
-            company: $this->user->company,
-            user: $this->user,
+            company: $this->author->company,
+            user: $this->author,
             action: UserActionEnum::EmployeeInformationUpdate,
             parameters: ['name' => $this->employee->name],
         )->onQueue('low');

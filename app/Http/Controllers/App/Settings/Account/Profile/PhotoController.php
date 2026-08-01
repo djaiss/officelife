@@ -6,6 +6,7 @@ namespace App\Http\Controllers\App\Settings\Account\Profile;
 
 use App\Actions\DestroyEmployeePhoto;
 use App\Actions\UpdateEmployeePhoto;
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
@@ -21,8 +22,15 @@ class PhotoController extends Controller
             'photo' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
         ]);
 
+        $employee = $request->user()->employee;
+
+        if ($employee === null) {
+            abort(404);
+        }
+
         new UpdateEmployeePhoto(
-            user: $request->user(),
+            author: $request->user(),
+            employee: $employee,
             file: $validated['photo'],
         )->execute();
 
@@ -33,7 +41,16 @@ class PhotoController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        new DestroyEmployeePhoto(user: $request->user())->execute();
+        $employee = $request->user()->employee;
+
+        if ($employee === null) {
+            abort(404);
+        }
+
+        new DestroyEmployeePhoto(
+            author: $request->user(),
+            employee: $employee,
+        )->execute();
 
         return redirect()->route('settings.profile.index')
             ->with('status', __('Your photo is removed.'))
@@ -43,13 +60,17 @@ class PhotoController extends Controller
     /**
      * Serve one version of an employee's photo. Photos are personal, so they
      * live on the private disk and are read through here rather than from a
-     * public URL, and only by the people who work at the same company.
+     * public URL, and only by the people allowed to see that employee.
+     *
+     * There is no action behind serving a file, so the check sits here. It is
+     * the one place in the application where it does.
      */
     public function show(Request $request, Employee $employee, int $size): StreamedResponse
     {
-        if ($employee->company_id !== $request->user()->company_id) {
-            abort(404);
-        }
+        $request->user()
+            ->permission(PermissionEnum::EmployeeView)
+            ->forEmployee($employee)
+            ->authorize();
 
         if (! $employee->hasPhoto()) {
             abort(404);

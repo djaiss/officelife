@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\CreateEmployee;
+use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
@@ -28,9 +29,10 @@ class CreateEmployeeTest extends TestCase
 
         $company = Company::factory()->create();
         $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::EmployeeCreate);
 
         $employee = new CreateEmployee(
-            user: $user,
+            author: $user,
             company: $company,
             firstName: 'Michael',
             lastName: 'Scott',
@@ -69,15 +71,33 @@ class CreateEmployeeTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_when_the_user_belongs_to_another_company(): void
+    public function it_throws_when_the_author_belongs_to_another_company(): void
     {
         $this->expectException(ModelNotFoundException::class);
 
         $company = Company::factory()->create();
         $stranger = User::factory()->create();
+        $this->grant($stranger, PermissionEnum::EmployeeCreate);
 
         new CreateEmployee(
-            user: $stranger,
+            author: $stranger,
+            company: $company,
+            firstName: 'Jim',
+            lastName: 'Halpert',
+        )->execute();
+    }
+
+    #[Test]
+    public function it_throws_when_the_author_may_not_add_anybody(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $company = Company::factory()->create();
+        $member = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($member, PermissionEnum::EmployeeView);
+
+        new CreateEmployee(
+            author: $member,
             company: $company,
             firstName: 'Jim',
             lastName: 'Halpert',
