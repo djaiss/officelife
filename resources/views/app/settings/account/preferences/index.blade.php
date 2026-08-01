@@ -10,6 +10,10 @@
   menus and the line underneath them. The language does not: every word on every
   screen is drawn in it, so that one is worth a whole page.
 
+  A row is two columns, what the setting is and what it is set to, until there
+  is not enough width for two. Then it becomes one, and the menu drops below the
+  words rather than clinging to the right hand edge with nothing beside it.
+
   @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
 --}}
 <x-app-layout :title="__('Preferences')">
@@ -38,13 +42,13 @@
         </x-help>
       </x-slot:help>
 
-      <x-box.row class="flex flex-wrap items-center gap-x-6 gap-y-3 px-4.5 py-4">
+      <x-box.row class="grid gap-x-6 gap-y-3 px-4.5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
           <p class="text-sm font-medium text-ink">{{ __('Language') }}</p>
           <p class="mt-0.5 text-sm text-muted">{{ __('The language used across the :app interface.', ['app' => config('app.name')]) }}</p>
         </div>
 
-        <x-form method="put" :action="route('settings.preferences.update')" id="language-form" class="ml-auto shrink-0">
+        <x-form method="put" :action="route('settings.preferences.update')" id="language-form">
           <input type="hidden" name="time_format" value="{{ $viewModel->timeFormat()->value }}" />
 
           <x-dropdown
@@ -56,7 +60,7 @@
         </x-form>
       </x-box.row>
 
-      <x-box.row class="flex flex-wrap items-center gap-x-6 gap-y-3 px-4.5 py-4">
+      <x-box.row class="grid gap-x-6 gap-y-3 px-4.5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
           <p class="text-sm font-medium text-ink">{{ __('Time format') }}</p>
           <p class="mt-0.5 text-sm text-muted">{{ __('How times are written across the application.') }}</p>
@@ -71,7 +75,7 @@
           :action="route('settings.preferences.update')"
           id="time-format-form"
           x-target="time-format-form language-form time-preview"
-          class="ml-auto shrink-0 transition-opacity [&[aria-busy]]:opacity-60"
+          class="transition-opacity [&[aria-busy]]:opacity-60"
         >
           <input type="hidden" name="locale" value="{{ $viewModel->locale() }}" />
 
