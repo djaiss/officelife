@@ -1,12 +1,5 @@
 {{--
-  What somebody sees when a code is not asked for on top of their password: the
-  one way of turning it on, offered the way an item in a list is, so a second
-  way added later reads as the same kind of thing.
-
-  The phone stays beside the words at every width, since the two are one thing.
-  The button sits beside them until there is no width to sit beside them, and
-  then below, filling the line rather than hugging the right hand edge on its
-  own.
+  What somebody sees when a code is not asked for on top of their password.
 
   The screen it leads to is built on this same layout, so it is handed to turbo
   and only the body changes hands.

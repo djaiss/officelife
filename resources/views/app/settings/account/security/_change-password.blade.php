@@ -1,13 +1,10 @@
 {{--
-  The password half of the security screen.
+  The password half of the security screen. Somebody who signs in through an
+  identity provider has no password to change here, so they are told as much.
 
-  The form saves in place: it asks for the screen again and swaps itself for the
-  one that comes back, so a mistyped current password lands under its field
-  without the page moving, and a save that works comes back with empty fields
-  and the toast the redirect carries.
-
-  Somebody who signs in through an identity provider has no password here to
-  change, so they are told as much instead.
+  The form asks for the screen again and swaps itself for what comes back, so a
+  mistyped current password lands under its field without the page moving, and
+  a save that works comes back with empty fields.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}

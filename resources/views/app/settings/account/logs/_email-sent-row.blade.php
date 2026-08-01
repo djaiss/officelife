@@ -1,26 +1,11 @@
 {{--
   One email we sent, as a row in a list. Clicking it opens the copy that was
   sent, so somebody can tell what an email actually said rather than only that
-  it left.
-
-  Two screens show this list, the logs and the page that holds every email, so
-  the markup sits here rather than being written twice.
+  it left. Shown by both the logs screen and the page that holds every email.
 
   The dot on the left is the delivery: still on its way, delivered, or bounced.
   Colour alone would say nothing to a screen reader, so the same three words are
   written out beside it.
-
-  Above sm the row reads across, with the time and the chevron out to the right
-  of the address and the subject. Below sm there is not enough width for that,
-  so the time moves under the subject where the rest of the words are, and only
-  the chevron stays on the right. The chevron is the whole reason somebody knows
-  the row opens, so it holds its place against the first line rather than
-  drifting down with the time.
-
-  The button fills the row, so the row is asked for no padding of its own. The
-  tint under the pointer stays on the row, which is the element that knows
-  whether it is first or last and therefore how to round its corners. The copy
-  below carries its own background, so it is not tinted along with it.
 
   @var \App\Models\EmailSent $emailSent
 --}}
@@ -46,7 +31,6 @@
     <span class="sr-only">{{ $deliveryLabel }}</span>
 
     <span class="min-w-0 flex-1 text-sm leading-relaxed">
-      {{-- An address has no break of its own, so it is told it may break anywhere rather than push the row wide. --}}
       <span class="block wrap-anywhere text-muted">{{ __('To:') }} {{ $emailSent->email_address }}</span>
       <span class="block text-ink">{{ __('Subject:') }} <span class="font-semibold">{{ $emailSent->subject }}</span></span>
 
@@ -66,11 +50,11 @@
     </span>
   </button>
 
-  {{-- The copy takes the bottom corners of the row it sits in, so the last one open does not square off the panel. --}}
+  {{-- rounded-b-[inherit]: the last row open would otherwise square off the panel. --}}
   <div x-cloak x-show="open" x-transition class="rounded-b-[inherit] border-t border-hairline-soft bg-card px-4 py-3.5">
     <p class="text-center text-xs text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
 
-    {{-- The copy arrives as the bare paragraphs Purify left behind, so the rhythm between them is ours to give. --}}
+    {{-- Purify leaves bare paragraphs behind, so the spacing between them is ours to give. --}}
     <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">{!! $emailSent->body !!}</div>
   </div>
 </x-box.row>

@@ -3,8 +3,7 @@
   code is asked for on top of it, and the API keys that let something other than
   a browser act as them.
 
-  Each panel holds a section of its own, kept in a partial beside this file, so
-  what this screen is made of can be read in one go.
+  Each panel holds a section of its own, kept in a partial beside this file.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}

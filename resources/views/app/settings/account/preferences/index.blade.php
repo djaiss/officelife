@@ -2,17 +2,9 @@
   What somebody chose about the way the application reads to them: the language
   of the interface, and the clock times are written on.
 
-  Each row is its own form. Picking a value saves it there and then, which is
-  why there is no button to press, and each form carries the other row's current
-  value along so that saving one never quietly resets the other.
-
-  The time format saves over ajax, since the only things that change are the two
-  menus and the line underneath them. The language does not: every word on every
-  screen is drawn in it, so that one is worth a whole page.
-
-  A row is two columns, what the setting is and what it is set to, until there
-  is not enough width for two. Then it becomes one, and the menu drops below the
-  words rather than clinging to the right hand edge with nothing beside it.
+  Each row is its own form, and carries the other row's current value along so
+  that saving one never quietly resets the other. The time format saves over
+  ajax; the language reloads the page, since every word on it is drawn in it.
 
   @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
 --}}
