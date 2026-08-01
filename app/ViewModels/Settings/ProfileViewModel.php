@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings;
 
+use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\Log;
 use App\Models\User;
@@ -20,6 +21,12 @@ class ProfileViewModel
      * click away, on the screen dedicated to them.
      */
     private const int LOGS_SHOWN = 5;
+
+    /**
+     * How many emails the box on the profile shows before it sends somebody to
+     * the screen that lists them all.
+     */
+    private const int EMAILS_SHOWN = 6;
 
     public function __construct(
         private readonly User $user,
@@ -53,6 +60,29 @@ class ProfileViewModel
             'phone' => old('phone', $this->employee?->emergency_contact_phone),
             'relationship' => old('relationship', $this->employee?->emergency_contact_relationship),
         ];
+    }
+
+    /**
+     * The last few emails the application sent to the person signed in, newest
+     * first.
+     *
+     * @return Collection<int, EmailSent>
+     */
+    public function emailsSent(): Collection
+    {
+        return $this->user->emailsSent()
+            ->latest('sent_at')
+            ->take(self::EMAILS_SHOWN)
+            ->get();
+    }
+
+    /**
+     * Whether there are more emails than the box shows, so the screen knows
+     * whether the link to the whole list is worth offering.
+     */
+    public function hasMoreEmailsSent(): bool
+    {
+        return $this->user->emailsSent()->count() > self::EMAILS_SHOWN;
     }
 
     /**

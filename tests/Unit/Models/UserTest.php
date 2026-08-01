@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use App\Models\Company;
+use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,20 @@ class UserTest extends TestCase
 
         $this->assertTrue($user->employee()->exists());
         $this->assertEquals('Michael Scott', $user->employee->name);
+    }
+
+    #[Test]
+    public function it_has_many_emails_sent(): void
+    {
+        $user = User::factory()->create();
+        EmailSent::factory()->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+            'subject' => 'Somebody signed in from a new place',
+        ]);
+
+        $this->assertTrue($user->emailsSent()->exists());
+        $this->assertEquals('Somebody signed in from a new place', $user->emailsSent->first()->subject);
     }
 
     #[Test]
