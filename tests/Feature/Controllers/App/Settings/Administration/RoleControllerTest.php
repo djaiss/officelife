@@ -1,0 +1,377 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature\Controllers\App\Settings\Administration;
+
+use App\Enums\PermissionEnum;
+use App\Enums\ScopeEnum;
+use App\Models\Company;
+use App\Models\Role;
+use App\Models\RolePermission;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
+
+class RoleControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    #[Test]
+    public function it_shows_the_roles_of_the_company(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        Role::factory()->create(['company_id' => $company->id, 'name' => 'Regional manager']);
+
+        $response = $this->actingAs($user)->get(route('settings.roles.index'));
+
+        $response->assertOk();
+        $response->assertSee('Roles and permissions');
+        $response->assertSee('Regional manager');
+        $response->assertSee('See the profile of a colleague');
+    }
+
+    #[Test]
+    public function it_shows_one_role(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Assistant to the regional manager']);
+
+        $response = $this->actingAs($user)->get(route('settings.roles.show', $role->id));
+
+        $response->assertOk();
+        $response->assertSee('Assistant to the regional manager');
+    }
+
+    #[Test]
+    public function it_hides_the_screen_from_somebody_who_may_not_administer_the_company(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->makeMember($user);
+
+        $response = $this->actingAs($user)->get(route('settings.roles.index'));
+
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_does_not_find_a_role_of_another_company(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => Company::factory()->create()->id]);
+
+        $response = $this->actingAs($user)->get(route('settings.roles.show', $role->id));
+
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_leaves_the_administration_section_out_of_the_sidebar_for_a_member(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->makeMember($user);
+
+        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+
+        $response->assertOk();
+        $response->assertDontSee('Roles and permissions');
+    }
+
+    #[Test]
+    public function it_puts_the_administration_section_in_the_sidebar_for_an_administrator(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+
+        $response->assertOk();
+        $response->assertSee('Roles and permissions');
+    }
+
+    #[Test]
+    public function it_renames_a_role_and_says_afresh_what_it_grants(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Temp']);
+        RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::EmployeeCreate,
+            'scope' => ScopeEnum::Company,
+        ]);
+
+        $response = $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'Sales representative',
+            'permissions' => [
+                PermissionEnum::EmployeeView->value => ['granted' => '1', 'scope' => ScopeEnum::Self->value],
+            ],
+        ]);
+
+        $response->assertRedirect(route('settings.roles.show', $role->id));
+        $response->assertSessionHas('status', 'The role is saved.');
+
+        $role->refresh();
+
+        $this->assertEquals('Sales representative', $role->name);
+        $this->assertEquals(1, $role->permissions()->count());
+        $this->assertDatabaseHas('role_permissions', [
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::EmployeeView->value,
+            'scope' => ScopeEnum::Self->value,
+        ]);
+    }
+
+    /**
+     * A permission covering the whole company has nothing to narrow down, so a
+     * scope submitted for it is not a narrower grant but an answer to a question
+     * nobody asked.
+     */
+    #[Test]
+    public function it_ignores_the_scope_of_a_permission_that_covers_the_whole_company(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'Corporate',
+            'permissions' => [
+                PermissionEnum::CompanyManage->value => ['granted' => '1', 'scope' => ScopeEnum::Self->value],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('role_permissions', [
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::CompanyManage->value,
+            'scope' => ScopeEnum::Company->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_ignores_a_permission_that_does_not_exist(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'Corporate',
+            'permissions' => [
+                'warehouse.forklift' => ['granted' => '1', 'scope' => ScopeEnum::Company->value],
+            ],
+        ]);
+
+        $this->assertEquals(0, $role->permissions()->count());
+    }
+
+    #[Test]
+    public function it_refuses_to_change_a_role_that_is_not_editable(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->locked()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'Anything',
+        ]);
+
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_refuses_a_name_that_is_too_short(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'a',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+    }
+
+    #[Test]
+    public function it_refuses_a_scope_that_is_not_one_of_ours(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($user)->put(route('settings.roles.update', $role->id), [
+            'name' => 'Sales representative',
+            'permissions' => [
+                PermissionEnum::EmployeeView->value => ['granted' => '1', 'scope' => 'reports'],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors('permissions.employee.view.scope');
+    }
+
+    #[Test]
+    public function it_creates_a_role_that_grants_nothing(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $response = $this->actingAs($user)->post(route('settings.roles.create'), [
+            'name' => 'Regional people lead',
+        ]);
+
+        $role = $company->roles()->where('name', 'Regional people lead')->firstOrFail();
+
+        $response->assertRedirect(route('settings.roles.show', $role->id));
+        $response->assertSessionHas('status', 'The role is created.');
+
+        $this->assertEquals('regional-people-lead', $role->slug);
+        $this->assertEquals(0, $role->permissions()->count());
+    }
+
+    #[Test]
+    public function it_creates_a_role_out_of_the_permissions_of_another(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $original = Role::factory()->create(['company_id' => $company->id]);
+        RolePermission::factory()->create([
+            'role_id' => $original->id,
+            'permission' => PermissionEnum::EmployeeViewPrivate,
+            'scope' => ScopeEnum::Self,
+        ]);
+
+        $this->actingAs($user)->post(route('settings.roles.create'), [
+            'name' => 'Party planning committee',
+            'copy_from' => $original->id,
+        ]);
+
+        $copy = $company->roles()->where('name', 'Party planning committee')->firstOrFail();
+
+        $this->assertDatabaseHas('role_permissions', [
+            'role_id' => $copy->id,
+            'permission' => PermissionEnum::EmployeeViewPrivate->value,
+            'scope' => ScopeEnum::Self->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_refuses_to_copy_a_role_of_another_company(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $elsewhere = Role::factory()->create(['company_id' => Company::factory()->create()->id]);
+
+        $response = $this->actingAs($user)->post(route('settings.roles.create'), [
+            'name' => 'Party planning committee',
+            'copy_from' => $elsewhere->id,
+        ]);
+
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_deletes_a_role_nobody_holds(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($user)->delete(route('settings.roles.destroy', $role->id));
+
+        $response->assertRedirect(route('settings.roles.index'));
+        $response->assertSessionHas('status', 'The role is deleted.');
+        $this->assertModelMissing($role);
+    }
+
+    #[Test]
+    public function it_refuses_to_delete_a_role_somebody_holds(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+        $user->roles()->attach($role->id);
+
+        $response = $this->actingAs($user)->delete(route('settings.roles.destroy', $role->id));
+
+        $response->assertNotFound();
+        $this->assertModelExists($role);
+    }
+
+    #[Test]
+    public function it_refuses_everything_to_somebody_who_may_not_administer_the_company(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->makeMember($user);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $this->actingAs($user)->post(route('settings.roles.create'), ['name' => 'Anything'])->assertNotFound();
+        $this->actingAs($user)->put(route('settings.roles.update', $role->id), ['name' => 'Anything'])->assertNotFound();
+        $this->actingAs($user)->delete(route('settings.roles.destroy', $role->id))->assertNotFound();
+    }
+
+    #[Test]
+    public function it_redirects_a_visitor_who_is_not_signed_in(): void
+    {
+        $response = $this->get(route('settings.roles.index'));
+
+        $response->assertRedirect(route('auth.login.new'));
+    }
+}

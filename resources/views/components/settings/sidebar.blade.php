@@ -17,12 +17,14 @@
   @var string $name
   @var \App\Models\Employee|null $employee
   @var string $current
+  @var bool $canManageRoles
 --}}
 @props([
   'companyName',
   'name',
   'employee' => null,
   'current' => 'profile',
+  'canManageRoles' => false,
 ])
 
 @php
@@ -109,6 +111,23 @@
       </svg>
       {{ __('Preferences') }}
     </a>
+
+    @if ($canManageRoles)
+      <h2 class="px-2.5 pt-4 pb-1.25 text-xs uppercase">{{ __('Administration') }}</h2>
+
+      <a
+        href="{{ route('settings.roles.index') }}"
+        data-turbo="true"
+        @if ($current === 'roles') aria-current="page" @endif
+        class="{{ $item }} {{ $current === 'roles' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
+          <path d="M8 2.2 13.2 4v4c0 3-2.2 5-5.2 5.8C5 13 2.8 11 2.8 8V4L8 2.2Z"></path>
+          <path d="M5.9 8.1 7.4 9.6l2.8-3"></path>
+        </svg>
+        {{ __('Roles and permissions') }}
+      </a>
+    @endif
   </nav>
 
   <div id="sidebar-identity" class="flex items-center gap-2 border-t border-hairline-soft px-3 py-2.5">

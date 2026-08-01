@@ -9,7 +9,7 @@
 --}}
 <x-app-layout :title="__('Emails sent')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="logs" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" current="logs" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>

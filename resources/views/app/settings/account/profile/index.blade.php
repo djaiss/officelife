@@ -6,7 +6,7 @@
 --}}
 <x-app-layout :title="__('Profile')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="profile" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" current="profile" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>

@@ -37,3 +37,15 @@ A chronological list of every feature and improvement shipped during development
 * Permissions: Checked every action that touches an employee or the company against the roles of whoever asked.
 * Permissions: Kept the private details of a colleague off the screen for anybody not allowed to see them.
 * App-wide: Switched the interface to the fonts already on the reader's machine, so nothing is downloaded before the page reads.
+* App-wide: Added the stacked layer, a layout for a screen that needs the whole window and names the screen it was opened from.
+* Settings: Added an Administration section to the sidebar, shown only to somebody who may administer the company.
+* Settings/administration/roles: Added the screen listing every role of the company.
+* Settings/administration/roles: Let somebody rename a role and say afresh what it is allowed to do.
+* Settings/administration/roles: Grouped the permissions into people, sensitive data and administration.
+* Settings/administration/roles: Let somebody pick the scope of each permission granted.
+* Settings/administration/roles: Let somebody filter the permissions and fold the groups away.
+* Settings/administration/roles: Warned about a role that administers the company.
+* Settings/administration/roles: Let somebody create a role, empty or copied from an existing one.
+* Settings/administration/roles: Let somebody duplicate a role.
+* Settings/administration/roles: Let somebody delete a role, after asking, and refused when somebody still holds it.
+* Settings/administration/roles: Showed who holds a role and let somebody hand it out and take it back.

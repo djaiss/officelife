@@ -13,6 +13,9 @@ use App\Http\Controllers\App\Settings\Account\Security\PasswordController;
 use App\Http\Controllers\App\Settings\Account\Security\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\Account\Security\SecurityController;
 use App\Http\Controllers\App\Settings\Account\Security\TwoFactorController;
+use App\Http\Controllers\App\Settings\Administration\DuplicateRoleController;
+use App\Http\Controllers\App\Settings\Administration\RoleController;
+use App\Http\Controllers\App\Settings\Administration\RolePeopleController;
 use Illuminate\Support\Facades\Route;
 
 // The landing page, until there is a dashboard to send people to.
@@ -47,4 +50,18 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::post('settings/account/profile/photo', [PhotoController::class, 'update'])->name('settings.photo.update');
     Route::delete('settings/account/profile/photo', [PhotoController::class, 'destroy'])->name('settings.photo.destroy');
     Route::get('settings/account/profile/photo/{employee}/{size}', [PhotoController::class, 'show'])->whereNumber(['employee', 'size'])->name('settings.photo.show');
+});
+
+// The screens where somebody looks after the company itself.
+Route::middleware(['auth', 'set.locale'])->group(function (): void {
+    Route::get('settings/administration/roles', [RoleController::class, 'index'])->name('settings.roles.index');
+    Route::post('settings/administration/roles', [RoleController::class, 'create'])->name('settings.roles.create');
+    Route::get('settings/administration/roles/{role}', [RoleController::class, 'show'])->whereNumber('role')->name('settings.roles.show');
+    Route::put('settings/administration/roles/{role}', [RoleController::class, 'update'])->whereNumber('role')->name('settings.roles.update');
+    Route::delete('settings/administration/roles/{role}', [RoleController::class, 'destroy'])->whereNumber('role')->name('settings.roles.destroy');
+
+    Route::post('settings/administration/roles/{role}/duplicate', [DuplicateRoleController::class, 'create'])->whereNumber('role')->name('settings.roleDuplicates.create');
+
+    Route::post('settings/administration/roles/{role}/people', [RolePeopleController::class, 'create'])->whereNumber('role')->name('settings.rolePeople.create');
+    Route::delete('settings/administration/roles/{role}/people/{user}', [RolePeopleController::class, 'destroy'])->whereNumber(['role', 'user'])->name('settings.rolePeople.destroy');
 });

@@ -27,4 +27,17 @@ enum ScopeEnum: string
             self::Company => 'Everybody in the company',
         };
     }
+
+    /**
+     * The one word the scope goes by where there is no room for the sentence,
+     * such as the buttons of the permission matrix. The sentence is written out
+     * once underneath it, so the word never has to stand on its own.
+     */
+    public function shortLabel(): string
+    {
+        return match ($this) {
+            self::Self => 'Self',
+            self::Company => 'Company',
+        };
+    }
 }

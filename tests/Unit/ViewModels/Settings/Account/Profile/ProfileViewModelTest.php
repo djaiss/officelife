@@ -203,4 +203,18 @@ class ProfileViewModelTest extends TestCase
         $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
         $this->assertEquals('dwight.schrute@dundermifflin.com', $viewModel->email());
     }
+
+    #[Test]
+    public function it_knows_whether_the_administration_section_belongs_in_the_sidebar(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $this->assertFalse(new ProfileViewModel(user: $user, employee: null)->canManageRoles());
+
+        $this->grant($user, PermissionEnum::RoleManage);
+        $user->forgetGrants();
+
+        $this->assertTrue(new ProfileViewModel(user: $user, employee: null)->canManageRoles());
+    }
 }
