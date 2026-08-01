@@ -1,4 +1,8 @@
 {{--
+  What somebody sees once a code is asked for on top of their password: when it
+  was turned on, the way back out, and the codes that get them in if they ever
+  lose the phone.
+
   Each destructive button swaps itself for what is about to be lost and the
   button that goes through with it, so nothing here acts on the first click.
 

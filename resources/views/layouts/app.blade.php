@@ -1,4 +1,9 @@
 {{--
+  The shell of every screen somebody sees once they are signed in: a sidebar on
+  the left that stays put, and the screen itself on the right under a bar that
+  says where you are. On a narrow screen the sidebar slides in over the page
+  instead, from the button in the bar.
+
   `navOpen` is declared here, on the common parent of the sidebar and the
   backdrop, and that parent is inside <body>: alpine is re-initialised from the
   body after a turbo navigation, so state declared above it would never be

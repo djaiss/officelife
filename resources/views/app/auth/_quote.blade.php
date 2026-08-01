@@ -1,4 +1,6 @@
 {{--
+  The panel on the side of the guest screens, carrying one line from The Office.
+
   @var array{text: string, author: string, source: string} $quote
 --}}
 <aside class="quote-panel hidden items-center justify-center border-l border-hairline p-15 lg:flex">

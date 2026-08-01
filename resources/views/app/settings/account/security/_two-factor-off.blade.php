@@ -1,3 +1,9 @@
+{{--
+  What somebody sees when a code is not asked for on top of their password.
+
+  The screen it leads to is built on this same layout, so it is handed to turbo
+  and only the body changes hands.
+--}}
 <div class="grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
   <div class="flex items-center gap-x-4">
     <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-placeholder" aria-hidden="true">

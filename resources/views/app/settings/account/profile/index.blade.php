@@ -1,4 +1,7 @@
 {{--
+  Where somebody edits their own employee record: how colleagues see them, and
+  who to call if something happens to them.
+
   @var \App\ViewModels\Settings\Account\Profile\ProfileViewModel $viewModel
 --}}
 <x-app-layout :title="__('Profile')">
@@ -37,10 +40,16 @@
         <x-avatar id="profile-avatar" :employee="$viewModel->employee()" :name="$viewModel->name()" :size="74" />
 
         {{--
+          These two forms reload the page rather than updating it in place, the
+          way the forms below do. A picture is not a field: it is read, turned
+          upright, cropped and written twice before there is anything to show,
+          and the screen is better off asking the server for the whole thing
+          once that is done.
+
           The message lives in the x-data of this div rather than in the change
-          handler: Blade does not compile a directive written inside an attribute
-          of a component tag, so @js() would reach the browser as itself and
-          Alpine would refuse the whole expression.
+          handler, because Blade does not compile a directive written inside an
+          attribute of a component tag: @js() would reach the browser as itself
+          and Alpine would refuse the whole expression.
         --}}
         <div
           class="space-y-3 max-sm:w-full"

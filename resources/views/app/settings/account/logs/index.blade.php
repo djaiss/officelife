@@ -1,4 +1,10 @@
 {{--
+  Everything that has been written down about an account: what its owner has
+  done, and what we have sent them.
+
+  The next page of logs is appended in place, and the link that asked for it is
+  replaced by the one that came back, or removed on the last page.
+
   @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel
 --}}
 <x-app-layout :title="__('Logs')">

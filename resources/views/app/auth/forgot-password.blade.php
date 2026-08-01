@@ -1,4 +1,6 @@
 {{--
+  Where somebody who cannot remember their password asks for a way back in.
+
   @var \App\ViewModels\Auth\PasswordResetViewModel $viewModel
 --}}
 <x-guest-layout :title="__('Forgot your password?')">

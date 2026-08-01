@@ -1,4 +1,6 @@
 {{--
+  Where somebody who already has an account signs back in.
+
   @var \App\ViewModels\Auth\LoginViewModel $viewModel
 --}}
 <x-guest-layout :title="__('Welcome back')">

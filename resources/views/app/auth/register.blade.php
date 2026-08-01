@@ -1,4 +1,6 @@
 {{--
+  Where somebody creates a company and the account that administers it.
+
   @var \App\ViewModels\Auth\RegisterViewModel $viewModel
 --}}
 @php
@@ -25,8 +27,9 @@
 
         <x-status :message="session('status')" />
 
-        {{-- The greyed out button is a courtesy: the server refuses an unticked
-             form all the same, so a browser without javascript still works. --}}
+        {{-- The submit button stays greyed out until the terms are ticked. The
+             server refuses the form all the same, so a browser without javascript
+             still gets a working page and a clear error. --}}
         <div x-data="{ terms: @js((bool) old('terms')) }">
           <x-box>
             <x-form method="post" :action="route('auth.register.create')" class="space-y-4">
@@ -80,8 +83,9 @@
                 required
               />
 
-              {{-- passwordrules states the floor the server enforces, so a password
-                   manager generates one that will pass. --}}
+              {{-- new-password on both, and passwordrules stating the floor the server
+                   actually enforces, so a password manager offers to generate one that
+                   will pass rather than filling an existing password in. --}}
               <div class="space-y-1.5">
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <x-input

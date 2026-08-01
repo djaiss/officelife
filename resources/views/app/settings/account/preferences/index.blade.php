@@ -1,4 +1,7 @@
 {{--
+  What somebody chose about the way the application reads to them: the language
+  of the interface, and the clock times are written on.
+
   Each row is its own form, and carries the other row's current value along so
   that saving one never quietly resets the other. The time format saves over
   ajax; the language reloads the page, since every word on it is drawn in it.

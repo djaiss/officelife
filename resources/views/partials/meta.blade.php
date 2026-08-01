@@ -1,6 +1,6 @@
 {{--
-  Every layout opens its <head> with this partial. A layout that repeats what is
-  here ships it twice.
+  Every layout opens its <head> with this partial, so the charset, the viewport and the
+  csrf token live here and nowhere else. A layout that repeats them ships them twice.
 
   @var string|null $title
   @var string|null $description

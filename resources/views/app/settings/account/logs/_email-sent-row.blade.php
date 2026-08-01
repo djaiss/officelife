@@ -1,5 +1,11 @@
 {{--
-  Shown by both the logs screen and the page that holds every email.
+  One email we sent, as a row in a list. Clicking it opens the copy that was
+  sent, so somebody can tell what an email actually said rather than only that
+  it left. Shown by both the logs screen and the page that holds every email.
+
+  The dot on the left is the delivery: still on its way, delivered, or bounced.
+  Colour alone would say nothing to a screen reader, so the same three words are
+  written out beside it.
 
   @var \App\Models\EmailSent $emailSent
 --}}

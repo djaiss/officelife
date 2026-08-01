@@ -1,5 +1,6 @@
 {{--
-  Shown whether or not the address had an account behind it.
+  Shown after asking for a sign-in link, whether or not the address had an
+  account behind it.
 
   @var \App\ViewModels\Auth\MagicLinkViewModel $viewModel
 --}}
