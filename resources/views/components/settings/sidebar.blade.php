@@ -2,9 +2,6 @@
   The column beside the settings screens: which company you are in, what you can
   change about your own account, and who you are signed in as.
 
-  Preferences has no screen yet, so it is listed but not a link. A nav item that
-  goes nowhere is worse than one that plainly cannot be clicked.
-
   Below lg the column has nowhere to go, so it becomes a drawer that slides in
   over the screen, opened by the button in the bar. It is still the same aside
   rather than a second copy, because `sidebar-identity` below is the target of
@@ -100,13 +97,18 @@
       {{ __('Security') }}
     </a>
 
-    <span class="{{ $item }} text-muted-soft" aria-disabled="true">
+    <a
+      href="{{ route('settings.preferences.index') }}"
+      data-turbo="true"
+      @if ($current === 'preferences') aria-current="page" @endif
+      class="{{ $item }} {{ $current === 'preferences' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+    >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <rect x="2.4" y="3.2" width="11.2" height="9.6" rx="1.5"></rect>
         <line x1="2.4" y1="6.4" x2="13.6" y2="6.4"></line>
       </svg>
       {{ __('Preferences') }}
-    </span>
+    </a>
   </nav>
 
   <div id="sidebar-identity" class="flex items-center gap-2 border-t border-hairline-soft px-3 py-2.5">

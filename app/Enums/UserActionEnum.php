@@ -10,6 +10,7 @@ enum UserActionEnum: string
     case CompanyUpdate = 'company_updated';
     case UserInformationUpdate = 'user_information_updated';
     case UserPasswordUpdate = 'user_password_updated';
+    case UserPreferencesUpdate = 'user_preferences_updated';
     case UserDeletion = 'user_deleted';
     case EmployeeCreation = 'employee_created';
     case EmployeeInformationUpdate = 'employee_information_updated';
@@ -32,6 +33,7 @@ enum UserActionEnum: string
             self::CompanyUpdate => 'Updated the company called :name',
             self::UserInformationUpdate => 'Updated the account of :email',
             self::UserPasswordUpdate => 'Changed their password',
+            self::UserPreferencesUpdate => 'Changed their preferences',
             self::UserDeletion => 'Deleted the account of :email',
             self::EmployeeCreation => 'Added :name to the company',
             self::EmployeeInformationUpdate => 'Updated the profile of :name',
