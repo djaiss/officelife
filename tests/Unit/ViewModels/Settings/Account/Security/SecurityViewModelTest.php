@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Security;
 
+use App\Enums\PermissionEnum;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
@@ -149,5 +150,19 @@ class SecurityViewModelTest extends TestCase
         $user->createToken('Beet farm sync');
 
         $this->assertEquals('Active · 2 API keys', new SecurityViewModel(user: $user, employee: null)->apiKeysHeader());
+    }
+
+    #[Test]
+    public function it_knows_whether_the_administration_section_belongs_in_the_sidebar(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $this->assertFalse(new SecurityViewModel(user: $user, employee: null)->canManageRoles());
+
+        $this->grant($user, PermissionEnum::RoleManage);
+        $user->forgetGrants();
+
+        $this->assertTrue(new SecurityViewModel(user: $user, employee: null)->canManageRoles());
     }
 }

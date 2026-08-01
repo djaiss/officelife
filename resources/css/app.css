@@ -33,6 +33,11 @@
     --color-on-disabled: var(--on-disabled);
     --color-brand: var(--brand);
 
+    /* The desk a stacked layer sits on, and the screens peeking out from under it. */
+    --color-layer-backdrop: var(--layer-backdrop);
+    --color-layer-stack: var(--layer-stack);
+    --color-layer-bar: var(--layer-bar);
+
     /* Fixed semantic colors, they read the same in both themes. */
     --color-success: #4f8a49;
     --color-warning: #9a6a24;
@@ -136,6 +141,9 @@
     --disabled: #e9e9e5;
     --on-disabled: #a0a0a4;
     --brand: #3f5fd0;
+    --layer-backdrop: #e6e5e1;
+    --layer-stack: #eeede9;
+    --layer-bar: #f3f2ef;
 
     /* The bands of the gradient behind the quote, from top left to bottom right. */
     --quote-bands: #dfe4f6, #e6e2f2, #efe4ee, #f4e8e6, #f6eee2, #f2f0e2;
@@ -165,6 +173,9 @@
     --disabled: #26262c;
     --on-disabled: #6a6a73;
     --brand: #93a7f0;
+    --layer-backdrop: #050507;
+    --layer-stack: #0a0a0c;
+    --layer-bar: #0e0e11;
 
     --quote-bands: #1b1f34, #221d33, #2c1e2e, #301f24, #2c2419, #20221a;
     --quote-shadow: rgba(0, 0, 0, 0.5);

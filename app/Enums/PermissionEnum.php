@@ -56,6 +56,23 @@ enum PermissionEnum: string
     }
 
     /**
+     * The section the permission is listed under on the screen where somebody
+     * grants them. Every permission belongs to exactly one.
+     */
+    public function group(): PermissionGroupEnum
+    {
+        return match ($this) {
+            self::EmployeeView,
+            self::EmployeeCreate,
+            self::EmployeeUpdate => PermissionGroupEnum::People,
+            self::EmployeeViewPrivate,
+            self::EmployeeUpdatePrivate => PermissionGroupEnum::SensitiveData,
+            self::RoleManage,
+            self::CompanyManage => PermissionGroupEnum::Administration,
+        };
+    }
+
+    /**
      * What the permission is called on the screen where somebody grants it. The
      * sentence doubles as the translation key.
      */

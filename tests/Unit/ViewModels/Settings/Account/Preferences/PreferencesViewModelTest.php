@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Preferences;
 
+use App\Enums\PermissionEnum;
 use App\Enums\TimeFormatEnum;
 use App\Models\Company;
 use App\Models\Employee;
@@ -110,5 +111,19 @@ class PreferencesViewModelTest extends TestCase
         $viewModel = new PreferencesViewModel(user: $user, employee: null);
 
         $this->assertEquals('5:45 PM', $viewModel->timePreview());
+    }
+
+    #[Test]
+    public function it_knows_whether_the_administration_section_belongs_in_the_sidebar(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $this->assertFalse(new PreferencesViewModel(user: $user, employee: null)->canManageRoles());
+
+        $this->grant($user, PermissionEnum::RoleManage);
+        $user->forgetGrants();
+
+        $this->assertTrue(new PreferencesViewModel(user: $user, employee: null)->canManageRoles());
     }
 }

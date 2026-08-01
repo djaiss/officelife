@@ -10,7 +10,7 @@
 --}}
 <x-app-layout :title="__('Preferences')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="preferences" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" current="preferences" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>

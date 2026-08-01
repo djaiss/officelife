@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings\Account\Logs;
 
+use App\Enums\PermissionEnum;
 use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
@@ -61,6 +62,18 @@ class EmailsSentViewModel
     public function employee(): ?Employee
     {
         return $this->employee;
+    }
+
+    /**
+     * Whether the sidebar shows the administration section, which is the way to
+     * the roles of the company.
+     */
+    public function canManageRoles(): bool
+    {
+        return $this->user
+            ->permission(PermissionEnum::RoleManage)
+            ->forCompany($this->user->company)
+            ->allowed();
     }
 
     public function companyName(): string

@@ -102,6 +102,18 @@ class ProfileViewModel
         return $this->user->email;
     }
 
+    /**
+     * Whether the sidebar shows the administration section, which is the way to
+     * the roles of the company.
+     */
+    public function canManageRoles(): bool
+    {
+        return $this->user
+            ->permission(PermissionEnum::RoleManage)
+            ->forCompany($this->user->company)
+            ->allowed();
+    }
+
     public function companyName(): string
     {
         return $this->user->company->name;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Enums;
 
 use App\Enums\PermissionEnum;
+use App\Enums\PermissionGroupEnum;
 use App\Enums\ScopeEnum;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -47,5 +48,19 @@ class PermissionEnumTest extends TestCase
         foreach (PermissionEnum::cases() as $permission) {
             $this->assertNotEmpty($permission->label());
         }
+    }
+
+    #[Test]
+    public function it_files_every_permission_under_a_group(): void
+    {
+        $this->assertEquals(PermissionGroupEnum::People, PermissionEnum::EmployeeView->group());
+        $this->assertEquals(PermissionGroupEnum::People, PermissionEnum::EmployeeCreate->group());
+        $this->assertEquals(PermissionGroupEnum::People, PermissionEnum::EmployeeUpdate->group());
+
+        $this->assertEquals(PermissionGroupEnum::SensitiveData, PermissionEnum::EmployeeViewPrivate->group());
+        $this->assertEquals(PermissionGroupEnum::SensitiveData, PermissionEnum::EmployeeUpdatePrivate->group());
+
+        $this->assertEquals(PermissionGroupEnum::Administration, PermissionEnum::RoleManage->group());
+        $this->assertEquals(PermissionGroupEnum::Administration, PermissionEnum::CompanyManage->group());
     }
 }

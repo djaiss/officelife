@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Logs;
 
+use App\Enums\PermissionEnum;
 use App\Models\Company;
 use App\Models\EmailSent;
 use App\Models\Employee;
@@ -117,5 +118,19 @@ class EmailsSentViewModelTest extends TestCase
         $viewModel = new EmailsSentViewModel(user: $user, employee: $employee);
 
         $this->assertTrue($employee->is($viewModel->employee()));
+    }
+
+    #[Test]
+    public function it_knows_whether_the_administration_section_belongs_in_the_sidebar(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $this->assertFalse(new EmailsSentViewModel(user: $user, employee: null)->canManageRoles());
+
+        $this->grant($user, PermissionEnum::RoleManage);
+        $user->forgetGrants();
+
+        $this->assertTrue(new EmailsSentViewModel(user: $user, employee: null)->canManageRoles());
     }
 }
