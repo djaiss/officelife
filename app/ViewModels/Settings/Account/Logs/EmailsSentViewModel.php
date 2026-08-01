@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ViewModels\Settings;
+namespace App\ViewModels\Settings\Account\Logs;
 
 use App\Models\EmailSent;
 use App\Models\Employee;

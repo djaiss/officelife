@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\ViewModels\Settings;
+namespace Tests\Unit\ViewModels\Settings\Account\Logs;
 
 use App\Models\Company;
 use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
-use App\ViewModels\Settings\EmailsSentViewModel;
+use App\ViewModels\Settings\Account\Logs\EmailsSentViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

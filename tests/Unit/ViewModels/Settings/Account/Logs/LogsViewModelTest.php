@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\ViewModels\Settings;
+namespace Tests\Unit\ViewModels\Settings\Account\Logs;
 
 use App\Enums\UserActionEnum;
 use App\Models\Company;
+use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\Log;
 use App\Models\User;
-use App\ViewModels\Settings\LogsViewModel;
+use App\ViewModels\Settings\Account\Logs\LogsViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -62,19 +63,68 @@ class LogsViewModelTest extends TestCase
     }
 
     #[Test]
-    public function it_gives_ten_logs_a_page(): void
+    public function it_gives_five_logs_a_page(): void
     {
         $user = User::factory()->create();
 
-        Log::factory()->count(12)->create([
+        Log::factory()->count(7)->create([
             'company_id' => $user->company_id,
             'user_id' => $user->id,
         ]);
 
         $viewModel = new LogsViewModel(user: $user, employee: null);
 
-        $this->assertCount(10, $viewModel->logs());
+        $this->assertCount(5, $viewModel->logs());
         $this->assertTrue($viewModel->logs()->hasMorePages());
+    }
+
+    #[Test]
+    public function it_gives_the_last_five_emails_sent_newest_first(): void
+    {
+        $user = User::factory()->create();
+        EmailSent::factory()->count(6)->sequence(fn ($sequence): array => [
+            'subject' => 'Email '.$sequence->index,
+            'sent_at' => now()->subDays(6 - $sequence->index),
+        ])->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $viewModel = new LogsViewModel(user: $user, employee: null);
+
+        $this->assertCount(5, $viewModel->emailsSent());
+        $this->assertEquals('Email 5', $viewModel->emailsSent()->first()->subject);
+        $this->assertTrue($viewModel->hasMoreEmailsSent());
+    }
+
+    #[Test]
+    public function it_says_there_is_nothing_more_to_read_when_there_are_five_emails_or_fewer(): void
+    {
+        $user = User::factory()->create();
+        EmailSent::factory()->count(5)->create([
+            'company_id' => $user->company_id,
+            'user_id' => $user->id,
+        ]);
+
+        $viewModel = new LogsViewModel(user: $user, employee: null);
+
+        $this->assertFalse($viewModel->hasMoreEmailsSent());
+    }
+
+    #[Test]
+    public function it_hides_the_emails_sent_to_somebody_else(): void
+    {
+        $user = User::factory()->create();
+        $colleague = User::factory()->create(['company_id' => $user->company_id]);
+        EmailSent::factory()->create([
+            'company_id' => $user->company_id,
+            'user_id' => $colleague->id,
+        ]);
+
+        $viewModel = new LogsViewModel(user: $user, employee: null);
+
+        $this->assertCount(0, $viewModel->emailsSent());
+        $this->assertFalse($viewModel->hasMoreEmailsSent());
     }
 
     #[Test]

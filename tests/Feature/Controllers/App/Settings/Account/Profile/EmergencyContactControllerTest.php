@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Controllers\App\Settings;
+namespace Tests\Feature\Controllers\App\Settings\Account\Profile;
 
 use App\Models\Company;
 use App\Models\Employee;

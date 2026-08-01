@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\App\Settings;
+namespace App\Http\Controllers\App\Settings\Account\Profile;
 
 use App\Actions\UpdateEmergencyContact;
 use App\Http\Controllers\Controller;

@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\ViewModels\Settings;
+namespace App\ViewModels\Settings\Account\Profile;
 
-use App\Models\EmailSent;
 use App\Models\Employee;
-use App\Models\Log;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * What the profile screen shows: who is signed in, the record they are editing,
@@ -16,18 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class ProfileViewModel
 {
-    /**
-     * How many of the latest actions the box holds. Everything beyond that is a
-     * click away, on the screen dedicated to them.
-     */
-    private const int LOGS_SHOWN = 5;
-
-    /**
-     * How many emails the box on the profile shows before it sends somebody to
-     * the screen that lists them all.
-     */
-    private const int EMAILS_SHOWN = 6;
-
     public function __construct(
         private readonly User $user,
         private readonly ?Employee $employee,
@@ -60,29 +45,6 @@ class ProfileViewModel
             'phone' => old('phone', $this->employee?->emergency_contact_phone),
             'relationship' => old('relationship', $this->employee?->emergency_contact_relationship),
         ];
-    }
-
-    /**
-     * The last few emails the application sent to the person signed in, newest
-     * first.
-     *
-     * @return Collection<int, EmailSent>
-     */
-    public function emailsSent(): Collection
-    {
-        return $this->user->emailsSent()
-            ->latest('sent_at')
-            ->take(self::EMAILS_SHOWN)
-            ->get();
-    }
-
-    /**
-     * Whether there are more emails than the box shows, so the screen knows
-     * whether the link to the whole list is worth offering.
-     */
-    public function hasMoreEmailsSent(): bool
-    {
-        return $this->user->emailsSent()->count() > self::EMAILS_SHOWN;
     }
 
     /**
@@ -125,29 +87,5 @@ class ProfileViewModel
     public function lastSavedAt(): ?string
     {
         return $this->employee?->last_saved_at?->diffForHumans();
-    }
-
-    /**
-     * The latest actions the signed in person performed, newest first. The
-     * author of each entry is read off the user, so both are loaded up front.
-     *
-     * @return Collection<int, Log>
-     */
-    public function logs(): Collection
-    {
-        return $this->user->logs()
-            ->with('user.employee')
-            ->latest()
-            ->take(self::LOGS_SHOWN)
-            ->get();
-    }
-
-    /**
-     * Whether there is more to read than the box shows, so the screen only
-     * offers to browse everything when browsing everything is worth it.
-     */
-    public function hasMoreLogs(): bool
-    {
-        return $this->user->logs()->count() > self::LOGS_SHOWN;
     }
 }
