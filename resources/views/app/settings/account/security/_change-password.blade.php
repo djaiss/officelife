@@ -9,7 +9,7 @@
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
 <div class="grid gap-x-9 gap-y-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-  <div class="space-y-2.5 text-sm leading-relaxed text-body">
+  <div class="space-y-1 text-sm leading-relaxed text-body">
     <p>{{ __('Choose a password you use nowhere else. Long beats complicated.') }}</p>
     <p>{{ __('You stay signed in here, and your new password is what you type the next time.') }}</p>
   </div>
