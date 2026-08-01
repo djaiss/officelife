@@ -109,5 +109,21 @@ class LogsViewModelTest extends TestCase
         $viewModel = new LogsViewModel(user: $user, employee: null);
 
         $this->assertEquals('accountant@vancerefrigeration.com', $viewModel->name());
+        $this->assertNull($viewModel->employee());
+    }
+
+    #[Test]
+    public function it_gives_the_employee_record_the_avatar_draws_from(): void
+    {
+        $company = Company::factory()->create();
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        $viewModel = new LogsViewModel(user: $user, employee: $employee);
+
+        $this->assertTrue($employee->is($viewModel->employee()));
     }
 }
