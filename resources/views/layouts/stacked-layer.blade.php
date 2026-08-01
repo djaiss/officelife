@@ -40,6 +40,7 @@
 
       <a
         href="{{ $backUrl }}"
+        data-turbo="true"
         class="mx-11.5 flex items-center gap-2.5 rounded-t-xl border border-b-0 border-hairline-strong bg-layer-bar px-4.5 py-2 transition-colors hover:bg-layer-stack"
       >
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0 text-muted" aria-hidden="true">
@@ -60,6 +61,7 @@
         <header class="sticky top-0 z-5 flex h-13.5 items-center gap-3.5 rounded-t-xl border-b border-hairline-soft bg-page/90 pr-5.5 pl-4.5 backdrop-blur-md">
           <a
             href="{{ $backUrl }}"
+            data-turbo="true"
             aria-label="{{ __('Go back to :screen', ['screen' => $backTitle]) }}"
             class="flex size-6.5 shrink-0 items-center justify-center rounded-md border border-hairline bg-canvas text-body transition-colors hover:bg-hover hover:text-ink"
           >
