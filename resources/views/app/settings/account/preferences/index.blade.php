@@ -6,6 +6,10 @@
   why there is no button to press, and each form carries the other row's current
   value along so that saving one never quietly resets the other.
 
+  The time format saves over ajax, since the only things that change are the two
+  menus and the line underneath them. The language does not: every word on every
+  screen is drawn in it, so that one is worth a whole page.
+
   @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
 --}}
 <x-app-layout :title="__('Preferences')">
@@ -40,7 +44,7 @@
           <p class="mt-0.5 text-sm text-muted">{{ __('The language used across the :app interface.', ['app' => config('app.name')]) }}</p>
         </div>
 
-        <x-form method="put" :action="route('settings.preferences.update')" class="ml-auto shrink-0">
+        <x-form method="put" :action="route('settings.preferences.update')" id="language-form" class="ml-auto shrink-0">
           <input type="hidden" name="time_format" value="{{ $viewModel->timeFormat()->value }}" />
 
           <x-dropdown
@@ -58,7 +62,17 @@
           <p class="mt-0.5 text-sm text-muted">{{ __('How times are written across the application.') }}</p>
         </div>
 
-        <x-form method="put" :action="route('settings.preferences.update')" class="ml-auto shrink-0">
+        {{--
+          The language menu is refreshed along with this one, since it carries the
+          time format along and would otherwise send back the value being replaced.
+        --}}
+        <x-form
+          method="put"
+          :action="route('settings.preferences.update')"
+          id="time-format-form"
+          x-target="time-format-form language-form time-preview"
+          class="ml-auto shrink-0 transition-opacity [&[aria-busy]]:opacity-60"
+        >
           <input type="hidden" name="locale" value="{{ $viewModel->locale() }}" />
 
           <x-dropdown
@@ -72,7 +86,7 @@
       </x-box.row>
     </x-box>
 
-    <p class="text-sm text-muted-soft">
+    <p id="time-preview" class="text-sm text-muted-soft">
       {{ __('It is :time where you are, in :language.', ['time' => $viewModel->timePreview(), 'language' => $viewModel->localeLabel()]) }}
     </p>
   </div>
