@@ -28,6 +28,7 @@ class SecurityControllerTest extends TestCase
         $user = User::factory()->create([
             'company_id' => $company->id,
             'employee_id' => $employee->id,
+            'password_changed_at' => now()->subDays(2),
         ]);
 
         $response = $this->actingAs($user)->get(route('settings.security.index'));
@@ -37,6 +38,18 @@ class SecurityControllerTest extends TestCase
         $response->assertSee('Current password', escape: false);
         $response->assertSee('Dwight Schrute', escape: false);
         $response->assertSee('Dunder Mifflin', escape: false);
+        $response->assertSee('Last changed 2 days ago', escape: false);
+    }
+
+    #[Test]
+    public function it_leaves_out_the_date_when_the_password_was_never_changed(): void
+    {
+        $user = User::factory()->create(['password_changed_at' => null]);
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Last changed', escape: false);
     }
 
     #[Test]

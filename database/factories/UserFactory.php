@@ -33,6 +33,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password_hash' => self::$password ??= Hash::make('password'),
+            'password_changed_at' => now(),
             'is_active' => true,
             'locale' => 'en',
             'remember_token' => Str::random(10),
@@ -56,6 +57,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'password_hash' => null,
+            'password_changed_at' => null,
             'sso_provider' => 'google',
         ]);
     }

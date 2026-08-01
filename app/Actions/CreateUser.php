@@ -45,6 +45,7 @@ class CreateUser
             'company_id' => $this->company->id,
             'email' => $this->email,
             'password_hash' => $this->password === null ? null : Hash::make($this->password),
+            'password_changed_at' => $this->password === null ? null : now(),
             'sso_provider' => $this->ssoProvider,
             'is_active' => true,
             'locale' => $this->locale,

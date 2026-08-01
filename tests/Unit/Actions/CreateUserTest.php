@@ -35,6 +35,12 @@ class CreateUserTest extends TestCase
             'is_active' => true,
         ]);
         $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->password_hash));
+
+        $this->assertEqualsWithDelta(
+            now()->timestamp,
+            $user->password_changed_at?->timestamp,
+            2,
+        );
     }
 
     #[Test]
@@ -49,6 +55,7 @@ class CreateUserTest extends TestCase
         )->execute();
 
         $this->assertNull($user->password_hash);
+        $this->assertNull($user->password_changed_at);
         $this->assertEquals('google', $user->sso_provider);
         $this->assertTrue($user->usesSingleSignOn());
     }

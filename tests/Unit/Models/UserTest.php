@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
@@ -93,13 +94,25 @@ class UserTest extends TestCase
     #[Test]
     public function it_casts_the_dates_and_the_active_flag(): void
     {
-        $user = User::factory()->inactive()->create(['last_login_at' => now()]);
+        $user = User::factory()->inactive()->create([
+            'last_login_at' => now(),
+            'password_changed_at' => '2026-07-31 09:30:00',
+        ]);
 
         $user->refresh();
 
         $this->assertFalse($user->is_active);
         $this->assertNotNull($user->last_login_at);
         $this->assertNotNull($user->email_verified_at);
+        $this->assertInstanceOf(Carbon::class, $user->password_changed_at);
+    }
+
+    #[Test]
+    public function it_has_no_password_change_date_when_the_password_was_never_set(): void
+    {
+        $user = User::factory()->singleSignOn()->create();
+
+        $this->assertNull($user->password_changed_at);
     }
 
     #[Test]
