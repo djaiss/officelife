@@ -49,14 +49,17 @@ class LogControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_a_word_when_there_is_nothing_to_read_yet(): void
+    public function it_shows_a_blank_state_when_there_is_nothing_to_read_yet(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get(route('settings.logs.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Nothing yet. Your actions show up here as you go.', escape: false);
+        $response->assertSee('No activity yet', escape: false);
+        $response->assertSee('Nothing has happened on your account yet.', escape: false);
+        $response->assertSee('No emails yet', escape: false);
+        $response->assertSee('Nothing has left our hands yet.', escape: false);
     }
 
     #[Test]
