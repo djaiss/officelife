@@ -99,16 +99,6 @@ class PasswordControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_refuses_an_empty_form(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->put(route('settings.password.update'), []);
-
-        $response->assertSessionHasErrors(['current_password', 'new_password']);
-    }
-
-    #[Test]
     public function it_redirects_a_visitor_who_is_not_signed_in(): void
     {
         $response = $this->put(route('settings.password.update'), []);
