@@ -14,6 +14,11 @@
   the address and the subject, the time and the chevron drop onto a line of
   their own together.
 
+  The button fills the row, so the row is asked for no padding of its own. The
+  tint under the pointer stays on the row, which is the element that knows
+  whether it is first or last and therefore how to round its corners. The copy
+  below carries its own background, so it is not tinted along with it.
+
   @var \App\Models\EmailSent $emailSent
 --}}
 @php
@@ -24,12 +29,12 @@
   };
 @endphp
 
-<div x-data="{ open: false }" class="border-b border-hairline-soft last:border-b-0">
+<x-box.row x-data="{ open: false }" padding="p-0">
   <button
     type="button"
     @click="open = ! open"
     :aria-expanded="open ? 'true' : 'false'"
-    class="flex w-full cursor-pointer flex-wrap items-start gap-x-3 gap-y-1 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-hover focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+    class="flex w-full cursor-pointer flex-wrap items-start gap-x-3 gap-y-1 px-4 py-3.5 text-left focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
   >
     <span class="mt-1 size-2 shrink-0 rounded-full {{ $delivery }}" aria-hidden="true"></span>
     <span class="sr-only">{{ $deliveryLabel }}</span>
@@ -53,10 +58,11 @@
     </span>
   </button>
 
-  <div x-cloak x-show="open" x-transition class="border-t border-hairline-soft bg-card px-4 py-3.5">
+  {{-- The copy takes the bottom corners of the row it sits in, so the last one open does not square off the panel. --}}
+  <div x-cloak x-show="open" x-transition class="rounded-b-[inherit] border-t border-hairline-soft bg-card px-4 py-3.5">
     <p class="text-center text-xs text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
 
     {{-- The copy arrives as the bare paragraphs Purify left behind, so the rhythm between them is ours to give. --}}
     <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">{!! $emailSent->body !!}</div>
   </div>
-</div>
+</x-box.row>

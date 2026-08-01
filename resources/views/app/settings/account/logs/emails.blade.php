@@ -44,9 +44,9 @@
     @endforelse
 
     @if ($viewModel->emailsSent()->hasMorePages())
-      <div id="pagination" class="p-3 text-center text-sm">
+      <x-slot:footer id="pagination">
         <x-link x-target="emails-sent-container pagination" :href="$viewModel->emailsSent()->nextPageUrl()">{{ __('Load more') }}</x-link>
-      </div>
+      </x-slot:footer>
     @endif
   </x-box>
 </x-app-layout>
