@@ -234,10 +234,10 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `concepts.activity-log`
 - **Purpose.** Explain that the product keeps a record of what people do, and what it means for the reader.
 - **Audience.** Owners, and privacy conscious employees.
-- **Summary.** What is recorded, listed exactly and no more: a company created, a company updated, account details updated, a password changed, an account deleted, an employee created, an email address confirmed, a sign in, and a sign in link requested. Each entry keeps who did it, when, and the email address they had at the time, so the record still says who acted after their account is gone. Why that design choice was made. That the log belongs to the company. Then the limit: **there is no screen that displays this log yet**. Write the page as "what the product records about you", not as "how to read the audit trail".
+- **Summary.** What is recorded, listed exactly and no more: a company created, a company updated, account details updated, a password changed, an account deleted, an employee created, an employee's details updated, an emergency contact updated, an email address confirmed, a sign in, and a sign in link requested. Each entry keeps who did it, when, and the email address they had at the time, so the record still says who acted after their account is gone. Why that design choice was made. That the log belongs to the company, while the screens that display it only ever show the reader their own entries. Then the two limits worth stating: nobody can read another person's entries anywhere in the product today, and an action this version of the product no longer recognises is shown by its raw name rather than a sentence. Send the reader to `profile.logs` for how to read their own.
 - **Prerequisites.** `concepts.model`.
 - **Complexity.** Low.
-- **Related pages.** `security.privacy`, `email.record`.
+- **Related pages.** `profile.logs`, `security.privacy`, `email.record`.
 
 ---
 
@@ -303,7 +303,7 @@ The screen also carries a line telling people joining an existing company to ask
 
 ## Section 5: Your profile
 
-**Why this section exists.** The profile screen is the first and, so far, the only place in the signed in application where somebody changes something about themselves. It is what a new user reaches for once they are in, and it is where the abstract distinction between an employee and an account finally becomes something you can click. It also holds the one piece of genuinely private information the product asks for, which deserves its own page rather than a paragraph, and the one place where somebody can read what the product did on their behalf: the emails it sent them.
+**Why this section exists.** The profile screen is the first and, so far, the only place in the signed in application where somebody changes something about themselves. It is what a new user reaches for once they are in, and it is where the abstract distinction between an employee and an account finally becomes something you can click. It also holds the one piece of genuinely private information the product asks for, which deserves its own page rather than a paragraph, and it is the way in to the two screens that let somebody read the record of what they have done and the emails the product sent them.
 
 **Who it is for.** Every employee with an account.
 
@@ -314,10 +314,10 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `profile.introduction`
 - **Purpose.** Section index, and the reader's first tour of a screen inside the application.
 - **Audience.** All.
-- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, your emergency contact, which they cannot, and the emails the product has sent you. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Preferences** is listed but cannot be opened, because that screen does not exist yet.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, the record of what you have done, your emergency contact, which they cannot see, and the emails the product has sent you. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Preferences** is listed but cannot be opened, because that screen does not exist yet.
 - **Prerequisites.** `concepts.employee-vs-user`.
 - **Complexity.** Low.
-- **Related pages.** Both pages below, `concepts.employee-record`, `security.introduction`.
+- **Related pages.** The three pages below, `concepts.employee-record`, `security.introduction`.
 
 ### Edit your details
 
@@ -327,7 +327,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **Summary.** The four fields, and which are required: **first name** and **last name** are, **display name** and **work email** are not. Explain the display name properly, since it is the field people ask about: it is the name you go by, and when you give one the product calls you by it everywhere, including the sidebar and your initials; leave it empty and your legal name is used instead. Say plainly who sees all of this: everyone in your company. Describe what saving looks like, because it is not what a reader expects from a web form: the page does not reload, a short confirmation slides into the bottom right corner and leaves on its own after a few seconds (it can be dismissed sooner with its close button), and the **Last saved** line under the fields updates in place. Note that saving is recorded in the company's activity log. Point at `profile.photo` for the avatar box rather than covering it here.
 - **Prerequisites.** `profile.introduction`.
 - **Complexity.** Low.
-- **Related pages.** `concepts.employee-record`, `concepts.activity-log`, `profile.photo`, `profile.emergency-contact`.
+- **Related pages.** `concepts.employee-record`, `concepts.activity-log`, `profile.photo`, `profile.logs`, `profile.emergency-contact`.
 
 ### Add a profile photo
 
@@ -348,6 +348,16 @@ The screen also carries a line telling people joining an existing company to ask
 - **Prerequisites.** `profile.introduction`.
 - **Complexity.** Medium, because the privacy claim has to be worded carefully.
 - **Related pages.** `security.privacy`, `concepts.employee-record`, `concepts.activity-log`.
+
+### Read what you have done
+
+- **id.** `profile.logs`
+- **Purpose.** Show somebody where their own record of activity is, and teach them to read a line of it.
+- **Audience.** All, and particularly anybody who has had an email about a sign in they do not recognise.
+- **Summary.** Where it is: the **Logs** box on the profile screen, which holds the five most recent entries, and **Browse all activity** under them, which opens the full record at `/settings/account/profile/logs`. Say plainly whose actions these are: your own, and only your own. Read one line apart, because each part answers a different question: the name of whoever acted, the short technical name of the action in a monospaced face, which is the thing to quote when asking for help, the sentence describing what happened, and how long ago it was, with the exact date and time available by resting the pointer on it. That the newest is first. How the full screen loads more: ten at a time, with a **Load more** link that adds the next ten under the ones already there without leaving the page, and which disappears when there is nothing left. What an empty box means for a new account. Two honest notes: an action the product no longer recognises shows its raw name in place of a sentence, and there is no way to filter, search or export the log today.
+- **Prerequisites.** `profile.introduction`, `concepts.activity-log`.
+- **Complexity.** Low.
+- **Related pages.** `concepts.activity-log`, `security.suspicious-activity`, `email.record`.
 
 ### Read the emails we sent you
 
@@ -783,7 +793,9 @@ Each entry names the evidence, what is missing, and the page it should become.
 
 - **Editing your company, your account, or somebody else's employee record.** The business logic for all three exists and is tested. Only your own employee record has a screen, covered by Section 5; nothing reaches the other three. Several pages above are shaped around this absence and say so; when the screens land, those caveats come out and the pages become how-tos.
 
-- **Viewing the activity log.** It is written and stored, and nothing displays it. `concepts.activity-log` describes what is recorded, not how to read it. The record of emails sent used to sit here too; it now has a screen, and `profile.emails` is its page.
+- **Reading somebody else's activity, or the emails sent to them.** The log and the record of sent emails both belong to the company and both name the person they concern, but every screen filters to the signed in person's own entries, and no screen shows a company wide view. **No page may describe reading a colleague's activity or their emails, or an owner overseeing the company's.**
+
+- **Filtering, searching or exporting the activity log or the emails sent.** Both screens read newest first, a page at a time, and offer nothing else. No page may promise a date range, a filter by action, or an export.
 
 - **Ending your other sessions.** Sessions are stored per device, but nothing lists or revokes them. Mentioned as a limitation in `signin.sign-out` only.
 
@@ -801,7 +813,7 @@ Build the portal in this order. Each block is independently publishable, so the 
 
 1. **First pass, the essentials.** `portal.introduction`, `getting.introduction`, `getting.what-is-officelife`, `getting.create-account`, `getting.confirm-email`, `signin.introduction`, `signin.password`, `signin.magic-link`, `signin.forgot-password`. This alone answers most of what a real user will ask today.
 2. **Second pass, the model.** All of Section 3, plus `getting.what-works-today`. This is where the product becomes comprehensible rather than merely usable.
-3. **Third pass, the one screen there is.** All of Section 5. It is short, it is the only part of the portal a reader can follow with the product open in front of them, and it makes Section 3 concrete.
+3. **Third pass, the screens there are.** All of Section 5, ending with `profile.logs` and `profile.emails`, which need `concepts.activity-log` and `email.record` written first. It is short, it is the only part of the portal a reader can follow with the product open in front of them, and it makes Section 3 concrete.
 4. **Fourth pass, security and email.** Sections 6 and 8. These are the pages people arrive at from an inbox, under stress, so they benefit from being written together and in one voice.
 5. **Fifth pass, operators.** Section 9. A different audience and a different register; writing it in one block keeps it consistent.
 6. **Sixth pass, the connective tissue.** Sections 7, 10 and 11. Language, troubleshooting and reference are best written last, because they mostly link to pages that must already exist.

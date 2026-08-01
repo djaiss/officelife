@@ -127,6 +127,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the actions the user performed.
+     *
+     * @return HasMany<Log, $this>
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class);
+    }
+
+    /**
      * Get the emails the application sent to the user.
      *
      * @return HasMany<EmailSent, $this>

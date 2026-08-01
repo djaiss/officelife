@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\UserActionEnum;
 use Carbon\Carbon;
 use Database\Factories\LogFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<string, mixed>|null $parameters
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
+ * @property-read string $author
+ * @property-read string $description
  */
 class Log extends Model
 {
@@ -74,5 +78,36 @@ class Log extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get who performed the action. A log outlives the account behind it, so it
+     * falls back to the email address recorded at the time once that account,
+     * or the employee record under it, is gone.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function author(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->user->employee->name ?? $this->user_email,
+        );
+    }
+
+    /**
+     * Get what the action reads as, in the language of whoever is looking. An
+     * action this version of the application no longer knows about is shown by
+     * its raw name rather than hidden.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function description(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => __(
+                UserActionEnum::tryFrom($this->action)?->description() ?? $this->action,
+                $this->parameters ?? [],
+            ),
+        );
     }
 }
