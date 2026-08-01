@@ -48,7 +48,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, dom, fileinfo, ${{ matrix.connection }}
+          # gd is what the image manipulation runs on, so the photo tests need
+          # it. The runner image does not guarantee it, so it is asked for here.
+          extensions: mbstring, dom, fileinfo, gd, ${{ matrix.connection }}
           coverage: none
 
       - name: Check PHP Version

@@ -21,6 +21,7 @@ description: Adds a new model to the Laravel application. Use when the user want
 - You MUST create the model in `app/Models/`, extending the Eloquent `Model` class.
 - You MUST add a class-level PHPDoc block listing every column as an `@property`, including `id`, `created_at` and `updated_at`.
 - You MUST use `HasFactory` with a `/** @use HasFactory<XFactory> */` docblock above the trait.
+- You MUST declare every constant at the top of the class, right after the traits and before `protected $table`. Never in the middle of the class.
 - You MUST set the table explicitly with `protected $table`.
 - You MUST declare mass-assignable fields in `protected $fillable` typed as `list<string>`.
 - You MUST define casts in a `protected function casts(): array` method, not a property.
