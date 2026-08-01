@@ -59,6 +59,7 @@ class AssignRole
     private function assign(): void
     {
         $this->user->roles()->syncWithoutDetaching([$this->role->id]);
+        $this->user->forgetGrants();
     }
 
     private function log(): void

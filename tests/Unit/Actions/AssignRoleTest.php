@@ -100,6 +100,32 @@ class AssignRoleTest extends TestCase
     }
 
     #[Test]
+    public function it_lets_them_through_straight_away(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::RoleManage);
+        $role = Role::factory()->create(['company_id' => $company->id]);
+        RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::CompanyManage,
+            'scope' => ScopeEnum::Company,
+        ]);
+        $dwight = User::factory()->create(['company_id' => $company->id]);
+
+        $this->assertFalse(
+            $dwight->permission(PermissionEnum::CompanyManage)->forCompany($company)->allowed(),
+        );
+
+        new AssignRole(author: $author, user: $dwight, role: $role)->execute();
+
+        $this->assertTrue(
+            $dwight->permission(PermissionEnum::CompanyManage)->forCompany($company)->allowed(),
+        );
+    }
+
+    #[Test]
     public function it_throws_when_the_author_may_not_administer_the_company(): void
     {
         $this->expectException(ModelNotFoundException::class);

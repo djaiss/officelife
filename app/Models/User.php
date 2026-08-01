@@ -196,7 +196,9 @@ class User extends Authenticatable
      * is granted at, with the grants of several roles added together.
      *
      * It is read once and kept for the rest of the request, since a screen asks
-     * the same question about a great many rows.
+     * the same question about a great many rows. Anything that changes which
+     * roles the user holds has to say so through forgetGrants(), or the checks
+     * that follow answer from what was true beforehand.
      *
      * @return array<string, list<ScopeEnum>>
      */
@@ -208,6 +210,29 @@ class User extends Authenticatable
             ->groupBy(fn (RolePermission $grant): string => $grant->permission->value)
             ->map(fn ($grants): array => $grants->pluck('scope')->unique()->values()->all())
             ->all();
+    }
+
+    /**
+     * Throw away the grants read earlier, so the next check reads them again.
+     * Giving somebody a role or taking one away has to do this, otherwise a
+     * role that was just removed still lets them through for the rest of the
+     * request.
+     */
+    public function forgetGrants(): void
+    {
+        $this->grants = null;
+    }
+
+    /**
+     * Reload the user from the database. The grants are not an attribute, so
+     * they survive this unless they are dropped here too, and somebody who
+     * refreshes a user expects to be looking at what the database says.
+     */
+    public function refresh()
+    {
+        $this->forgetGrants();
+
+        return parent::refresh();
     }
 
     /**

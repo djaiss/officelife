@@ -65,10 +65,18 @@ class UpdateRole
             throw new ModelNotFoundException('Role not found');
         }
 
+        $seen = [];
+
         foreach ($this->grants as $grant) {
             if (! in_array($grant['scope'], $grant['permission']->scopes(), true)) {
                 throw new InvalidArgumentException($grant['permission']->value.' cannot be granted at '.$grant['scope']->value.' scope');
             }
+
+            if (in_array($grant['permission'], $seen, true)) {
+                throw new InvalidArgumentException($grant['permission']->value.' is granted more than once');
+            }
+
+            $seen[] = $grant['permission'];
         }
     }
 

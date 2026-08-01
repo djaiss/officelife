@@ -63,13 +63,24 @@ class CreateRole
      * A permission that covers the whole company has nothing to narrow down, so
      * asking for it at self scope is asking for something that cannot be
      * evaluated rather than for something narrower.
+     *
+     * A role grants a permission once, at one scope, so the same permission
+     * twice is a question with no answer rather than two grants.
      */
     private function validate(): void
     {
+        $seen = [];
+
         foreach ($this->grants as $grant) {
             if (! in_array($grant['scope'], $grant['permission']->scopes(), true)) {
                 throw new InvalidArgumentException($grant['permission']->value.' cannot be granted at '.$grant['scope']->value.' scope');
             }
+
+            if (in_array($grant['permission'], $seen, true)) {
+                throw new InvalidArgumentException($grant['permission']->value.' is granted more than once');
+            }
+
+            $seen[] = $grant['permission'];
         }
     }
 

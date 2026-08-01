@@ -96,6 +96,38 @@ class RemoveRoleTest extends TestCase
         );
     }
 
+    /**
+     * The grants of a user are read once and kept for the rest of the request,
+     * so a role taken away has to say so. Otherwise the person it was taken
+     * from carries on getting through every check until the request ends.
+     */
+    #[Test]
+    public function it_stops_letting_them_through_straight_away(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::RoleManage);
+        $role = Role::factory()->create(['company_id' => $company->id]);
+        RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::CompanyManage,
+            'scope' => ScopeEnum::Company,
+        ]);
+        $dwight = User::factory()->create(['company_id' => $company->id]);
+        $dwight->roles()->attach($role->id);
+
+        $this->assertTrue(
+            $dwight->permission(PermissionEnum::CompanyManage)->forCompany($company)->allowed(),
+        );
+
+        new RemoveRole(author: $author, user: $dwight, role: $role)->execute();
+
+        $this->assertFalse(
+            $dwight->permission(PermissionEnum::CompanyManage)->forCompany($company)->allowed(),
+        );
+    }
+
     #[Test]
     public function it_throws_when_the_author_may_not_administer_the_company(): void
     {

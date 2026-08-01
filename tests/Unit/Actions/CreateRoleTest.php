@@ -157,4 +157,23 @@ class CreateRoleTest extends TestCase
             ],
         )->execute();
     }
+
+    #[Test]
+    public function it_throws_when_the_same_permission_is_granted_twice(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::RoleManage);
+
+        new CreateRole(
+            author: $author,
+            company: $company,
+            name: 'Regional manager',
+            grants: [
+                ['permission' => PermissionEnum::EmployeeUpdate, 'scope' => ScopeEnum::Self],
+                ['permission' => PermissionEnum::EmployeeUpdate, 'scope' => ScopeEnum::Company],
+            ],
+        )->execute();
+    }
 }

@@ -59,6 +59,7 @@ class RemoveRole
     private function remove(): void
     {
         $this->user->roles()->detach($this->role->id);
+        $this->user->forgetGrants();
     }
 
     private function log(): void
