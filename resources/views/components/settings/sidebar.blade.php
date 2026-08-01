@@ -18,7 +18,7 @@
 ])
 
 @php
-  $item = 'flex items-center gap-[10px] rounded-[7px] px-[10px] py-2 text-[13.5px]';
+  $item = 'flex items-center gap-[10px] rounded-[7px] px-2.5 py-1.5 text-[13.5px]';
 @endphp
 
 <aside class="sticky top-0 flex h-screen flex-col border-r border-hairline bg-sunken">
@@ -31,10 +31,11 @@
   </div>
 
   <nav class="min-h-0 flex-1 space-y-px overflow-y-auto px-2 pt-2 pb-3">
-    <h2 class="px-[10px] pt-[6px] pb-[5px] text-[10.5px] tracking-[0.09em] text-muted-soft uppercase">{{ __('Your profile') }}</h2>
+    <h2 class="px-2.5 pt-1.5 pb-1.25 text-[10.5px] tracking-[0.09em] text-muted-soft uppercase">{{ __('Your profile') }}</h2>
 
     <a
       href="{{ route('settings.profile.index') }}"
+      data-turbo="true"
       @if ($current === 'profile') aria-current="page" @endif
       class="{{ $item }} {{ $current === 'profile' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
     >
@@ -47,6 +48,7 @@
 
     <a
       href="{{ route('settings.logs.index') }}"
+      data-turbo="true"
       @if ($current === 'logs') aria-current="page" @endif
       class="{{ $item }} {{ $current === 'logs' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
     >
