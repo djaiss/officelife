@@ -314,7 +314,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `profile.introduction`
 - **Purpose.** Section index, and the reader's first tour of a screen inside the application.
 - **Audience.** All.
-- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: **Logs** sits under **Profile** and holds the record of what you have done and the emails the product sent you, and **Preferences** is listed but cannot be opened, because that screen does not exist yet.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: under **Profile** sit **Logs**, which holds the record of what you have done and the emails the product sent you, and **Security**, where you change your password, while **Preferences** is listed but cannot be opened, because that screen does not exist yet.
 - **Prerequisites.** `concepts.employee-vs-user`.
 - **Complexity.** Low.
 - **Related pages.** The three pages below, `concepts.employee-record`, `security.introduction`.
@@ -394,10 +394,10 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `security.password`
 - **Purpose.** Explain what the product requires of a password and what changing one does.
 - **Audience.** All.
-- **Summary.** The rule, which is short: at least eight characters, confirmed by typing it twice. Advice on choosing one. That the change is recorded in the company's activity log. That an account which signs in through an identity provider has no password to change, and what the message about that means. Then be straight with the reader: **the only way to change your password today is the forgotten password flow**, because the settings screens carry your employee record and nothing about your account yet. Walk them through it in one line and link there. Do not describe a password form that does not exist.
+- **Summary.** Where the screen is: **Security** in the settings sidebar, at `/settings/account/security`, whose first box changes the password. What it asks for and why all three fields are there: the current password, because we hold only a hash and cannot show you the old one, then the new one twice. The rule, which is short: at least eight characters. Advice on choosing one, in the screen's own framing, that long beats complicated. What saving looks like, since it is not what a reader expects from a web form: the page does not reload, a confirmation slides into the bottom right corner, and the fields come back empty. What a wrong current password looks like: a message under that field, and nothing changed. That the change is recorded in the company's activity log, so it can be read back on the Logs screen. That you stay signed in on this browser, and that the product cannot end your other sessions today, so a password nobody else should know is worth changing from every device you use. That an account which signs in through an identity provider sees a line of explanation in place of the form, because there is no password to change. Close with the other way in, for somebody who cannot remember the current one: the forgotten password flow, in one line, with a link.
 - **Prerequisites.** An account.
 - **Complexity.** Medium.
-- **Related pages.** `signin.forgot-password`, `concepts.activity-log`.
+- **Related pages.** `signin.forgot-password`, `concepts.activity-log`, `security.suspicious-activity`.
 
 ### Two factor authentication
 

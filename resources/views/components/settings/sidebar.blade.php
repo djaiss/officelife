@@ -31,7 +31,7 @@
   </div>
 
   <nav class="min-h-0 flex-1 space-y-px overflow-y-auto px-2 pt-2 pb-3">
-    <h2 class="px-2.5 pt-1.5 pb-1.25 text-xs tracking-widest text-muted-soft uppercase">{{ __('Your profile') }}</h2>
+    <h2 class="px-2.5 pt-1.5 pb-1.25 text-xs tracking-widest text-muted-soft uppercase">{{ __('Your account') }}</h2>
 
     <a
       href="{{ route('settings.profile.index') }}"
@@ -58,6 +58,19 @@
         <line x1="6.2" y1="10.6" x2="10.2" y2="10.6"></line>
       </svg>
       {{ __('Logs') }}
+    </a>
+
+    <a
+      href="{{ route('settings.security.index') }}"
+      data-turbo="true"
+      @if ($current === 'security') aria-current="page" @endif
+      class="{{ $item }} {{ $current === 'security' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+    >
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
+        <rect x="3.4" y="7" width="9.2" height="6.6" rx="1.5"></rect>
+        <path d="M5.6 7V5.2a2.4 2.4 0 0 1 4.8 0V7"></path>
+      </svg>
+      {{ __('Security') }}
     </a>
 
     <span class="{{ $item }} text-muted-soft" aria-disabled="true">
