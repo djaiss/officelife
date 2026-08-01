@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\App\Settings\Account\Logs\EmailSentController;
 use App\Http\Controllers\App\Settings\Account\Logs\LogController;
+use App\Http\Controllers\App\Settings\Account\Preferences\PreferenceController;
 use App\Http\Controllers\App\Settings\Account\Profile\EmergencyContactController;
 use App\Http\Controllers\App\Settings\Account\Profile\PhotoController;
 use App\Http\Controllers\App\Settings\Account\Profile\ProfileController;
@@ -22,6 +23,9 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::put('settings/account/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
     Route::get('settings/account/logs', [LogController::class, 'index'])->name('settings.logs.index');
     Route::get('settings/account/logs/emails', [EmailSentController::class, 'index'])->name('settings.emailsSent.index');
+
+    Route::get('settings/account/preferences', [PreferenceController::class, 'index'])->name('settings.preferences.index');
+    Route::put('settings/account/preferences', [PreferenceController::class, 'update'])->name('settings.preferences.update');
 
     Route::get('settings/account/security', [SecurityController::class, 'index'])->name('settings.security.index');
     Route::put('settings/account/security/password', [PasswordController::class, 'update'])->name('settings.password.update');

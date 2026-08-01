@@ -29,7 +29,7 @@ That separation between "a person who works here" and "an account that can sign 
 
 This has two consequences the writer must respect:
 
-1. **Every numbered section below is writable today.** They cover accounts, signing in, your profile, security, language, the emails the product sends, and running your own instance. Every claim in them is backed by code that exists and by tests that pass.
+1. **Every numbered section below is writable today.** They cover accounts, signing in, your profile, security, language and preferences, the emails the product sends, and running your own instance. Every claim in them is backed by code that exists and by tests that pass.
 2. **"Not yet documentable", at the end, is not writable.** It is an inventory of things the database or the enums anticipate but no screen or route delivers. It exists so nobody writes those pages by accident, and so they can be written the moment the feature lands.
 
 Never present a planned capability as finished. When a page has to mention something that is half built, say plainly what works and what does not.
@@ -314,7 +314,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `profile.introduction`
 - **Purpose.** Section index, and the reader's first tour of a screen inside the application.
 - **Audience.** All.
-- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: under **Profile** sit **Logs**, which holds the record of what you have done and the emails the product sent you, and **Security**, where you change your password, while **Preferences** is listed but cannot be opened, because that screen does not exist yet. Because this is the first page in the portal to send somebody to the sidebar, add one sentence for readers who cannot see one: on a phone that sidebar is behind the menu button at the top left of the screen, and `appearance.mobile` explains it.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Profile**, at `/settings/account/profile`. What it is made of, in the order it appears: your avatar, the details your colleagues can see, and your emergency contact, which they cannot. Make the connection to the concepts section explicit, because this is where it lands: this screen edits your **employee record**, not your account, which is why your sign in address is nowhere on it. Note what the sidebar shows and what it does not: under **Profile** sit **Logs**, which holds the record of what you have done and the emails the product sent you, **Security**, where you change your password, and **Preferences**, where you choose the language of the interface and the clock times are written on. Because this is the first page in the portal to send somebody to the sidebar, add one sentence for readers who cannot see one: on a phone that sidebar is behind the menu button at the top left of the screen, and `appearance.mobile` explains it.
 - **Prerequisites.** `concepts.employee-vs-user`.
 - **Complexity.** Low.
 - **Related pages.** The three pages below, `concepts.employee-record`, `security.introduction`, `appearance.mobile`.
@@ -458,7 +458,7 @@ There is no screen, route or command to **turn two factor authentication on**. T
 - **id.** `language.introduction`
 - **Purpose.** Section index.
 - **Audience.** All.
-- **Summary.** Four short pages: pick your language, understand which language setting wins, pick light or dark, and find your way around on a phone.
+- **Summary.** Five short pages: pick your language, keep that choice on your account along with the clock times are written on, understand which language setting wins, pick light or dark, and find your way around on a phone.
 - **Prerequisites.** None.
 - **Complexity.** Low.
 - **Related pages.** Every page below.
@@ -468,10 +468,24 @@ There is no screen, route or command to **turn two factor authentication on**. T
 - **id.** `language.change`
 - **Purpose.** Show the picker and explain which setting wins.
 - **Audience.** All.
-- **Summary.** Where the picker is and how to use it, including that it works before you sign in. The four languages currently shipped: English, French, German and Spanish. Then the precedence rule, in the reader's terms and in order: what you picked in this session wins, because it is the most recent thing you asked for; failing that, the language on your account; failing that, your company's language; failing that, the application's own default. The practical consequence: a choice made from the picker lasts as long as your session, so if the interface reverts, that is why. That translations are community maintained and how to help. And, because it follows from the precedence rule, note that setting a permanent language on your account is not possible from any screen yet.
+- **Summary.** Where the picker is and how to use it, including that it works before you sign in. The four languages currently shipped: English, French, German and Spanish. Then the precedence rule, in the reader's terms and in order: what you picked in this session wins, because it is the most recent thing you asked for; failing that, the language on your account; failing that, your company's language; failing that, the application's own default. The practical consequence: a choice made from the picker on a guest screen lasts as long as your session, which is why the interface can revert when you next visit, and why the way to make a language stick is to choose it on the Preferences screen once you are signed in. Point at `preferences.screen` for that rather than explaining it twice. That translations are community maintained and how to help.
 - **Prerequisites.** None.
 - **Complexity.** Medium. The precedence chain is the whole page.
-- **Related pages.** `language.company-default`, `hosting.locales`.
+- **Related pages.** `preferences.screen`, `language.company-default`, `hosting.locales`.
+
+### Your preferences
+
+- **id.** `preferences.screen`
+- **Purpose.** Cover the Preferences screen: the two choices it holds, and the fact that they belong to the account rather than to the browser.
+- **Audience.** All.
+- **Summary.** Where the screen is and how to reach it: **Settings**, then **Preferences**, at `/settings/account/preferences`. The sentence at the top of it is the point of the page, so make it early and plainly: these settings apply to your account only, and they follow you to every device you sign in from, which is what separates them from the theme toggle, covered by `appearance.theme`, which stays in the browser you set it in. Then the two rows, in the order they appear. **Language**, the same four languages as the picker on the guest screens, saved to your account this time, so it survives signing out; link to `language.change` for the precedence rule rather than restating it. **Time format**, either a 24 hour or a 12 hour clock, with the same afternoon hour written both ways beside each choice so the difference is visible rather than described. Then the mechanics of the screen, which are unusual enough to be worth one sentence each: there is no save button, because picking a value from a menu saves it immediately and a confirmation slides in at the corner; and choosing a new language redraws the screen in it there and then, confirmation included, so the change is visible without reloading. Close with what changing either one is recorded as: a line in your logs saying you changed your preferences, which `profile.logs` explains how to read.
+- **Prerequisites.** Being signed in. `language.change` for the precedence rule.
+- **Complexity.** Low.
+- **Related pages.** `language.change`, `appearance.theme`, `profile.logs`.
+
+:::note for the writer
+Do not promise that the time format changes how times look everywhere. The choice is stored on the account and the screen shows it back to the reader, but the screens that display times, the logs and the emails sent, still write them their own way; the setting is not yet threaded through them. Say what is true: you choose it here, and it is what the rest of the product will use as it is built. Do not list screens it affects, because today there are none.
+:::
 
 ### Your company's default language
 
@@ -498,7 +512,7 @@ There is no screen, route or command to **turn two factor authentication on**. T
 - **id.** `appearance.mobile`
 - **Purpose.** Tell somebody on a small screen where the navigation went, so they do not conclude the product has fewer screens on a phone than on a laptop.
 - **Audience.** All.
-- **Summary.** The one thing worth saying first: nothing is missing on a phone, it is only folded away. On a wide screen the settings sidebar is a column down the left; below roughly a laptop width it becomes a menu that slides in over the page, and the button that opens it is the three lines at the left of the bar at the top of every signed in screen. What the menu holds, which is exactly what the column held: your company, the light and dark toggle, **Profile**, **Logs**, **Security**, the greyed out **Preferences**, and your own name at the foot. The three ways to close it: the cross beside the toggle, a tap on the dimmed page behind it, or the escape key on a device with a keyboard. That picking a destination closes it and takes you there. Then the smaller adjustments a reader may notice and wonder about, each in a sentence: the email address in the top bar is hidden on the narrowest screens because the menu already says who you are signed in as, the "?" help bubbles open along the bottom edge of the screen instead of beside the thing they explain, and the rows on the Logs screen let the time drop onto its own line rather than squeezing the sentence. Close by saying the product is the same product either way, with no separate mobile version and nothing to install.
+- **Summary.** The one thing worth saying first: nothing is missing on a phone, it is only folded away. On a wide screen the settings sidebar is a column down the left; below roughly a laptop width it becomes a menu that slides in over the page, and the button that opens it is the three lines at the left of the bar at the top of every signed in screen. What the menu holds, which is exactly what the column held: your company, the light and dark toggle, **Profile**, **Logs**, **Security**, **Preferences**, and your own name at the foot. The three ways to close it: the cross beside the toggle, a tap on the dimmed page behind it, or the escape key on a device with a keyboard. That picking a destination closes it and takes you there. Then the smaller adjustments a reader may notice and wonder about, each in a sentence: the email address in the top bar is hidden on the narrowest screens because the menu already says who you are signed in as, the "?" help bubbles open along the bottom edge of the screen instead of beside the thing they explain, and the rows on the Logs screen let the time drop onto its own line rather than squeezing the sentence. Close by saying the product is the same product either way, with no separate mobile version and nothing to install.
 - **Prerequisites.** Being signed in.
 - **Complexity.** Low.
 - **Related pages.** `profile.introduction`, `appearance.theme`, `profile.logs`.
@@ -817,7 +831,7 @@ Each entry names the evidence, what is missing, and the page it should become.
 
 - **Any API.** There is no API route file, no API controller, no resource, no token authentication. The application's own conventions describe an `Api` controller namespace and versioning, but nothing is built. **The portal must not contain an API section.**
 
-- **The application itself, past the profile screen.** There is no dashboard, no employee directory, no home screen, and the only navigation is the settings sidebar, whose **Preferences** entry opens nothing. `/` renders a landing page rather than anything signed in. `getting.what-works-today` is the page that tells readers this, and it is the page to revisit first as the product grows. Note for `appearance.mobile`: the signed in screens respond to the width of the window, but `/` is still the untouched framework landing page and is not part of the product's design, so no page may present it as a screen of OfficeLife on any size of device.
+- **The application itself, past the profile screen.** There is no dashboard, no employee directory, no home screen, and the only navigation is the settings sidebar. `/` renders a landing page rather than anything signed in. `getting.what-works-today` is the page that tells readers this, and it is the page to revisit first as the product grows. Note for `appearance.mobile`: the signed in screens respond to the width of the window, but `/` is still the untouched framework landing page and is not part of the product's design, so no page may present it as a screen of OfficeLife on any size of device.
 
 ---
 
@@ -827,8 +841,8 @@ Build the portal in this order. Each block is independently publishable, so the 
 
 1. **First pass, the essentials.** `portal.introduction`, `getting.introduction`, `getting.what-is-officelife`, `getting.create-account`, `getting.confirm-email`, `signin.introduction`, `signin.password`, `signin.magic-link`, `signin.forgot-password`. This alone answers most of what a real user will ask today.
 2. **Second pass, the model.** All of Section 3, plus `getting.what-works-today`. This is where the product becomes comprehensible rather than merely usable.
-3. **Third pass, the screens there are.** All of Section 5, ending with `profile.logs` and `profile.emails`, which need `concepts.activity-log` and `email.record` written first. It is short, it is the only part of the portal a reader can follow with the product open in front of them, and it makes Section 3 concrete.
+3. **Third pass, the screens there are.** All of Section 5, ending with `profile.logs` and `profile.emails`, which need `concepts.activity-log` and `email.record` written first. Then `preferences.screen`, pulled forward out of Section 7 because it documents a screen rather than a behaviour, and because `profile.introduction` sends readers to it. It is short, it is the only part of the portal a reader can follow with the product open in front of them, and it makes Section 3 concrete.
 4. **Fourth pass, security and email.** Sections 6 and 8. These are the pages people arrive at from an inbox, under stress, so they benefit from being written together and in one voice.
 5. **Fifth pass, operators.** Section 9. A different audience and a different register; writing it in one block keeps it consistent.
-6. **Sixth pass, the connective tissue.** Sections 7, 10 and 11. Language, troubleshooting and reference are best written last, because they mostly link to pages that must already exist. `appearance.mobile` is the one page in this block worth pulling forward if the portal ships before the rest of Section 7, since a reader on a phone hits the question it answers on their first screen.
+6. **Sixth pass, the connective tissue.** The rest of Sections 7, 10 and 11. Language, troubleshooting and reference are best written last, because they mostly link to pages that must already exist. `appearance.mobile` is the one page left in this block worth pulling forward if the portal ships before the rest of Section 7, since a reader on a phone hits the question it answers on their first screen.
 7. **Then translate.** `fr_FR`, `de_DE`, `es_ES`. Only the `id` stays identical across locales; titles, slugs and sections are translated with the rest.

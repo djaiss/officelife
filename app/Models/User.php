@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\TimeFormatEnum;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +27,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $sso_provider
  * @property bool $is_active
  * @property string|null $locale
+ * @property TimeFormatEnum $time_format
  * @property Carbon|null $last_login_at
  * @property string|null $last_login_ip
  * @property string|null $two_factor_secret
@@ -60,6 +62,7 @@ class User extends Authenticatable
         'sso_provider',
         'is_active',
         'locale',
+        'time_format',
         'last_login_at',
         'last_login_ip',
         'two_factor_secret',
@@ -88,6 +91,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'time_format' => TimeFormatEnum::class,
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
             'password_hash' => 'hashed',

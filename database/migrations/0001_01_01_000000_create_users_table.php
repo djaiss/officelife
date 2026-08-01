@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('sso_provider')->nullable()->comment('SSO provider the user signs in with');
             $table->boolean('is_active')->default(true)->comment('whether the user can sign in, so a user can be suspended without being deleted');
             $table->string('locale', 5)->nullable()->comment('language of the interface, falls back to the company locale');
+            $table->string('time_format', 2)->default('24')->comment('whether times are shown on a 24 hour or a 12 hour clock');
             $table->datetime('last_login_at')->nullable()->comment('when the user last signed in');
             $table->string('last_login_ip', 45)->nullable()->comment('ip address the user last signed in from, so a sign-in from somewhere new can be flagged');
             $table->text('two_factor_secret')->nullable()->comment('encrypted TOTP secret, null until the user enrols in two factor authentication');
