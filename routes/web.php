@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\App\Settings\EmailSentController;
-use App\Http\Controllers\App\Settings\EmergencyContactController;
-use App\Http\Controllers\App\Settings\LogController;
-use App\Http\Controllers\App\Settings\PhotoController;
-use App\Http\Controllers\App\Settings\ProfileController;
+use App\Http\Controllers\App\Settings\Account\EmergencyContactController;
+use App\Http\Controllers\App\Settings\Account\Logs\EmailSentController;
+use App\Http\Controllers\App\Settings\Account\Logs\LogController;
+use App\Http\Controllers\App\Settings\Account\PhotoController;
+use App\Http\Controllers\App\Settings\Account\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // The landing page, until there is a dashboard to send people to.
@@ -18,9 +18,8 @@ Route::get('/', function () {
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings/account/profile', [ProfileController::class, 'index'])->name('settings.profile.index');
     Route::put('settings/account/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
-    Route::get('settings/account/profile/emails', [EmailSentController::class, 'index'])->name('settings.emailsSent.index');
-
-    Route::get('settings/account/profile/logs', [LogController::class, 'index'])->name('settings.logs.index');
+    Route::get('settings/account/logs', [LogController::class, 'index'])->name('settings.logs.index');
+    Route::get('settings/account/logs/emails', [EmailSentController::class, 'index'])->name('settings.emailsSent.index');
 
     Route::put('settings/account/emergency-contact', [EmergencyContactController::class, 'update'])->name('settings.emergencyContact.update');
 

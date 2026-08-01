@@ -5,18 +5,18 @@
   alpine-ajax appends the rows that come back, then swaps the link for the one
   that came with them, or drops it on the last page.
 
-  @var \App\ViewModels\Settings\EmailsSentViewModel $viewModel
+  @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel
 --}}
 <x-app-layout :title="__('Emails sent')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="profile" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="logs" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
     <nav class="text-[13.5px] text-muted" aria-label="{{ __('Breadcrumb') }}">
       {{ __('Settings') }}
       <span class="px-[5px] text-placeholder" aria-hidden="true">/</span>
-      <x-link :href="route('settings.profile.index')" turbo>{{ __('Profile') }}</x-link>
+      <x-link :href="route('settings.logs.index')" turbo>{{ __('Logs') }}</x-link>
       <span class="px-[5px] text-placeholder" aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{{ __('Emails sent') }}</span>
     </nav>

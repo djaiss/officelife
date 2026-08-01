@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\App\Settings;
+namespace App\Http\Controllers\App\Settings\Account;
 
 use App\Actions\DestroyEmployeePhoto;
 use App\Actions\UpdateEmployeePhoto;

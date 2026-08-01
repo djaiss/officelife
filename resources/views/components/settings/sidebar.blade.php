@@ -45,6 +45,19 @@
       {{ __('Profile') }}
     </a>
 
+    <a
+      href="{{ route('settings.logs.index') }}"
+      @if ($current === 'logs') aria-current="page" @endif
+      class="{{ $item }} {{ $current === 'logs' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+    >
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
+        <path d="M4 2.4h5.2L12.4 5.6V13.6H4z"></path>
+        <line x1="6.2" y1="8" x2="10.2" y2="8"></line>
+        <line x1="6.2" y1="10.6" x2="10.2" y2="10.6"></line>
+      </svg>
+      {{ __('Logs') }}
+    </a>
+
     <span class="{{ $item }} text-muted-soft" aria-disabled="true">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <rect x="2.4" y="3.2" width="11.2" height="9.6" rx="1.5"></rect>

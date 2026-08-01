@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\App\Settings;
+namespace App\Http\Controllers\App\Settings\Account;
 
 use App\Actions\UpdateEmployeeInformation;
 use App\Http\Controllers\Controller;
-use App\ViewModels\Settings\ProfileViewModel;
+use App\ViewModels\Settings\Account\ProfileViewModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,7 +15,7 @@ class ProfileController extends Controller
 {
     public function index(Request $request): View
     {
-        return view('app.settings.profile', [
+        return view('app.settings.account.profile', [
             'viewModel' => new ProfileViewModel(
                 user: $request->user(),
                 employee: $request->user()->employee,
