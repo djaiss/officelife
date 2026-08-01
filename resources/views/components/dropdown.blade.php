@@ -11,7 +11,8 @@
   all Alpine does here is open and close the panel.
 
   The panel is anchored to the right, since these sit at the right hand edge of
-  the rows they belong to.
+  the rows they belong to. Below sm there is no room to sit beside anything, so
+  the button and the panel take the width they are given instead.
 
   Usage:
     <x-form method="put" :action="route('...')">
@@ -40,7 +41,7 @@
     @keydown.escape.window="open = false"
     :aria-expanded="open ? 'true' : 'false'"
     :class="open ? 'border-focus' : 'border-hairline-strong'"
-    class="flex w-42 cursor-pointer items-center gap-2 rounded-md border bg-canvas px-3 py-2 text-sm text-ink transition-colors hover:bg-hover"
+    class="flex w-full cursor-pointer items-center gap-2 rounded-md border bg-canvas px-3 py-2 text-sm text-ink transition-colors hover:bg-hover sm:w-42"
   >
     <span class="truncate">{{ $label }}</span>
 
@@ -53,7 +54,7 @@
     x-cloak
     x-show="open"
     x-transition.opacity.duration.120ms
-    class="absolute top-full right-0 z-10 mt-1.5 w-60 overflow-hidden rounded-lg border border-hairline-strong bg-canvas shadow-lg"
+    class="absolute top-full right-0 z-10 mt-1.5 w-full overflow-hidden rounded-lg border border-hairline-strong bg-canvas shadow-lg sm:w-60"
   >
     @isset($title)
       <div class="px-3 pt-2.5 pb-1.5 text-xs tracking-widest text-muted-soft uppercase">{{ $title }}</div>

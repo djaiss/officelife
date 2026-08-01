@@ -35,7 +35,7 @@
       </x-help>
     </x-slot:help>
 
-    <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <div class="grid gap-x-9 gap-y-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('Choose a password you use nowhere else. Long beats complicated.') }}</p>
         <p>{{ __('You stay signed in here, and your new password is what you type the next time.') }}</p>
@@ -112,24 +112,26 @@
     </x-slot:help>
 
     @if (! $viewModel->usesTwoFactorAuthentication())
-      <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_auto]">
+      <div class="grid gap-x-9 gap-y-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
         <div class="space-y-2.5 text-sm leading-relaxed text-body">
           <p>{{ __('Ask us for a code from your authenticator app every time you sign in, on top of your password.') }}</p>
           <p>{{ __('You will need an authenticator app on your phone. Any of them works.') }}</p>
         </div>
 
-        <div class="flex items-center">
-          <x-button :href="route('settings.twoFactor.new')">{{ __('Turn it on') }}</x-button>
-        </div>
+        <x-button :href="route('settings.twoFactor.new')" class="max-sm:w-full">{{ __('Turn it on') }}</x-button>
       </div>
     @else
       {{--
         The two destructive buttons ask before they act rather than after: each
         one swaps itself for a short sentence saying what is about to be lost,
         and the button that goes through with it.
+
+        Both sit beside what they act on until there is no width to sit beside
+        it, and then below it, filling the line rather than hugging the right
+        hand edge on their own. The same goes for the pair that replaces them.
       --}}
       <div class="space-y-6">
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div class="grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div class="min-w-0 space-y-1">
             <p class="flex items-center gap-2 text-sm font-semibold text-ink">
               <span class="size-2 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
@@ -139,39 +141,39 @@
             <p class="text-sm text-muted">{{ __('Turned on :time. We ask for a code every time you sign in.', ['time' => $viewModel->twoFactorConfirmedAt()]) }}</p>
           </div>
 
-          <div x-data="{ confirming: false }" class="ml-auto shrink-0">
-            <x-button.secondary type="button" x-show="! confirming" @click="confirming = true">{{ __('Turn it off') }}</x-button.secondary>
+          <div x-data="{ confirming: false }">
+            <x-button.secondary type="button" x-show="! confirming" @click="confirming = true" class="max-sm:w-full">{{ __('Turn it off') }}</x-button.secondary>
 
-            <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3">
-              <p class="text-sm text-error">{{ __('Your password alone will get you in again. Sure?') }}</p>
+            <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3 max-sm:flex-col max-sm:items-stretch">
+              <p class="text-sm text-error max-sm:text-center">{{ __('Your password alone will get you in again. Sure?') }}</p>
 
               <x-button.secondary type="button" @click="confirming = false">{{ __('Keep it on') }}</x-button.secondary>
 
               <x-form method="delete" :action="route('settings.twoFactor.destroy')">
-                <x-button class="bg-error hover:bg-error/88">{{ __('Turn it off') }}</x-button>
+                <x-button class="bg-error hover:bg-error/88 max-sm:w-full">{{ __('Turn it off') }}</x-button>
               </x-form>
             </div>
           </div>
         </div>
 
         <div class="space-y-3 border-t border-hairline-soft pt-5">
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div class="grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div class="min-w-0 space-y-1">
               <p class="text-sm font-semibold text-ink">{{ __('Recovery codes') }}</p>
 
               <p class="text-sm text-muted">{{ __('Keep these somewhere safe. Each one signs you in once, if you ever lose the phone.') }}</p>
             </div>
 
-            <div x-data="{ confirming: false }" class="ml-auto shrink-0">
-              <x-button.secondary type="button" x-show="! confirming" @click="confirming = true">{{ __('Get new codes') }}</x-button.secondary>
+            <div x-data="{ confirming: false }">
+              <x-button.secondary type="button" x-show="! confirming" @click="confirming = true" class="max-sm:w-full">{{ __('Get new codes') }}</x-button.secondary>
 
-              <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3">
-                <p class="text-sm text-error">{{ __('The codes below stop working. Sure?') }}</p>
+              <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3 max-sm:flex-col max-sm:items-stretch">
+                <p class="text-sm text-error max-sm:text-center">{{ __('The codes below stop working. Sure?') }}</p>
 
                 <x-button.secondary type="button" @click="confirming = false">{{ __('Keep them') }}</x-button.secondary>
 
                 <x-form method="post" :action="route('settings.recoveryCodes.create')">
-                  <x-button class="bg-error hover:bg-error/88">{{ __('Get new codes') }}</x-button>
+                  <x-button class="bg-error hover:bg-error/88 max-sm:w-full">{{ __('Get new codes') }}</x-button>
                 </x-form>
               </div>
             </div>

@@ -44,29 +44,40 @@
       The raw name of the action is shown beside the sentence, in a monospaced
       face, because it is what somebody quotes when they ask us what happened.
 
-      The row wraps rather than squeezing: when there is not enough width left
-      for the sentence, the time drops onto a line of its own instead of shaving
-      the sentence down to nothing.
+      The row is written for the width it has. Above sm it reads across: the
+      name and the action on one line, the sentence under them, the time out to
+      the right. Below sm there is not enough width for any of that, so it reads
+      down instead: the action takes a line of its own, and so does the time,
+      indented to line up under the words rather than stranded against the right
+      hand edge. The bar between the name and the action goes with it, having
+      nothing left to separate.
+
+      The mark sits against the first line rather than in the middle, since the
+      middle of a row three lines tall is beside nothing in particular.
     --}}
     @forelse ($viewModel->logs() as $log)
-      <x-box.row class="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0 text-placeholder" aria-hidden="true">
+      <x-box.row class="flex items-start gap-x-3">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="mt-1 shrink-0 text-placeholder" aria-hidden="true">
           <path d="M1.5 8h3L6 5l2 6 2-4 1.4 1h3.1"></path>
         </svg>
 
-        <div class="min-w-50 flex-1">
+        <div class="min-w-0 flex-1">
           <p class="flex flex-wrap items-baseline gap-x-2 text-sm">
             <span class="font-semibold text-ink">{{ $log->author }}</span>
 
-            <span class="text-hairline-strong" aria-hidden="true">|</span>
+            <span class="text-hairline-strong max-sm:hidden" aria-hidden="true">|</span>
 
-            <span class="font-mono text-xs text-muted">{{ $log->action }}</span>
+            <span class="font-mono text-xs wrap-anywhere text-muted max-sm:w-full">{{ $log->action }}</span>
           </p>
 
           <p class="mt-0.5 text-sm text-body">{{ $log->description }}</p>
+
+          <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ $log->created_at->toDayDateTimeString() }}" class="mt-1 block font-mono text-xs text-muted-soft sm:hidden">
+            {{ $log->created_at->diffForHumans() }}
+          </time>
         </div>
 
-        <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ $log->created_at->toDayDateTimeString() }}" class="ml-auto shrink-0 font-mono text-xs text-muted-soft">
+        <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ $log->created_at->toDayDateTimeString() }}" class="mt-0.5 shrink-0 font-mono text-xs whitespace-nowrap text-muted-soft max-sm:hidden">
           {{ $log->created_at->diffForHumans() }}
         </time>
       </x-box.row>

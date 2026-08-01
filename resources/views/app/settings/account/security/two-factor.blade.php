@@ -28,7 +28,7 @@
   />
 
   <x-box :title="__('1. Pair your authenticator app')">
-    <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_auto]">
+    <div class="grid gap-x-9 gap-y-5 md:grid-cols-[minmax(0,1fr)_auto]">
       <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('Open the authenticator app on your phone, add an account, and point its camera at this square.') }}</p>
         <p>{{ __('It files the account under :email.', ['email' => $viewModel->email()]) }}</p>
@@ -48,7 +48,7 @@
   </x-box>
 
   <x-box :title="__('2. Prove it worked')">
-    <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <div class="grid gap-x-9 gap-y-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('Type the six digits the app is showing right now. They change every thirty seconds.') }}</p>
         <p>{{ __('Nothing changes about your account until this code is accepted, so you cannot lock yourself out here.') }}</p>
