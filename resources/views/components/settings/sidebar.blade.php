@@ -126,6 +126,12 @@
           <path d="M5.9 8.1 7.4 9.6l2.8-3"></path>
         </svg>
         {{ __('Roles and permissions') }}
+
+        {{-- The arrow says the item leaves the settings behind for a layer of its own. --}}
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" class="ml-auto shrink-0 text-muted-soft" aria-hidden="true">
+          <line x1="3" y1="8" x2="13" y2="8"></line>
+          <path d="M9.4 4.4 13 8l-3.6 3.6"></path>
+        </svg>
       </a>
     @endif
   </nav>

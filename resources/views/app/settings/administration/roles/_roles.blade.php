@@ -29,6 +29,7 @@
     @foreach ($viewModel->list() as $entry)
       <a
         href="{{ $entry['url'] }}"
+        data-turbo="true"
         @if ($entry['selected']) aria-current="page" @endif
         class="flex items-center gap-2.25 rounded-md px-2.5 py-2 {{ $entry['selected'] ? 'bg-hover' : 'hover:bg-hover' }}"
       >
