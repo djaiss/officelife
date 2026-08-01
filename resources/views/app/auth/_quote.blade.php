@@ -3,19 +3,19 @@
 
   @var array{text: string, author: string, source: string} $quote
 --}}
-<aside class="quote-panel hidden items-center justify-center border-l border-hairline p-[60px] lg:flex">
-  <div class="w-full max-w-[520px]">
-    <figure class="quote-card space-y-5 rounded-[15px] border border-hairline bg-canvas px-[26px] pt-[26px] pb-[22px]">
-      <blockquote class="text-[22px] leading-[1.42] tracking-[-0.018em] text-pretty text-ink">
+<aside class="quote-panel hidden items-center justify-center border-l border-hairline p-15 lg:flex">
+  <div class="w-full max-w-lg">
+    <figure class="quote-card space-y-5 rounded-2xl border border-hairline bg-canvas px-6 pt-6 pb-6">
+      <blockquote class="text-xl leading-snug tracking-tight text-pretty text-ink">
         &ldquo;{{ $quote['text'] }}&rdquo;
       </blockquote>
 
-      <figcaption class="flex items-center gap-[11px]">
+      <figcaption class="flex items-center gap-3">
         <x-avatar-initials :name="$quote['author']" />
 
-        <div class="space-y-[2px]">
-          <div class="text-[13.5px] font-semibold text-ink">{{ $quote['author'] }}</div>
-          <div class="text-[12.5px] text-muted"><em>{{ __('from') }}</em> {{ $quote['source'] }}</div>
+        <div class="space-y-0.5">
+          <div class="text-sm font-semibold text-ink">{{ $quote['author'] }}</div>
+          <div class="text-xs text-muted"><em>{{ __('from') }}</em> {{ $quote['source'] }}</div>
         </div>
       </figcaption>
     </figure>

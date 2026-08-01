@@ -43,7 +43,7 @@
     aria-haspopup="dialog"
     aria-label="{{ __('Help') }}"
     :class="open ? 'border-brand text-brand' : 'border-hairline-strong text-muted-soft'"
-    class="flex size-[17px] cursor-pointer items-center justify-center rounded-full border bg-canvas text-[11px] leading-none font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+    class="flex size-4 cursor-pointer items-center justify-center rounded-full border bg-canvas text-xs leading-none font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
   >?</button>
 
   <div
@@ -52,17 +52,17 @@
     x-transition
     role="dialog"
     @if ($title) aria-label="{{ $title }}" @endif
-    class="absolute top-full z-70 w-[330px] max-w-[calc(100vw-2rem)] pt-[11px] text-left {{ $align === 'right' ? 'right-[-7px]' : 'left-[-7px]' }}"
+    class="absolute top-full z-70 w-80 max-w-[calc(100vw-2rem)] pt-3 text-left {{ $align === 'right' ? '-right-2' : '-left-2' }}"
   >
     {{-- The caret pointing back at the badge. --}}
-    <div class="absolute top-[5px] size-3 rotate-45 border-t border-l border-hairline bg-canvas {{ $align === 'right' ? 'right-4' : 'left-4' }}" aria-hidden="true"></div>
+    <div class="absolute top-1 size-3 rotate-45 border-t border-l border-hairline bg-canvas {{ $align === 'right' ? 'right-4' : 'left-4' }}" aria-hidden="true"></div>
 
     <div class="relative overflow-hidden rounded-xl border border-hairline bg-canvas shadow-xl">
-      <div class="flex items-center gap-[11px] px-4 pt-[15px] pb-3">
-        <span class="flex size-7 shrink-0 items-center justify-center rounded-lg border border-hairline-strong bg-sunken text-[13px] font-bold text-brand" aria-hidden="true">?</span>
+      <div class="flex items-center gap-3 px-4 pt-4 pb-3">
+        <span class="flex size-7 shrink-0 items-center justify-center rounded-lg border border-hairline-strong bg-sunken text-sm font-bold text-brand" aria-hidden="true">?</span>
 
         @if ($title)
-          <span class="min-w-0 flex-1 text-[15px] leading-tight font-semibold tracking-[-0.2px] text-ink">{{ $title }}</span>
+          <span class="min-w-0 flex-1 text-base leading-tight font-semibold tracking-tight text-ink">{{ $title }}</span>
         @endif
 
         <button
@@ -79,7 +79,7 @@
         </button>
       </div>
 
-      <div class="px-4 pb-4 text-[13.5px] leading-relaxed text-muted">
+      <div class="px-4 pb-4 text-sm leading-relaxed text-muted">
         {{ $slot }}
       </div>
     </div>

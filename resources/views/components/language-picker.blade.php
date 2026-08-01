@@ -11,7 +11,7 @@
 ])
 
 @php
-  $flag = 'inline-block h-[13.5px] w-[19px] shrink-0 rounded-[3px] bg-cover shadow-[inset_0_0_0_1px_rgba(128,128,140,0.35)]';
+  $flag = 'inline-block h-3.5 w-5 shrink-0 rounded-sm bg-cover inset-ring inset-ring-hairline-strong';
   $selected = collect($locales)->firstWhere('code', $current) ?? $locales[0];
 @endphp
 
@@ -23,7 +23,7 @@
     @keydown.escape.window="open = false"
     :aria-expanded="open ? 'true' : 'false'"
     :class="open ? 'border-focus' : 'border-hairline-strong'"
-    class="flex cursor-pointer items-center gap-[9px] rounded-md border bg-canvas px-[11px] py-2 text-[13px] text-ink transition-colors"
+    class="flex cursor-pointer items-center gap-2 rounded-md border bg-canvas px-3 py-2 text-sm text-ink transition-colors"
   >
     <span class="{{ $flag }}" style="background: {{ $selected['flag'] }};" aria-hidden="true"></span>
     <span>{{ $selected['label'] }}</span>
@@ -38,9 +38,9 @@
     x-cloak
     x-show="open"
     x-transition.opacity.duration.120ms
-    class="absolute bottom-[calc(100%+6px)] left-0 z-10 w-[250px] overflow-hidden rounded-lg border border-hairline-strong bg-canvas shadow-lg"
+    class="absolute bottom-full mb-1.5 left-0 z-10 w-64 overflow-hidden rounded-lg border border-hairline-strong bg-canvas shadow-lg"
   >
-    <div class="px-3 pt-[10px] pb-[6px] text-[10.5px] tracking-[0.09em] text-muted-soft uppercase">
+    <div class="px-3 pt-2.5 pb-1.5 text-xs tracking-widest text-muted-soft uppercase">
       {{ __('Interface language') }}
     </div>
 
@@ -51,13 +51,13 @@
           name="locale"
           value="{{ $locale['code'] }}"
           @if ($locale['code'] === $current) aria-current="true" @endif
-          class="flex w-full cursor-pointer items-center gap-[10px] px-3 py-[9px] text-left transition-colors hover:bg-hover {{ $locale['code'] === $current ? 'bg-card' : '' }}"
+          class="flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-hover {{ $locale['code'] === $current ? 'bg-card' : '' }}"
         >
           <span class="{{ $flag }}" style="background: {{ $locale['flag'] }};" aria-hidden="true"></span>
-          <span class="flex-1 text-[13px] text-ink {{ $locale['code'] === $current ? 'font-semibold' : '' }}">{{ $locale['label'] }}</span>
+          <span class="flex-1 text-sm text-ink {{ $locale['code'] === $current ? 'font-semibold' : '' }}">{{ $locale['label'] }}</span>
           <span class="text-xs text-muted-soft">{{ $locale['region'] }}</span>
 
-          <span class="flex w-[14px] items-center justify-center text-ink {{ $locale['code'] === $current ? '' : 'opacity-0' }}">
+          <span class="flex w-3.5 items-center justify-center text-ink {{ $locale['code'] === $current ? '' : 'opacity-0' }}">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
               <path d="M2.2 6.3 4.7 8.8 9.8 3.4"></path>
             </svg>
@@ -66,7 +66,7 @@
       @endforeach
     </x-form>
 
-    <div class="border-t border-hairline-soft px-3 py-[9px] text-xs text-muted">
+    <div class="border-t border-hairline-soft px-3 py-2 text-xs text-muted">
       {{ __('Translations are community-maintained.') }}
     </div>
   </div>

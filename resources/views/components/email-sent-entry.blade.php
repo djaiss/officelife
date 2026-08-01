@@ -24,17 +24,17 @@
     type="button"
     @click="open = ! open"
     :aria-expanded="open ? 'true' : 'false'"
-    class="flex w-full cursor-pointer items-start gap-3 px-4 py-[14px] text-left transition-colors duration-150 hover:bg-hover focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+    class="flex w-full cursor-pointer items-start gap-3 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-hover focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
   >
-    <span class="mt-[5px] size-2 shrink-0 rounded-full {{ $delivery }}" aria-hidden="true"></span>
+    <span class="mt-1 size-2 shrink-0 rounded-full {{ $delivery }}" aria-hidden="true"></span>
     <span class="sr-only">{{ $deliveryLabel }}</span>
 
-    <span class="min-w-0 text-[13px] leading-relaxed">
+    <span class="min-w-0 text-sm leading-relaxed">
       <span class="block text-muted">{{ __('To:') }} {{ $emailSent->email_address }}</span>
       <span class="block text-ink">{{ __('Subject:') }} <span class="font-semibold">{{ $emailSent->subject }}</span></span>
     </span>
 
-    <span class="ml-auto flex shrink-0 items-center gap-2 text-[12.5px] text-muted">
+    <span class="ml-auto flex shrink-0 items-center gap-2 text-xs text-muted">
       @if ($emailSent->sent_at)
         <time datetime="{{ $emailSent->sent_at->toIso8601String() }}" title="{{ $emailSent->sent_at->toDayDateTimeString() }}">
           {{ __('Sent :time', ['time' => $emailSent->sent_at->diffForHumans()]) }}
@@ -47,10 +47,10 @@
     </span>
   </button>
 
-  <div x-cloak x-show="open" x-transition class="border-t border-hairline-soft bg-card px-4 py-[14px]">
-    <p class="text-center text-[12px] text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
+  <div x-cloak x-show="open" x-transition class="border-t border-hairline-soft bg-card px-4 py-3.5">
+    <p class="text-center text-xs text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
 
     {{-- The copy arrives as the bare paragraphs Purify left behind, so the rhythm between them is ours to give. --}}
-    <div class="mt-3 space-y-2 text-[13px] leading-relaxed text-body">{!! $emailSent->body !!}</div>
+    <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">{!! $emailSent->body !!}</div>
   </div>
 </div>

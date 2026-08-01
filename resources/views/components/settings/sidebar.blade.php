@@ -18,20 +18,20 @@
 ])
 
 @php
-  $item = 'flex items-center gap-[10px] rounded-[7px] px-2.5 py-1.5 text-[13.5px]';
+  $item = 'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm';
 @endphp
 
 <aside class="sticky top-0 flex h-screen flex-col border-r border-hairline bg-sunken">
-  <div class="flex items-center gap-[10px] px-4 pt-[14px] pb-[10px]">
+  <div class="flex items-center gap-2.5 px-4 pt-3.5 pb-2.5">
     <x-avatar-initials :name="$companyName" :size="26" />
 
-    <span class="truncate text-sm font-semibold tracking-[-0.01em] text-ink">{{ $companyName }}</span>
+    <span class="truncate text-sm font-semibold tracking-tight text-ink">{{ $companyName }}</span>
 
     <x-theme-toggle class="ml-auto" />
   </div>
 
   <nav class="min-h-0 flex-1 space-y-px overflow-y-auto px-2 pt-2 pb-3">
-    <h2 class="px-2.5 pt-1.5 pb-1.25 text-[10.5px] tracking-[0.09em] text-muted-soft uppercase">{{ __('Your profile') }}</h2>
+    <h2 class="px-2.5 pt-1.5 pb-1.25 text-xs tracking-widest text-muted-soft uppercase">{{ __('Your profile') }}</h2>
 
     <a
       href="{{ route('settings.profile.index') }}"
@@ -69,9 +69,9 @@
     </span>
   </nav>
 
-  <div id="sidebar-identity" class="flex items-center gap-[9px] border-t border-hairline-soft px-3 py-[10px]">
+  <div id="sidebar-identity" class="flex items-center gap-2 border-t border-hairline-soft px-3 py-2.5">
     <x-avatar :employee="$employee" :name="$name" :size="26" />
 
-    <span class="truncate text-[12.5px] font-semibold text-ink">{{ $name }}</span>
+    <span class="truncate text-xs font-semibold text-ink">{{ $name }}</span>
   </div>
 </aside>

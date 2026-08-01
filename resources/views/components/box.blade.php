@@ -13,7 +13,7 @@
 --}}
 @props([
   'title' => null,
-  'padding' => 'p-[22px]',
+  'padding' => 'p-6',
   'description' => null,
   'additionalInfo' => null,
 ])

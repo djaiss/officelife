@@ -40,7 +40,7 @@
         x-init="setTimeout(() => dismiss(), 4500)"
         x-show="shown"
         :class="leaving ? 'animate-toast-out' : 'animate-toast-in'"
-        class="relative flex items-start gap-[13px] overflow-hidden rounded-xl border border-hairline bg-canvas p-[14px] shadow-lg"
+        class="relative flex items-start gap-3 overflow-hidden rounded-xl border border-hairline bg-canvas p-3.5 shadow-lg"
       >
         <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full {{ $toast['tint'] }}">
           <span class="animate-toast-ring absolute inset-0 rounded-full {{ $toast['tint'] }}" aria-hidden="true"></span>
@@ -59,10 +59,10 @@
         </div>
 
         <div class="min-w-0 flex-1">
-          <p class="text-sm font-semibold tracking-[-0.01em] text-ink">{{ $toast['title'] }}</p>
+          <p class="text-sm font-semibold tracking-tight text-ink">{{ $toast['title'] }}</p>
 
           @if ($toast['description'])
-            <p class="mt-[3px] text-[13px] leading-snug text-body">{{ $toast['description'] }}</p>
+            <p class="mt-0.5 text-sm leading-snug text-body">{{ $toast['description'] }}</p>
           @endif
         </div>
 
@@ -70,7 +70,7 @@
           type="button"
           x-on:click="dismiss()"
           aria-label="{{ __('Dismiss') }}"
-          class="flex size-[22px] shrink-0 items-center justify-center rounded-md text-placeholder transition-colors hover:bg-hover hover:text-ink"
+          class="flex size-6 shrink-0 items-center justify-center rounded-md text-placeholder transition-colors hover:bg-hover hover:text-ink"
         >
           <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <line x1="3.6" y1="3.6" x2="12.4" y2="12.4"></line>

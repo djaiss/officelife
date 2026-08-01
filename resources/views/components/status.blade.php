@@ -10,6 +10,6 @@
   'message' => null,
 ])
 
-<div role="status" {{ $attributes->class(['rounded-lg border border-hairline bg-canvas px-4 py-3 text-[13px] text-ink', 'hidden' => ! $message]) }}>
+<div role="status" {{ $attributes->class(['rounded-lg border border-hairline bg-canvas px-4 py-3 text-sm text-ink', 'hidden' => ! $message]) }}>
   {{ $message }}
 </div>
