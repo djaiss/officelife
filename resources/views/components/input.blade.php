@@ -39,7 +39,7 @@
 
   $classes = [
     'block w-full appearance-none',
-    'px-[11px] py-[10px] text-[13.5px]',
+    'px-3 py-2.5 text-sm',
     'rounded-md border border-hairline-strong bg-input text-ink placeholder-placeholder',
     'transition-colors duration-150',
     'hover:border-focus hover:bg-hover',
@@ -49,7 +49,7 @@
   ];
 @endphp
 
-<div class="space-y-[6px]">
+<div class="space-y-1.5">
   @if ($label)
     <x-label :for="$id" :value="$label" />
   @endif

@@ -3,10 +3,10 @@
   class on <html> and remembers the choice.
 --}}
 @php
-  $button = 'flex h-6 w-7 cursor-pointer items-center justify-center rounded-[6px] transition-colors';
+  $button = 'flex h-6 w-7 cursor-pointer items-center justify-center rounded-sm transition-colors';
 @endphp
 
-<div x-data {{ $attributes->class(['flex gap-[2px] rounded-md border border-hairline-strong bg-canvas p-[2px]']) }}>
+<div x-data {{ $attributes->class(['flex gap-0.5 rounded-md border border-hairline-strong bg-canvas p-0.5']) }}>
   <button
     type="button"
     @click="$store.theme.set(false)"

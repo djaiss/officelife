@@ -20,12 +20,12 @@
       {{ $sidebar }}
 
       <main class="min-w-0">
-        <header class="sticky top-0 z-5 flex h-[52px] items-center gap-[14px] border-b border-hairline bg-page/90 px-7 backdrop-blur-md">
+        <header class="sticky top-0 z-5 flex h-13 items-center gap-3.5 border-b border-hairline bg-page/90 px-7 backdrop-blur-md">
           @isset($breadcrumb)
             {{ $breadcrumb }}
           @endisset
 
-          <span class="ml-auto text-[13px] text-muted">{{ auth()->user()?->email }}</span>
+          <span class="ml-auto text-sm text-muted">{{ auth()->user()?->email }}</span>
         </header>
 
         <div class="mx-auto max-w-240 space-y-8.5 px-7 pt-7.5 pb-17.5">

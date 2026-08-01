@@ -25,14 +25,14 @@
   $describedBy = trim(($helpId ?? '').' '.($errorId ?? ''));
 
   $classes = [
-    'block w-full cursor-pointer text-[13px] text-muted',
+    'block w-full cursor-pointer text-sm text-muted',
     'file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-hairline-strong',
-    'file:bg-canvas file:px-3 file:py-[7px] file:text-[13px] file:font-semibold file:text-ink',
+    'file:bg-canvas file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink',
     'hover:file:bg-hover',
   ];
 @endphp
 
-<div class="space-y-[6px]">
+<div class="space-y-1.5">
   @if ($label)
     <x-label :for="$id" :value="$label" />
   @endif

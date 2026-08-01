@@ -6,13 +6,13 @@
 --}}
 <x-guest-layout :title="__('One more step')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
-    <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-[60px]">
-      <div class="mx-auto w-full max-w-[470px] space-y-[22px]">
-        <div class="space-y-[9px]">
-          <div class="flex items-center gap-[11px]">
+    <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
+      <div class="mx-auto w-full max-w-md space-y-6">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
             <x-logo :size="30" />
 
-            <h1 class="text-[26px] font-semibold tracking-[-0.025em] text-ink">{{ __('One more step') }}</h1>
+            <h1 class="text-2xl font-semibold tracking-tight text-ink">{{ __('One more step') }}</h1>
 
             <x-theme-toggle class="ml-auto" />
           </div>

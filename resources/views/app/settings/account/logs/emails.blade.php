@@ -13,11 +13,11 @@
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
-    <nav class="text-[13.5px] text-muted" aria-label="{{ __('Breadcrumb') }}">
+    <nav class="text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
       {{ __('Settings') }}
-      <span class="px-[5px] text-placeholder" aria-hidden="true">/</span>
+      <span class="px-1 text-placeholder" aria-hidden="true">/</span>
       <x-link :href="route('settings.logs.index')" turbo>{{ __('Logs') }}</x-link>
-      <span class="px-[5px] text-placeholder" aria-hidden="true">/</span>
+      <span class="px-1 text-placeholder" aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{{ __('Emails sent') }}</span>
     </nav>
   </x-slot:breadcrumb>
@@ -31,11 +31,11 @@
     @forelse ($viewModel->emailsSent() as $emailSent)
       <x-email-sent-entry :email-sent="$emailSent" />
     @empty
-      <p class="px-4 py-[13px] text-[13px] text-muted">{{ __('Nothing yet. The emails we send you show up here.') }}</p>
+      <p class="px-4 py-3 text-sm text-muted">{{ __('Nothing yet. The emails we send you show up here.') }}</p>
     @endforelse
 
     @if ($viewModel->emailsSent()->hasMorePages())
-      <div id="pagination" class="p-[13px] text-center text-[13px]">
+      <div id="pagination" class="p-3 text-center text-sm">
         <x-link x-target="emails-sent-container pagination" :href="$viewModel->emailsSent()->nextPageUrl()">{{ __('Load more') }}</x-link>
       </div>
     @endif

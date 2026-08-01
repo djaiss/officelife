@@ -7,4 +7,4 @@
   'value' => null,
 ])
 
-<label {{ $attributes->class(['block text-[12.5px] leading-tight font-semibold text-ink']) }}>{{ $value ?? $slot }}</label>
+<label {{ $attributes->class(['block text-xs leading-tight font-semibold text-ink']) }}>{{ $value ?? $slot }}</label>

@@ -10,9 +10,9 @@
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
-    <nav class="text-[13.5px] text-muted" aria-label="{{ __('Breadcrumb') }}">
+    <nav class="text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
       {{ __('Settings') }}
-      <span class="px-[5px] text-placeholder" aria-hidden="true">/</span>
+      <span class="px-1 text-placeholder" aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{{ __('Profile') }}</span>
     </nav>
   </x-slot:breadcrumb>
@@ -31,7 +31,7 @@
     </x-slot:help>
 
     <div class="grid items-center gap-7 md:grid-cols-[minmax(0,1fr)_auto]">
-      <div class="space-y-[10px] text-[13px] leading-relaxed text-body">
+      <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('Your avatar appears next to your name across :app.', ['app' => config('app.name')]) }}</p>
         <p>{{ __('Use a square image for the best result. JPEG, PNG and WebP up to 5 MB.') }}</p>
         <p>{{ __('Without an avatar, we show your initials instead.') }}</p>
@@ -88,7 +88,7 @@
               <button
                 type="submit"
                 x-on:click="if (! confirming) { $event.preventDefault(); confirming = true }"
-                class="cursor-pointer text-[13px] text-muted hover:text-ink"
+                class="cursor-pointer text-sm text-muted hover:text-ink"
                 x-text="confirming ? @js(__('Remove it for good?')) : @js(__('Remove the photo'))"
               ></button>
             </x-form>
@@ -107,7 +107,7 @@
     </x-slot:help>
 
     <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <div class="space-y-[10px] text-[13px] leading-relaxed text-body">
+      <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('These details are shown on your profile. Everyone in your company can see them.') }}</p>
         <p>{{ __('The details you keep private, such as your emergency contact, are never shown to your colleagues.') }}</p>
       </div>
@@ -117,7 +117,7 @@
         :action="route('settings.profile.update')"
         id="details-form"
         x-target="details-form profile-avatar sidebar-identity"
-        class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
+        class="space-y-3.5 transition-opacity [&[aria-busy]]:opacity-60"
       >
         <div class="grid grid-cols-2 gap-3">
           <x-input
@@ -176,7 +176,7 @@
     </x-slot:help>
 
     <div class="grid gap-9 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <div class="space-y-[10px] text-[13px] leading-relaxed text-body">
+      <div class="space-y-2.5 text-sm leading-relaxed text-body">
         <p>{{ __('Who we should call if something happens to you at work.') }}</p>
         <p>{{ __('Only you and your company administrators can see this.') }}</p>
       </div>
@@ -186,7 +186,7 @@
         :action="route('settings.emergencyContact.update')"
         id="emergency-contact-form"
         x-target="emergency-contact-form last-saved"
-        class="space-y-[14px] transition-opacity [&[aria-busy]]:opacity-60"
+        class="space-y-3.5 transition-opacity [&[aria-busy]]:opacity-60"
       >
         <div class="grid grid-cols-2 gap-3">
           <x-input

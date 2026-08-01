@@ -10,10 +10,10 @@
   'description' => null,
 ])
 
-<div {{ $attributes->class(['space-y-[6px]']) }}>
-  <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink">{{ $title ?? $slot }}</h1>
+<div {{ $attributes->class(['space-y-1.5']) }}>
+  <h1 class="text-2xl font-semibold tracking-tight text-ink">{{ $title ?? $slot }}</h1>
 
   @isset($description)
-    <p class="text-[13.5px] text-body">{{ $description }}</p>
+    <p class="text-sm text-body">{{ $description }}</p>
   @endisset
 </div>
