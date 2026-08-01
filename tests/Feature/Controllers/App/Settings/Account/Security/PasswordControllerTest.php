@@ -24,6 +24,7 @@ class PasswordControllerTest extends TestCase
 
         $user = User::factory()->create([
             'password_hash' => Hash::make('beets-bears-battlestar'),
+            'password_changed_at' => null,
         ]);
 
         $response = $this->actingAs($user)->put(route('settings.password.update'), [
@@ -37,6 +38,12 @@ class PasswordControllerTest extends TestCase
         $response->assertSessionHas('status_description', 'Use it the next time you sign in.');
 
         $this->assertTrue(Hash::check('schrute-farms-2005', $user->refresh()->password_hash));
+
+        $this->assertEqualsWithDelta(
+            now()->timestamp,
+            $user->refresh()->password_changed_at?->timestamp,
+            2,
+        );
 
         Queue::assertPushedOn(
             queue: 'low',

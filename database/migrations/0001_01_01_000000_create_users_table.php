@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email')->unique()->comment('email address the user logs in with');
             $table->timestamp('email_verified_at')->nullable()->comment('when the email address was verified');
             $table->string('password_hash')->nullable()->comment('hashed password, null when the user signs in through SSO');
+            $table->datetime('password_changed_at')->nullable()->comment('when the user last changed or set their password, null when the user signs in through SSO');
             $table->string('sso_provider')->nullable()->comment('SSO provider the user signs in with');
             $table->boolean('is_active')->default(true)->comment('whether the user can sign in, so a user can be suspended without being deleted');
             $table->string('locale', 5)->nullable()->comment('language of the interface, falls back to the company locale');

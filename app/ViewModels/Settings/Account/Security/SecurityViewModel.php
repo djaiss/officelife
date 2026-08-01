@@ -29,6 +29,15 @@ class SecurityViewModel
     }
 
     /**
+     * How long ago the password was last changed or set, in words, or null when
+     * it never was, so the screen can leave the line out entirely.
+     */
+    public function passwordChangedAt(): ?string
+    {
+        return $this->user->password_changed_at?->diffForHumans();
+    }
+
+    /**
      * The name to show and to draw initials from. Somebody whose account is not
      * attached to an employee record has only an email address to go by.
      */

@@ -89,7 +89,13 @@
             <p class="text-xs text-muted">{{ __('Minimum 8 characters.') }}</p>
           </div>
 
-          <div class="flex items-center pt-1">
+          <div class="flex items-center gap-3 pt-1">
+            <span @class(['text-xs text-muted-soft', 'hidden' => ! $viewModel->passwordChangedAt()])>
+              @if ($viewModel->passwordChangedAt())
+                {{ __('Last changed :time', ['time' => $viewModel->passwordChangedAt()]) }}
+              @endif
+            </span>
+
             <x-button class="ml-auto">{{ __('Save') }}</x-button>
           </div>
         </x-form>

@@ -53,6 +53,26 @@ class SecurityViewModelTest extends TestCase
     }
 
     #[Test]
+    public function it_gives_how_long_ago_the_password_was_changed(): void
+    {
+        $user = User::factory()->create(['password_changed_at' => now()->subDays(2)]);
+
+        $viewModel = new SecurityViewModel(user: $user, employee: null);
+
+        $this->assertEquals('2 days ago', $viewModel->passwordChangedAt());
+    }
+
+    #[Test]
+    public function it_gives_nothing_when_the_password_was_never_changed(): void
+    {
+        $user = User::factory()->create(['password_changed_at' => null]);
+
+        $viewModel = new SecurityViewModel(user: $user, employee: null);
+
+        $this->assertNull($viewModel->passwordChangedAt());
+    }
+
+    #[Test]
     public function it_says_whether_the_account_signs_in_through_a_provider(): void
     {
         $user = User::factory()->create();

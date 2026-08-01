@@ -22,6 +22,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string|null $password_hash
+ * @property Carbon|null $password_changed_at
  * @property string|null $sso_provider
  * @property bool $is_active
  * @property string|null $locale
@@ -55,6 +56,7 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password_hash',
+        'password_changed_at',
         'sso_provider',
         'is_active',
         'locale',
@@ -89,6 +91,7 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
             'password_hash' => 'hashed',
+            'password_changed_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',
