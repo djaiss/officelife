@@ -17,6 +17,9 @@ enum UserActionEnum: string
     case EmployeePhotoUpdate = 'employee_photo_updated';
     case EmployeePhotoDeletion = 'employee_photo_deleted';
     case EmergencyContactUpdate = 'emergency_contact_updated';
+    case LocationCreation = 'location_created';
+    case LocationUpdate = 'location_updated';
+    case LocationDeletion = 'location_deleted';
     case RoleCreation = 'role_created';
     case RoleUpdate = 'role_updated';
     case RoleDeletion = 'role_deleted';
@@ -50,6 +53,9 @@ enum UserActionEnum: string
             self::EmployeePhotoUpdate => 'Changed the photo of :name',
             self::EmployeePhotoDeletion => 'Removed the photo of :name',
             self::EmergencyContactUpdate => 'Updated their emergency contact',
+            self::LocationCreation => 'Created the office called :name',
+            self::LocationUpdate => 'Updated the office called :name',
+            self::LocationDeletion => 'Deleted the office called :name',
             self::RoleCreation => 'Created the role called :name',
             self::RoleUpdate => 'Changed the role called :name',
             self::RoleDeletion => 'Deleted the role called :name',
