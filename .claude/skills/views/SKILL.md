@@ -14,7 +14,18 @@ description: Conventions for defining views. Use when the user wants to create o
 - You MUST NOT compute data in a view. You MUST compute data in a viewmodel, that is passed to the controller, and pass it to the view.
 - You SHOULD create and maintain PHPDoc blocks at the top of every view file.
 - You MUST create and maintain PHPDoc blocks for components.
-- When passing variables to a partial using `@include`, you MUST explicitly pass all required variables.
+- When passing variables to a partial using `@include`, you MUST explicitly pass all required variables. Relying on the parent scope is not enough, even though Blade makes those variables reachable, because a partial that names what it needs can be read on its own.
+
+```blade
+{{-- Good: the partial says what it needs. --}}
+@include('app.settings.account.security._change-password', ['viewModel' => $viewModel])
+
+{{-- Bad: it happens to work, and nothing says why. --}}
+@include('app.settings.account.security._change-password')
+```
+
+  A partial that needs no variable of its own, such as one built only out of copy and routes, is included without a second argument.
+
 - You MUST make sure each view is responsive.
 
 ## Example

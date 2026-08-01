@@ -32,7 +32,7 @@
       </x-help>
     </x-slot:help>
 
-    @include('app.settings.account.security._change-password')
+    @include('app.settings.account.security._change-password', ['viewModel' => $viewModel])
   </x-box>
 
   <x-box :title="__('Two factor authentication')">
@@ -43,7 +43,7 @@
     </x-slot:help>
 
     @if ($viewModel->usesTwoFactorAuthentication())
-      @include('app.settings.account.security._two-factor-on')
+      @include('app.settings.account.security._two-factor-on', ['viewModel' => $viewModel])
     @else
       @include('app.settings.account.security._two-factor-off')
     @endif

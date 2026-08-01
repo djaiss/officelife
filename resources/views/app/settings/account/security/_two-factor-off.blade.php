@@ -2,6 +2,9 @@
   What somebody sees when a code is not asked for on top of their password: the
   one way of turning it on, offered the way an item in a list is, so a second
   way added later reads as the same kind of thing.
+
+  The screen it leads to is built on this same layout, so it is handed to turbo
+  and only the body changes hands.
 --}}
 <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
   <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-placeholder" aria-hidden="true">
@@ -17,5 +20,5 @@
     <p class="text-sm text-muted">{{ __('You will need an authenticator app on your phone. Any of them works.') }}</p>
   </div>
 
-  <x-button :href="route('settings.twoFactor.new')" class="shrink-0">{{ __('Turn it on') }}</x-button>
+  <x-button :href="route('settings.twoFactor.new')" data-turbo="true" class="shrink-0">{{ __('Turn it on') }}</x-button>
 </div>
