@@ -65,6 +65,44 @@ class SecurityControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_offers_to_turn_two_factor_authentication_on_when_it_is_off(): void
+    {
+        $user = User::factory()->create(['two_factor_confirmed_at' => null]);
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Two factor authentication', escape: false);
+        $response->assertSee('Turn it on', escape: false);
+        $response->assertDontSee('Recovery codes', escape: false);
+    }
+
+    #[Test]
+    public function it_shows_the_recovery_codes_when_two_factor_authentication_is_on(): void
+    {
+        $user = User::factory()->twoFactor()->create(['two_factor_confirmed_at' => now()->subDays(3)]);
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Turned on 3 days ago', escape: false);
+        $response->assertSee('Recovery codes', escape: false);
+        $response->assertSee('scranton-1', escape: false);
+        $response->assertSee('scranton-2', escape: false);
+    }
+
+    #[Test]
+    public function it_says_so_when_every_recovery_code_has_been_used(): void
+    {
+        $user = User::factory()->twoFactor()->create(['two_factor_recovery_codes' => []]);
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('You have used every code. Ask for new ones before you need them.', escape: false);
+    }
+
+    #[Test]
     public function it_redirects_a_visitor_who_is_not_signed_in(): void
     {
         $response = $this->get(route('settings.security.index'));

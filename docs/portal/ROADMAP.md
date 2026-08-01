@@ -154,7 +154,7 @@ The screen also carries a line telling people joining an existing company to ask
 - **id.** `getting.what-works-today`
 - **Purpose.** Set honest expectations for somebody who just got in and is looking at a bare page.
 - **Audience.** New owners.
-- **Summary.** A short, factual page. What exists: your company, your account, your employee record, the profile screen where you edit it, the list of emails the product has sent you, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
+- **Summary.** A short, factual page. What exists: your company, your account, your employee record, the profile screen where you edit it, the preferences screen where you choose your language and how times are written, two factor authentication, the list of emails the product has sent you, and everything in the account and security sections of this portal. What does not exist yet: any screen for browsing employees, editing your company, or managing accounts. Where the project is going, only insofar as the code shows it, with no dates. Where to follow along or contribute, since it is open source.
 - **Prerequisites.** `getting.create-account`.
 - **Complexity.** Low, but must be revisited every time a feature ships. Flag it in the page as the portal's "what is built" page.
 - **Related pages.** `portal.introduction`, `concepts.introduction`.
@@ -402,15 +402,35 @@ The screen also carries a line telling people joining an existing company to ask
 ### Two factor authentication
 
 - **id.** `security.two-factor`
-- **Purpose.** Explain the code screen honestly, to the only two audiences that can currently meet it.
-- **Audience.** Employees whose account already has it, and operators.
-- **Summary.** What two factor authentication is and why it helps. How the challenge works when your account has it: after your password is accepted you are not signed in, you are asked for the six digit code your authenticator app is showing, and only then are you in. That a recovery code works in place of the app's code, that each recovery code works once and is spent the moment it is used, and that this is what you use when you have lost your phone. What "that code is not right" and "that took too long, please sign in again" mean, the second being a session that expired between the two screens. That attempts at the challenge are rate limited.
+- **Purpose.** Explain what two factor authentication is, why it is worth the trouble, and what changes about signing in once it is on.
+- **Audience.** Employees, and operators.
+- **Summary.** What two factor authentication is and why it helps: a password can be guessed, reused or stolen from a distance, and a code that changes every thirty seconds on a phone in a pocket cannot. Where the switch is: **Settings**, then **Security**, the box under the password. What it looks like when it is off, and what turning it on gives you. Then how the challenge works from then on: after your password is accepted you are not signed in, you are asked for the six digits your authenticator app is showing, and only then are you in. That the same happens after a sign in link, since a link that skipped the password must not also skip the code. That a recovery code works in place of the app's code, that each one works once and is spent the moment it is used, and that this is what you use when you have lost your phone. What "that code is not right" and "that took too long, please sign in again" mean, the second being a session that expired between the two screens. That attempts at the challenge are rate limited.
 - **Prerequisites.** `signin.password`.
-- **Complexity.** High, because of the caveat below.
-- **Related pages.** `signin.password`, `security.suspicious-activity`.
+- **Complexity.** Medium.
+- **Related pages.** `security.two-factor-set-up`, `security.recovery-codes`, `signin.password`, `signin.magic-link`, `security.suspicious-activity`.
 
-:::warning for the writer
-There is no screen, route or command to **turn two factor authentication on**. The challenge, the code verification, the recovery codes and the storage all exist, but nothing enrols a user. Only an account whose two factor enrolment was set directly in the database will ever see the challenge. The page must say so in the first paragraph, in the reader's language: setting this up from inside OfficeLife is not possible yet, and this page explains the challenge for accounts that already have it. Do not write enrolment steps, do not describe a QR code screen, do not tell readers to save their recovery codes at a moment that does not exist.
+### Turn on two factor authentication
+
+- **id.** `security.two-factor-set-up`
+- **Purpose.** Walk somebody through enrolling, with their phone in one hand, without them fearing they will lock themselves out.
+- **Audience.** Employees.
+- **Summary.** A tutorial, in the order the screens come. What you need first: an authenticator app on your phone, any of them. **Settings**, then **Security**, then **Turn it on**, which lands on a screen with two numbered steps. Step one: point the app's camera at the square, or, when the app is on the same machine you are reading this on and there is no camera to point, type in the secret printed beside it, which is the same thing in letters. That the app files the account under your email address, which is how you will recognise it in a list. Step two: type back the six digits the app is showing, and press the button. Say plainly what the screen says, because it is the sentence that stops people hesitating: nothing about your account changes until that code is accepted, so leaving halfway through leaves you exactly as you were. What happens next: you land back on Security, the box now says the feature is on, and your recovery codes are printed underneath. Send the reader to `security.recovery-codes` before they close the tab. Then how to turn it off, and what turning it off costs: the secret and the codes are both forgotten, so turning it on again means pairing the app afresh, and until then your password is all it takes to sign in. Note that the screen asks you to confirm before it does either of those things.
+- **Prerequisites.** `security.two-factor`.
+- **Complexity.** Medium.
+- **Related pages.** `security.recovery-codes`, `security.two-factor`, `profile.logs`.
+
+### Your recovery codes
+
+- **id.** `security.recovery-codes`
+- **Purpose.** Make sure somebody actually saves the codes, and knows what to do when they run low.
+- **Audience.** Employees who have turned two factor authentication on.
+- **Summary.** What they are: eight codes, each of which signs you in once in place of the code your app would show, for the day the phone is lost, broken or wiped. Where they are: on the Security screen, under the two factor box, for as long as the feature is on. Where to keep them, which is anywhere that is not the phone the app is on. That a code disappears from the list the moment it is used, so the list doubles as a count of how many you have left. How to get a fresh set, with the warning the screen gives: asking for new ones stops every old one working, immediately, so do it when you have somewhere to put them. When to do it: when you are running low, or when you think somebody else has seen the list. What the screen says when you have spent them all, and why you should not wait for that. That both handing out a new set and turning the feature on or off are written to your logs.
+- **Prerequisites.** `security.two-factor-set-up`.
+- **Complexity.** Low.
+- **Related pages.** `security.two-factor-set-up`, `profile.logs`.
+
+:::note for the writer
+Recovery codes are stored encrypted but they are recoverable, which is why the screen can keep showing them rather than printing them once and forgetting. Do not write "save these now, you will never see them again", because that is not how this product behaves and a reader who believed it would panic. Say instead that they stay on the Security screen for as long as the feature is on.
 :::
 
 ### When something looks wrong
@@ -796,7 +816,7 @@ Do not describe this as an app. There is no native application and no app store 
 - **id.** `reference.limits`
 - **Purpose.** Put every number the product enforces in one table.
 - **Audience.** All, and operators in particular.
-- **Summary.** A single table: minimum password length, how long "remember me" lasts, how long a sign in link lasts, how long an email confirmation link lasts, how many sign in attempts before a lockout, the rate limits on link requests, password resets, resent confirmations and two factor attempts, and the session lifetime. Mark which are configurable per instance and which are fixed in code, and link to the configuration page for the former. Give defaults, not the values from any one instance.
+- **Summary.** A single table: minimum password length, how long "remember me" lasts, how long a sign in link lasts, how long an email confirmation link lasts, how many sign in attempts before a lockout, the rate limits on link requests, password resets, resent confirmations and two factor attempts, how many recovery codes a set holds and how long each one is, and the session lifetime. Mark which are configurable per instance and which are fixed in code, and link to the configuration page for the former. Give defaults, not the values from any one instance.
 - **Prerequisites.** None.
 - **Complexity.** Medium. Verify every number against the code before publishing, and re-verify whenever it changes.
 - **Related pages.** `hosting.configuration`, `signin.introduction`.
@@ -812,8 +832,6 @@ Each entry names the evidence, what is missing, and the page it should become.
 - **Plans, trials and billing.** Every company carries a plan (free, starter, business, enterprise), a billing email address, and a trial end date set to thirty days at signup, and the model can answer whether it is still on trial. Nothing reads any of it. There is no billing code, no payment provider, no subscription library, and no screen. **Do not write pricing, plans, trials, invoices, or upgrade documentation.** When billing exists it becomes a section of its own, and `getting.cloud-or-self-hosted` will need rewriting.
 
 - **Single sign on.** Accounts carry an identity provider field, the model can answer whether an account uses one, sign in refuses such accounts a password path, and password changes are refused for them with a specific message. No provider integration, configuration or route exists, so no account can be created this way. `security.password` may mention the message a user could see; nothing may describe setting SSO up.
-
-- **Turning on two factor authentication.** Covered in the warning under `security.two-factor`. The challenge is finished; enrolment does not exist.
 
 - **Suspending an account.** Accounts have an active flag that is honoured everywhere, including by sign in links. Nothing sets it to false. `account.delete` explains the state; no page may describe how to suspend somebody.
 

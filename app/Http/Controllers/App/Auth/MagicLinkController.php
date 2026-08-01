@@ -53,6 +53,15 @@ class MagicLinkController extends Controller
                 ->withErrors(['email' => __('That link no longer works. Ask for another one.')]);
         }
 
+        // A link that skips the password must not also skip the challenge, so
+        // somebody who enrolled answers it here exactly as they would after
+        // typing a password. The session only remembers who they claim to be.
+        if ($user->usesTwoFactorAuthentication()) {
+            $request->session()->put('twoFactor.user.id', $user->id);
+
+            return redirect()->route('auth.twoFactor.new');
+        }
+
         Auth::guard('web')->login($user);
 
         $request->session()->regenerate();

@@ -9,7 +9,9 @@ use App\Http\Controllers\App\Settings\Account\Profile\EmergencyContactController
 use App\Http\Controllers\App\Settings\Account\Profile\PhotoController;
 use App\Http\Controllers\App\Settings\Account\Profile\ProfileController;
 use App\Http\Controllers\App\Settings\Account\Security\PasswordController;
+use App\Http\Controllers\App\Settings\Account\Security\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\Account\Security\SecurityController;
+use App\Http\Controllers\App\Settings\Account\Security\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // The landing page, until there is a dashboard to send people to.
@@ -29,6 +31,12 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
 
     Route::get('settings/account/security', [SecurityController::class, 'index'])->name('settings.security.index');
     Route::put('settings/account/security/password', [PasswordController::class, 'update'])->name('settings.password.update');
+
+    Route::get('settings/account/security/two-factor', [TwoFactorController::class, 'new'])->name('settings.twoFactor.new');
+    Route::post('settings/account/security/two-factor', [TwoFactorController::class, 'create'])->name('settings.twoFactor.create');
+    Route::delete('settings/account/security/two-factor', [TwoFactorController::class, 'destroy'])->name('settings.twoFactor.destroy');
+
+    Route::post('settings/account/security/recovery-codes', [RecoveryCodeController::class, 'create'])->name('settings.recoveryCodes.create');
 
     Route::put('settings/account/profile/emergency-contact', [EmergencyContactController::class, 'update'])->name('settings.emergencyContact.update');
 
