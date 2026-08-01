@@ -49,3 +49,5 @@ A chronological list of every feature and improvement shipped during development
 * Settings/administration/roles: Let somebody duplicate a role.
 * Settings/administration/roles: Let somebody delete a role, after asking, and refused when somebody still holds it.
 * Settings/administration/roles: Showed who holds a role and let somebody hand it out and take it back.
+* Locations: Added offices, which a company owns as a list rather than typing an address on every employee who works there.
+* Locations: Added actions to create, change and delete an office of the company.

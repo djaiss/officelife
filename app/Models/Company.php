@@ -118,6 +118,16 @@ class Company extends Model
     }
 
     /**
+     * Get the offices of the company.
+     *
+     * @return HasMany<Location, $this>
+     */
+    public function locations(): HasMany
+    {
+        return $this->hasMany(Location::class);
+    }
+
+    /**
      * Get whether the company is still within its trial period.
      */
     public function isOnTrial(): bool
