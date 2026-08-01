@@ -54,6 +54,15 @@ class EmailsSentViewModel
         return $this->employee->name ?? $this->user->email;
     }
 
+    /**
+     * The record the avatar draws from, so the sidebar can show the photo when
+     * there is one. An account that belongs to nobody who works here has none.
+     */
+    public function employee(): ?Employee
+    {
+        return $this->employee;
+    }
+
     public function companyName(): string
     {
         return $this->user->company->name;

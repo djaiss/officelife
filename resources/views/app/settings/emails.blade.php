@@ -9,7 +9,7 @@
 --}}
 <x-app-layout :title="__('Emails sent')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" current="profile" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" current="profile" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
@@ -35,7 +35,7 @@
     @endforelse
 
     @if ($viewModel->emailsSent()->hasMorePages())
-      <div id="pagination" class="border-t border-hairline-soft p-[13px] text-center text-[13px]">
+      <div id="pagination" class="p-[13px] text-center text-[13px]">
         <x-link x-target="emails-sent-container pagination" :href="$viewModel->emailsSent()->nextPageUrl()">{{ __('Load more') }}</x-link>
       </div>
     @endif
