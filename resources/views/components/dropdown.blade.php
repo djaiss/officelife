@@ -33,7 +33,14 @@
   'monospacedHints' => false,
 ])
 
-<div x-data="{ open: false }" {{ $attributes->class(['relative']) }}>
+{{--
+  A menu inside a form that saves over ajax is morphed back into place rather
+  than replaced, so `open` survives the save and the panel would stay hanging
+  there. Closing it once the request is on its way puts that right. The event
+  is listened for on the window because it is fired on the form, which is a
+  parent of this, and events do not travel downwards.
+--}}
+<div x-data="{ open: false }" @ajax:before.window="open = false" {{ $attributes->class(['relative']) }}>
   <button
     type="button"
     @click="open = ! open"
