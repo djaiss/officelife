@@ -49,7 +49,7 @@
       the sentence down to nothing.
     --}}
     @forelse ($viewModel->logs() as $log)
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-hairline-soft px-4 py-3 last:border-b-0">
+      <x-box.row class="flex flex-wrap items-center gap-x-3 gap-y-1">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0 text-placeholder" aria-hidden="true">
           <path d="M1.5 8h3L6 5l2 6 2-4 1.4 1h3.1"></path>
         </svg>
@@ -69,7 +69,7 @@
         <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ $log->created_at->toDayDateTimeString() }}" class="ml-auto shrink-0 font-mono text-xs text-muted-soft">
           {{ $log->created_at->diffForHumans() }}
         </time>
-      </div>
+      </x-box.row>
     @empty
       <x-empty-state :title="__('No activity yet')">
         <x-slot:icon>
@@ -83,9 +83,9 @@
     @endforelse
 
     @if ($viewModel->logs()->hasMorePages())
-      <div id="pagination" class="p-3 text-center text-sm">
+      <x-slot:footer id="pagination">
         <x-link x-target="logs-container pagination" :href="$viewModel->logs()->nextPageUrl()">{{ __('Load more') }}</x-link>
-      </div>
+      </x-slot:footer>
     @endif
   </x-box>
 
@@ -117,9 +117,9 @@
     @endforelse
 
     @if ($viewModel->hasMoreEmailsSent())
-      <div class="p-3 text-center text-sm">
+      <x-slot:footer>
         <x-link :href="route('settings.emailsSent.index')" turbo>{{ __('Browse all emails') }}</x-link>
-      </div>
+      </x-slot:footer>
     @endif
   </x-box>
 </x-app-layout>
