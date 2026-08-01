@@ -1,0 +1,21 @@
+{{--
+  What somebody sees when a code is not asked for on top of their password: the
+  one way of turning it on, offered the way an item in a list is, so a second
+  way added later reads as the same kind of thing.
+--}}
+<div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+  <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-placeholder" aria-hidden="true">
+    <rect x="4.4" y="1.6" width="7.2" height="12.8" rx="1.8"></rect>
+    <line x1="6.9" y1="12.2" x2="9.1" y2="12.2"></line>
+  </svg>
+
+  <div class="min-w-0 flex-1 space-y-1">
+    <p class="text-sm font-semibold text-ink">{{ __('Authenticator app') }}</p>
+
+    <p class="text-sm text-muted">{{ __('Ask us for a code from your authenticator app every time you sign in, on top of your password.') }}</p>
+
+    <p class="text-sm text-muted">{{ __('You will need an authenticator app on your phone. Any of them works.') }}</p>
+  </div>
+
+  <x-button :href="route('settings.twoFactor.new')" class="shrink-0">{{ __('Turn it on') }}</x-button>
+</div>
