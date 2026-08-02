@@ -10,6 +10,7 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Location;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 /**
@@ -26,6 +27,7 @@ class UpdateLocation
         private ?string $city = null,
         private ?string $address = null,
         private ?string $timezone = null,
+        private readonly bool $isPrimary = false,
     ) {}
 
     public function execute(): Location
@@ -77,16 +79,36 @@ class UpdateLocation
         if ($taken) {
             throw new InvalidArgumentException('The company already has an office called '.$this->name);
         }
+
+        if ($this->isPrimary && $this->location->isArchived()) {
+            throw new InvalidArgumentException('A closed office cannot be the head office');
+        }
     }
 
+    /**
+     * A company keeps one head office, so promoting this one demotes whichever
+     * office held it before. Asking for it not to be the head office is not a
+     * way of leaving the company without one: the flag only ever moves.
+     */
     private function update(): void
     {
-        $this->location->name = $this->name;
-        $this->location->country = $this->country;
-        $this->location->city = $this->city;
-        $this->location->address = $this->address;
-        $this->location->timezone = $this->timezone;
-        $this->location->save();
+        DB::transaction(function (): void {
+            if ($this->isPrimary) {
+                Location::query()
+                    ->where('company_id', $this->location->company_id)
+                    ->whereKeyNot($this->location->id)
+                    ->update(['is_primary' => false]);
+
+                $this->location->is_primary = true;
+            }
+
+            $this->location->name = $this->name;
+            $this->location->country = $this->country;
+            $this->location->city = $this->city;
+            $this->location->address = $this->address;
+            $this->location->timezone = $this->timezone;
+            $this->location->save();
+        });
     }
 
     private function log(): void

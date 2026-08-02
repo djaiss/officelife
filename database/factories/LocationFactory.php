@@ -29,4 +29,25 @@ class LocationFactory extends Factory
             'timezone' => 'UTC',
         ];
     }
+
+    /**
+     * An office the company has closed.
+     */
+    public function archived(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'archived_at' => now(),
+            'is_primary' => false,
+        ]);
+    }
+
+    /**
+     * The head office of the company.
+     */
+    public function primary(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_primary' => true,
+        ]);
+    }
 }

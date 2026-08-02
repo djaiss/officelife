@@ -18,6 +18,7 @@
   @var \App\Models\Employee|null $employee
   @var string $current
   @var bool $canManageRoles
+  @var bool $canManageCompany
 --}}
 @props([
   'companyName',
@@ -25,6 +26,7 @@
   'employee' => null,
   'current' => 'profile',
   'canManageRoles' => false,
+  'canManageCompany' => false,
 ])
 
 @php
@@ -112,9 +114,32 @@
       {{ __('Preferences') }}
     </a>
 
-    @if ($canManageRoles)
+    @if ($canManageRoles || $canManageCompany)
       <h2 class="px-2.5 pt-4 pb-1.25 text-xs uppercase">{{ __('Administration') }}</h2>
+    @endif
 
+    @if ($canManageCompany)
+      <a
+        href="{{ route('settings.locations.index') }}"
+        data-turbo="true"
+        @if ($current === 'locations') aria-current="page" @endif
+        class="{{ $item }} {{ $current === 'locations' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
+          <path d="M8 14s4.4-4 4.4-7A4.4 4.4 0 0 0 3.6 7c0 3 4.4 7 4.4 7Z"></path>
+          <circle cx="8" cy="6.8" r="1.7"></circle>
+        </svg>
+        {{ __('Locations') }}
+
+        {{-- The arrow says the item leaves the settings behind for a layer of its own. --}}
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" class="ml-auto shrink-0 text-muted-soft" aria-hidden="true">
+          <line x1="3" y1="8" x2="13" y2="8"></line>
+          <path d="M9.4 4.4 13 8l-3.6 3.6"></path>
+        </svg>
+      </a>
+    @endif
+
+    @if ($canManageRoles)
       <a
         href="{{ route('settings.roles.index') }}"
         data-turbo="true"

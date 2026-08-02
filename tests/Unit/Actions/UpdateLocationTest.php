@@ -96,6 +96,63 @@ class UpdateLocationTest extends TestCase
     }
 
     #[Test]
+    public function it_promotes_an_office_to_head_office_and_demotes_the_one_that_held_it(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+        $scranton = Location::factory()->primary()->create(['company_id' => $company->id, 'name' => 'Scranton branch']);
+        $utica = Location::factory()->create(['company_id' => $company->id, 'name' => 'Utica branch']);
+
+        new UpdateLocation(author: $author, location: $utica, name: 'Utica branch', isPrimary: true)->execute();
+
+        $this->assertTrue($utica->refresh()->is_primary);
+        $this->assertFalse($scranton->refresh()->is_primary);
+    }
+
+    #[Test]
+    public function it_leaves_the_head_office_of_another_company_alone(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+        $location = Location::factory()->create(['company_id' => $company->id, 'name' => 'Utica branch']);
+        $elsewhere = Location::factory()->primary()->create();
+
+        new UpdateLocation(author: $author, location: $location, name: 'Utica branch', isPrimary: true)->execute();
+
+        $this->assertTrue($elsewhere->refresh()->is_primary);
+    }
+
+    #[Test]
+    public function it_leaves_the_head_office_alone_when_the_box_is_not_ticked(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+        $location = Location::factory()->primary()->create(['company_id' => $company->id, 'name' => 'Scranton branch']);
+
+        new UpdateLocation(author: $author, location: $location, name: 'Scranton business park')->execute();
+
+        $this->assertTrue($location->refresh()->is_primary);
+    }
+
+    #[Test]
+    public function it_throws_when_an_archived_office_is_made_the_head_office(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+        $location = Location::factory()->archived()->create(['company_id' => $company->id, 'name' => 'Nashua branch']);
+
+        new UpdateLocation(author: $author, location: $location, name: 'Nashua branch', isPrimary: true)->execute();
+    }
+
+    #[Test]
     public function it_throws_when_another_office_of_the_company_already_has_that_name(): void
     {
         $this->expectException(InvalidArgumentException::class);

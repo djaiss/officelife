@@ -14,6 +14,8 @@ use App\Http\Controllers\App\Settings\Account\Security\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\Account\Security\SecurityController;
 use App\Http\Controllers\App\Settings\Account\Security\TwoFactorController;
 use App\Http\Controllers\App\Settings\Administration\DuplicateRoleController;
+use App\Http\Controllers\App\Settings\Administration\LocationArchiveController;
+use App\Http\Controllers\App\Settings\Administration\LocationController;
 use App\Http\Controllers\App\Settings\Administration\RoleController;
 use App\Http\Controllers\App\Settings\Administration\RolePeopleController;
 use Illuminate\Support\Facades\Route;
@@ -64,4 +66,11 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
 
     Route::post('settings/administration/roles/{role}/people', [RolePeopleController::class, 'create'])->whereNumber('role')->name('settings.rolePeople.create');
     Route::delete('settings/administration/roles/{role}/people/{user}', [RolePeopleController::class, 'destroy'])->whereNumber(['role', 'user'])->name('settings.rolePeople.destroy');
+
+    Route::get('settings/administration/locations/{scope?}', [LocationController::class, 'index'])->where('scope', 'archived|all')->name('settings.locations.index');
+    Route::post('settings/administration/locations', [LocationController::class, 'create'])->name('settings.locations.create');
+    Route::put('settings/administration/locations/{location}', [LocationController::class, 'update'])->whereNumber('location')->name('settings.locations.update');
+
+    Route::post('settings/administration/locations/{location}/archive', [LocationArchiveController::class, 'create'])->whereNumber('location')->name('settings.locationArchives.create');
+    Route::delete('settings/administration/locations/{location}/archive', [LocationArchiveController::class, 'destroy'])->whereNumber('location')->name('settings.locationArchives.destroy');
 });
