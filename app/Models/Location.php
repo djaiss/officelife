@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $city
  * @property string|null $address
  * @property string|null $timezone
+ * @property Carbon|null $archived_at
+ * @property bool $is_primary
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -48,7 +50,22 @@ class Location extends Model
         'city',
         'address',
         'timezone',
+        'archived_at',
+        'is_primary',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'archived_at' => 'datetime',
+            'is_primary' => 'boolean',
+        ];
+    }
 
     /**
      * Get the company the office belongs to.
@@ -58,5 +75,14 @@ class Location extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get whether the office has been closed. An archived office keeps its row,
+     * so what was written down about it is still there to read.
+     */
+    public function isArchived(): bool
+    {
+        return $this->archived_at !== null;
     }
 }

@@ -65,13 +65,24 @@ class EmailsSentViewModel
     }
 
     /**
-     * Whether the sidebar shows the administration section, which is the way to
-     * the roles of the company.
+     * Whether the sidebar offers the roles of the company.
      */
     public function canManageRoles(): bool
     {
         return $this->user
             ->permission(PermissionEnum::RoleManage)
+            ->forCompany($this->user->company)
+            ->allowed();
+    }
+
+    /**
+     * Whether the sidebar offers the settings of the company itself, such as its
+     * offices.
+     */
+    public function canManageCompany(): bool
+    {
+        return $this->user
+            ->permission(PermissionEnum::CompanyManage)
             ->forCompany($this->user->company)
             ->allowed();
     }

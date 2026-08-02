@@ -20,6 +20,8 @@ enum UserActionEnum: string
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
+    case LocationArchive = 'location_archived';
+    case LocationRestoration = 'location_restored';
     case RoleCreation = 'role_created';
     case RoleUpdate = 'role_updated';
     case RoleDeletion = 'role_deleted';
@@ -56,6 +58,8 @@ enum UserActionEnum: string
             self::LocationCreation => 'Created the office called :name',
             self::LocationUpdate => 'Updated the office called :name',
             self::LocationDeletion => 'Deleted the office called :name',
+            self::LocationArchive => 'Archived the office called :name',
+            self::LocationRestoration => 'Reopened the office called :name',
             self::RoleCreation => 'Created the role called :name',
             self::RoleUpdate => 'Changed the role called :name',
             self::RoleDeletion => 'Deleted the role called :name',

@@ -51,3 +51,14 @@ A chronological list of every feature and improvement shipped during development
 * Settings/administration/roles: Showed who holds a role and let somebody hand it out and take it back.
 * Locations: Added offices, which a company owns as a list rather than typing an address on every employee who works there.
 * Locations: Added actions to create, change and delete an office of the company.
+* Settings/administration/locations: Added the screen listing every office of the company.
+* Settings/administration/locations: Showed how many offices, countries and time zones the company keeps, and which office is the head office.
+* Settings/administration/locations: Let somebody search the offices by name, city or country.
+* Settings/administration/locations: Split the open, the archived and all the offices into three pages of their own.
+* Settings/administration/locations: Let somebody order the list by office or by city.
+* Settings/administration/locations: Added a panel that slides in from the right to edit an office without leaving the list.
+* Settings/administration/locations: Let somebody promote an office to head office, which takes the badge off whichever office had it.
+* Settings/administration/locations: Let somebody archive an office, after asking, keeping everything written about it.
+* Settings/administration/locations: Let somebody reopen an archived office.
+* Settings/administration/locations: Let somebody add an office from a dialog asking only for its name, city and country.
+* Settings: Added the offices of the company to the sidebar, for whoever may change its settings.

@@ -9,7 +9,7 @@
 --}}
 <x-app-layout :title="__('Security and access')">
   <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" current="security" />
+    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" :can-manage-company="$viewModel->canManageCompany()" current="security" />
   </x-slot:sidebar>
 
   <x-slot:breadcrumb>
