@@ -114,7 +114,7 @@
     </x-button>
   </x-slot:actions>
 
-  <div class="mx-auto max-w-260 space-y-4.5 px-5 pt-6 pb-22 sm:px-7">
+  <div class="mx-auto max-w-260 space-y-4.5 px-4 pt-6 pb-22 sm:px-7">
     <div>
       <x-page-header :title="__('Locations')" />
 

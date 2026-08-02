@@ -52,14 +52,19 @@
     {{ $attributes->class('absolute inset-y-0 right-0 flex w-full max-w-130 flex-col border-l border-hairline-strong bg-page shadow-2xl') }}
   >
     @isset($header)
-      <div class="flex shrink-0 items-center gap-3 border-b border-hairline bg-sunken px-4.5 py-3">
-        {{ $header }}
+      {{-- The close button is the last thing on the line whatever the header
+           holds, so what the caller puts there wraps under itself on a narrow
+           screen rather than pushing the way out of the panel off the edge. --}}
+      <div class="flex shrink-0 items-start gap-3 border-b border-hairline bg-sunken px-4 py-3 sm:px-4.5">
+        <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2">
+          {{ $header }}
+        </div>
 
         <button
           type="button"
           x-on:click="{{ $close }}"
           aria-label="{{ __('Close the panel') }}"
-          class="ml-auto flex size-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted transition-colors hover:bg-hover hover:text-ink"
+          class="flex size-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted transition-colors hover:bg-hover hover:text-ink"
         >
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <line x1="3.6" y1="3.6" x2="12.4" y2="12.4"></line>
@@ -69,12 +74,12 @@
       </div>
     @endisset
 
-    <div class="min-h-0 flex-1 overflow-y-auto px-4.5 py-4.5">
+    <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4.5 sm:px-4.5">
       {{ $slot }}
     </div>
 
     @isset($footer)
-      <div class="shrink-0 border-t border-hairline bg-sunken px-4.5 py-3">
+      <div class="shrink-0 border-t border-hairline bg-sunken px-4 py-3 sm:px-4.5">
         {{ $footer }}
       </div>
     @endisset

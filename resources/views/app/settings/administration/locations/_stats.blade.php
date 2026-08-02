@@ -4,7 +4,7 @@
 
   @var \App\ViewModels\Settings\Administration\LocationsViewModel $viewModel
 --}}
-<div id="locations-stats" class="grid gap-3 transition-opacity sm:grid-cols-2 lg:grid-cols-4 [&[aria-busy]]:opacity-60">
+<div id="locations-stats" class="grid grid-cols-2 gap-3 transition-opacity lg:grid-cols-4 [&[aria-busy]]:opacity-60">
   @foreach ($viewModel->stats() as $stat)
     <div class="rounded-xl border border-hairline bg-canvas px-4 py-3.25">
       <p class="text-xs tracking-wide text-muted-soft uppercase">{{ $stat['label'] }}</p>

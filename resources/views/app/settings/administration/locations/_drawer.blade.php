@@ -27,18 +27,18 @@
   <x-slot:header>
     <span class="flex size-8 shrink-0 items-center justify-center rounded-md bg-brand/12 text-xs font-semibold text-brand" x-text="office?.code"></span>
 
-    <span class="min-w-0">
+    <span class="min-w-0 flex-1">
       <span id="location-panel-title" class="block truncate text-sm font-semibold tracking-tight text-ink" x-text="form.name"></span>
 
       <span class="mt-0.25 block truncate text-xs text-muted" x-text="office?.meta"></span>
     </span>
 
-    <div x-cloak x-show="dirty" class="ml-auto flex shrink-0 items-center gap-2">
-      <x-button.secondary type="button" x-on:click="discard()" class="py-1.5 text-xs [:where(&)]:px-2.75">
+    <div x-cloak x-show="dirty" class="flex shrink-0 items-center gap-2 max-sm:w-full sm:ml-auto">
+      <x-button.secondary type="button" x-on:click="discard()" class="py-1.5 text-xs max-sm:flex-1 [:where(&)]:px-2.75">
         {{ __('Discard') }}
       </x-button.secondary>
 
-      <x-button form="location-form" class="py-1.5 text-xs [:where(&)]:px-3.25">{{ __('Save office') }}</x-button>
+      <x-button form="location-form" class="py-1.5 text-xs max-sm:flex-1 [:where(&)]:px-3.25">{{ __('Save office') }}</x-button>
     </div>
   </x-slot:header>
 

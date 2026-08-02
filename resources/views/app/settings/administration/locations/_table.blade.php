@@ -12,10 +12,16 @@
   id: a rename has to show up in the row behind the panel without the screen
   being drawn again.
 
+  Four columns need a screen wide enough for four columns. Below md the same row
+  folds into two lines instead of squeezing every one of them into nothing: the
+  office and its state on the first, where it is and what time it keeps on the
+  second. The cells are placed by hand there, since the order they fold into is
+  not the order they are written in.
+
   @var \App\ViewModels\Settings\Administration\LocationsViewModel $viewModel
 --}}
 @php
-  $columns = 'grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_auto] gap-4';
+  $columns = 'grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1.5 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_auto] md:gap-y-0';
   $sortLinks = $viewModel->sortLinks();
 @endphp
 
@@ -28,15 +34,15 @@
         <span aria-hidden="true">{{ $sortLinks['name']['arrow'] }}</span>
       </a>
 
-      <a href="{{ $sortLinks['place']['url'] }}" data-turbo="true" class="flex items-center gap-1.5 hover:text-ink">
+      <a href="{{ $sortLinks['place']['url'] }}" data-turbo="true" class="flex items-center gap-1.5 hover:text-ink max-md:justify-end">
         {{ __('City and country') }}
 
         <span aria-hidden="true">{{ $sortLinks['place']['arrow'] }}</span>
       </a>
 
-      <span>{{ __('Time zone') }}</span>
+      <span class="max-md:hidden">{{ __('Time zone') }}</span>
 
-      <span>{{ __('Status') }}</span>
+      <span class="max-md:hidden">{{ __('Status') }}</span>
     </div>
 
     @forelse ($viewModel->rows() as $row)
@@ -46,7 +52,7 @@
         :class="open === {{ $row['id'] }} && 'bg-hover'"
         class="grid w-full {{ $columns }} cursor-pointer items-center border-b border-hairline-soft px-4 py-2.75 text-left transition-colors last:border-b-0 hover:bg-hover"
       >
-        <span class="flex min-w-0 items-center gap-2.75">
+        <span class="flex min-w-0 items-center gap-2.75 max-md:col-start-1 max-md:row-start-1">
           <span class="flex size-7.5 shrink-0 items-center justify-center rounded-md text-xs font-semibold {{ $row['isArchived'] ? 'bg-hover text-muted-soft' : 'bg-brand/12 text-brand' }}">
             {{ $row['code'] }}
           </span>
@@ -64,11 +70,11 @@
           </span>
         </span>
 
-        <span class="truncate text-sm text-body">{{ $row['place'] }}</span>
+        <span class="truncate text-sm text-body max-md:col-start-1 max-md:row-start-2 max-md:pl-10.25 max-md:text-xs">{{ $row['place'] }}</span>
 
-        <span class="truncate text-sm text-body">{{ $row['timezone'] }}</span>
+        <span class="truncate text-sm text-body max-md:col-start-2 max-md:row-start-2 max-md:text-right max-md:text-xs">{{ $row['timezone'] }}</span>
 
-        <span class="flex items-center gap-2.5">
+        <span class="flex items-center gap-2.5 max-md:col-start-2 max-md:row-start-1 max-md:justify-end">
           <span class="inline-flex items-center gap-1.75 rounded-full px-2.25 py-0.75 text-xs whitespace-nowrap {{ $row['isArchived'] ? 'bg-hover text-body' : 'bg-success/12 text-success' }}">
             <span class="size-1.25 rounded-full {{ $row['isArchived'] ? 'bg-muted-soft' : 'bg-success' }}" aria-hidden="true"></span>
 
