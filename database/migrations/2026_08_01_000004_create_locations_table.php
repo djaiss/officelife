@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('city')->nullable()->comment('city the office is in');
             $table->text('address')->nullable()->comment('street address of the office');
             $table->string('timezone', 50)->nullable()->comment('timezone the office keeps, falls back to the company timezone');
+            $table->timestamp('archived_at')->nullable()->comment('day the office was closed, null while it is still open');
+            $table->boolean('is_primary')->default(false)->comment('whether the office is the head office of the company');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
