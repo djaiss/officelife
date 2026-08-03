@@ -62,3 +62,4 @@ A chronological list of every feature and improvement shipped during development
 * Settings/administration/locations: Let somebody reopen an archived office.
 * Settings/administration/locations: Let somebody add an office from a dialog asking only for its name, city and country.
 * Settings: Added the offices of the company to the sidebar, for whoever may change its settings.
+* Docs: Split the product specification into modular Spec-Kit files under docs/specs, starting with the company and tenancy spec.
