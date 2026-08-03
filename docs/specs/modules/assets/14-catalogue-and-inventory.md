@@ -233,6 +233,28 @@ on. The name is what people read. That is why a company can add "Awaiting repair
 without the code learning about it: it declares itself as `undeployable` and
 behaves accordingly.
 
+### Why AssetStatus is a table and PermissionEnum is not
+
+The two sit next to each other in the codebase and are modelled opposite ways, so
+the reason is worth stating.
+
+A permission is defined by the code that checks it. A permission row nothing
+checks grants nothing, and a permission checked in code with no row would crash.
+There is no version of it that a company can meaningfully edit, which is why
+`04-permissions-and-roles` makes it an enum.
+
+A status is different, and the split runs through the middle of it. The `type`
+is code: four closed values, and the code branches on them. The row is company
+data: a label a company puts on its own equipment, over one of those four types.
+"In transit", "Awaiting wipe" and "Pending disposal" are real statuses that no
+product should have to ship in advance, and they behave correctly without the
+code learning about them because each declares its type.
+
+The `key` column is the seam between the two. It is set on the handful of system
+rows the code has to recognise by name, which today is `lost` and nothing else,
+and null on everything a company adds. It is deliberately small: a status needing
+a key is a status the code branches on, and that list should stay short.
+
 ### Deployed is shown, not stored
 
 FR-08 says being assigned is not a status. That is a statement about the
