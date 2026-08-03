@@ -9,6 +9,7 @@ use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Location
@@ -75,6 +76,17 @@ class Location extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get the equipment that has been assigned to the office, and the equipment
+     * assigned to it now.
+     *
+     * @return MorphMany<AssetAssignment, $this>
+     */
+    public function assetAssignments(): MorphMany
+    {
+        return $this->morphMany(AssetAssignment::class, 'assignee');
     }
 
     /**
