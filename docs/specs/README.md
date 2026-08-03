@@ -61,12 +61,13 @@ docs/specs/
 │   └── 13-module-system.md                enabling and disabling modules per company
 │
 ├── modules/                               optional, activated per company
-│   ├── 14-assets-core.md                  catalogue, serialised assets, checkout and checkin
-│   ├── 15-assets-quantitative.md          accessories, consumables, components, stock thresholds
-│   ├── 16-assets-software-licences.md     software products, licences, seats
-│   ├── 17-assets-lifecycle-operations.md  maintenance, audits, attachments, custom fields
-│   ├── 18-assets-self-service.md          requests, reservations, acceptance, depreciation
-│   └── 19-assets-playbook-integration.md  the onboarding and offboarding hooks
+│   └── assets/                            the Assets module
+│       ├── 14-catalogue-and-inventory.md  catalogue, storage locations, serialised assets, checkout and checkin
+│       ├── 15-quantitative-inventory.md   accessories, consumables, components, stock thresholds
+│       ├── 16-software-licences.md        software products, licences, seats
+│       ├── 17-lifecycle-operations.md     suppliers, maintenance, audits, attachments, custom fields
+│       ├── 18-self-service.md             requests, reservations, acceptance, depreciation
+│       └── 19-playbook-integration.md     the onboarding and offboarding hooks
 │
 └── backlog/                               named and scoped, not specified in detail yet
     ├── 20-pillar-operate.md               time tracking, PTO
@@ -74,6 +75,14 @@ docs/specs/
     ├── 22-pillar-grow.md                  one on ones, rate your manager, skills, e-coffees
     └── 23-module-candidates.md            the unprioritised module list, kept for reference
 ```
+
+Each module owns a folder under `modules/`. A module is one product area that a
+company turns on or off as a whole, and every spec describing part of it lives in
+that folder. `assets/` is the first. Future modules (PTO, Time, Skills, one on
+ones, internal news) each get a folder of their own rather than a file.
+
+Numbering stays continuous across the whole tree, so a spec identifier is unique
+no matter which folder it sits in.
 
 ### Reading order
 

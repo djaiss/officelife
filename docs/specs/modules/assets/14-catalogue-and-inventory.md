@@ -1,0 +1,435 @@
+# 14. Assets: catalogue and serialised inventory
+
+| | |
+| --- | --- |
+| **Identifier** | `modules/assets/14-catalogue-and-inventory` |
+| **Status** | Specified |
+| **Module** | Assets |
+| **Level** | 1, the only asset scope committed to the first version |
+| **Source** | Sections 7.1.1, 7.1.2, 7.1.3 and 7.1.8 of the monolithic specification |
+| **Depends on** | `03-employees`, `04-permissions-and-roles`, `05-locations`, `11-domain-events`, `13-module-system` |
+| **Depended on by** | `15-quantitative-inventory`, `16-software-licences`, `17-lifecycle-operations`, `18-self-service`, `19-playbook-integration` |
+
+## 1. Context / Overview
+
+The stated goal for this module is eventual feature parity with Snipe-IT. That is
+ambitious and openly so, which is exactly what `core/13-module-system` says
+modules are for: the core stays thin, the ambition lives in the modules.
+
+The ambition is structured in three levels. **This spec is level 1, and level 1
+is the only asset scope committed to the first version.** Levels 2 and 3 are the
+trajectory towards parity, with no timetable.
+
+### The structuring decision
+
+Do not model the whole inventory as one generic `Equipment` or `InventoryItem`.
+The families have life cycles too different to share a data model.
+
+| Family | Nature |
+| --- | --- |
+| **Asset** | Serialised, individual, traceable, comes back. Checked out and checked in. |
+| **Accessory** | Counted by quantity, may come back, no individual serial number tracked. |
+| **Consumable** | Counted, handed out, does not come back. |
+| **Component** | Installed inside an asset, never assigned to an employee directly. |
+| **Licence** | Seats attributable to an employee or an asset, with expiry and renewal. |
+
+The centre of the module is not a generic object. It is this graph:
+
+```
+AssetModel  →  Asset  →  AssetAssignment  →  Employee | Location | Asset
+```
+
+This spec covers that graph. The other families are `15-quantitative-inventory` and
+`16-software-licences`.
+
+`AssetModel` is the concept most often missing from a first attempt. Every
+physical asset belongs to a model, and the model carries what they have in common:
+manufacturer, category, expected lifetime. Without it, the manufacturer of forty
+identical laptops is typed forty times.
+
+## 2. User Stories & Requirements
+
+### Stories
+
+**As an IT administrator**, I record the equipment the company owns, each item
+individually, with its serial number and its own tag.
+
+**As an IT administrator**, I define once that "Apple MacBook Pro 14 inch M4 Pro"
+is a laptop made by Apple, and every one we own refers to it.
+
+**As an IT administrator**, I hand a laptop to somebody, recording the state it
+was in and when I expect it back.
+
+**As an IT administrator**, I take a laptop back, recording the state it came
+back in, and it returns to stock.
+
+**As an IT administrator**, I assign equipment to an office rather than a person,
+because a meeting room display belongs to the room.
+
+**As an IT administrator**, I say what state a piece of equipment is in, ready to
+deploy, awaiting repair, lost, retired, separately from who currently holds it.
+
+**As an IT administrator**, I look at an asset and see everybody who has had it,
+in what state, and when it was due back.
+
+**As an IT administrator**, I look at a colleague and see everything assigned to
+them.
+
+**As an IT administrator**, an item that is out with somebody cannot be handed to
+somebody else by mistake.
+
+### Functional requirements
+
+| ID | Requirement |
+| --- | --- |
+| FR-01 | Every catalogue object and every asset belongs to exactly one company. |
+| FR-02 | A category groups assets and carries the rules that apply to the whole family: whether acceptance is required, the text to accept, whether a checkout sends an email. |
+| FR-03 | A manufacturer is who makes the equipment. A supplier is who sells it. They are separate entities. |
+| FR-04 | An asset model belongs to a manufacturer and a category, and carries the attributes shared by every asset of that model. |
+| FR-05 | Every asset belongs to exactly one asset model. |
+| FR-06 | An asset has an asset tag, the internal identifier of the company, unique within it, and separately a serial number, which comes from the manufacturer. |
+| FR-07 | An asset status describes the operational state and has a system type: deployable, pending, undeployable, archived. |
+| FR-08 | Being assigned is not a status. It is derived from an active assignment. |
+| FR-09 | A company may add its own statuses on top of the system ones. |
+| FR-10 | An asset has a default location and a current location. |
+| FR-11 | Assignment is recorded in an append only history table, never updated in place. |
+| FR-12 | An asset may be assigned to an employee, to a location, or to another asset. |
+| FR-13 | An asset has at most one active assignment at a time. |
+| FR-14 | Checkout is a business operation, not a field update. It validates that the asset is deployable and unassigned, creates the assignment, updates the location, publishes an event, requests acceptance when the category requires it, and writes to the audit log. |
+| FR-15 | Checkin is a business operation. It closes the active assignment, records the returned condition, updates the status, publishes an event, and writes to the audit log. |
+| FR-16 | Checkout records the expected return date, the condition at checkout and free text notes. Checkin records the condition at checkin, the location it returned to, and notes. |
+| FR-17 | Checking out an asset that is not deployable, or already assigned, is refused. |
+| FR-18 | The history is readable from both ends: from the asset and from whoever held it. |
+| FR-19 | An asset can be archived, keeping its history. |
+| FR-20 | Managing the catalogue and assets requires the permissions declared by the module. |
+| FR-21 | *(Level 2)* A storage location is a place inside an office: a floor, a room, a cupboard, a shelf, a cabinet, a locker. |
+| FR-22 | *(Level 2)* A storage location belongs to exactly one office and may have a parent storage location, forming a tree of any depth including none. |
+| FR-23 | *(Level 2)* The parent chain of a storage location may not contain a cycle. |
+| FR-24 | *(Level 2)* A storage location can be archived, keeping every record of what was in it. |
+| FR-25 | *(Level 2)* An asset in stock records the exact storage location it sits in. An asset checked out to somebody records none. |
+| FR-26 | *(Level 2)* Checking an asset in records where it was put back, at storage location precision. |
+| FR-27 | *(Level 2)* An asset may be assigned to a storage location, which is distinct from being stored in one: an assigned asset is not available, a stored one is. |
+
+## 3. Technical Specifications & Boundaries
+
+### The catalogue
+
+Reference objects, defined once per company and reused throughout the module,
+the same way teams and job titles are. See `06-teams` and `07-job-titles`.
+
+```
+AssetCategory
+- id, company_id
+- name                      "Laptops", "Phones", "Displays", "Security badges"
+- type
+- requires_acceptance       whether the holder must accept the terms
+- eula_text                 the terms to accept
+- send_checkout_email
+
+Manufacturer
+- id, company_id
+- name                      "Apple", "Dell", "Lenovo"
+- website_url, support_url, support_email, support_phone
+- notes
+
+AssetModel
+- id, company_id
+- manufacturer_id, asset_category_id
+- name                      "Apple MacBook Pro 14-inch M4 Pro"
+- model_number
+- image_path
+- useful_life_months
+- is_requestable
+- notes
+
+AssetStatus
+- id, company_id            null for a system status
+- name
+- type                      deployable | pending | undeployable | archived
+- color
+- is_system
+```
+
+### Storage locations (level 2)
+
+An office answers where an asset is to within a building. That is enough to hand
+equipment out and get it back, which is why level 1 stops there. It is not enough
+to find a thing.
+
+`StorageLocation` is a place inside an office: a floor, a room, a store cupboard,
+a shelf, a network cabinet, a locker. It is a self referencing tree, so a company
+records as much or as little depth as it keeps.
+
+```
+Montréal Office
+└── 3rd floor
+    ├── IT store
+    │   ├── Shelf A
+    │   └── Shelf B
+    ├── Network room
+    │   └── Cabinet 02
+    └── Office 3-142
+```
+
+```
+StorageLocation
+- id, company_id
+- location_id              the office it is inside, required
+- parent_storage_location_id   nullable, FK to StorageLocation
+- name                     "IT store", "Shelf A", "Cabinet 02"
+- type                     floor | room | storage | shelf | cabinet | locker | other
+- description              nullable
+- archived_at              nullable, null while it is in use
+```
+
+Three decisions inside that, each of which could reasonably have gone the other
+way.
+
+**It is a separate entity, not `Location` with a parent.** Making offices and
+shelves one self referencing tree, the way `06-teams` does for teams and
+departments, is the obvious move and it is wrong here. A `Location` carries a
+country, a city and a time zone, and employees attach to it through
+`EmployeeLocation`. A shelf has none of those and no employee is attached to one.
+Merging them means every query about where somebody works has to exclude the
+furniture.
+
+**It is called `StorageLocation`, not `AssetLocation`.** `EmployeeLocation` in
+`05-locations` is the history of which office an employee is attached to.
+`AssetLocation` would read as the same construct for assets, which is exactly
+what this is not.
+
+**It uses `archived_at`, not `is_active`.** Matching `locations`, where the same
+question was already answered. A store cupboard that stops being used still has
+to answer what was in it.
+
+The parent chain may not contain a cycle, checked in the application on every
+write, the same way `06-teams` checks team parents.
+
+### Where an asset is
+
+Two columns rather than one, because they answer different questions.
+
+```
+Asset
+- default_location_id           the office it belongs to
+- current_location_id           the office it is in now
+- current_storage_location_id   nullable, level 2, the exact spot inside it
+```
+
+An asset checked out to somebody has no meaningful storage location and the
+column is null. An asset in stock has one, and that is what makes an audit worth
+running.
+
+`AssetAssignment` gains `storage_location` as a fourth assignee type at level 2,
+alongside employee, location and asset. A display bolted to the wall of the
+Renoir meeting room is assigned to that room, not stored in it, and the
+distinction is real: an assigned asset is not available, a stored one is.
+
+`AssetStatus` follows the same shape as the lifecycle status in
+`08-employee-lifecycle-status`: a fixed system list with a `type` that drives
+behaviour, plus whatever the company adds. The `type` is what the code branches
+on. The name is what people read. That is why a company can add "Awaiting repair"
+without the code learning about it: it declares itself as `undeployable` and
+behaves accordingly.
+
+Two fields on `AssetModel` are deferred to later levels and named here so the
+column order does not have to change: `depreciation_method_id` (level 3, see
+`18-self-service`) and `fieldset_id` (level 2, see
+`17-lifecycle-operations`).
+
+### The asset
+
+```
+Asset
+- id, company_id
+- asset_model_id
+- asset_tag                 internal identifier, unique per company, "OL-LAPTOP-0042"
+- serial_number             from the manufacturer
+- name
+- status_id
+- default_location_id       the office it lives in when nobody has it
+- current_location_id       the office it is in now
+- current_storage_location_id  nullable, level 2, the exact spot inside that office
+- supplier_id               nullable, see 17
+- purchase_date, purchase_cost, order_number
+- warranty_expires_at, end_of_life_at
+- is_byod                   owned by the employee, not the company
+- is_requestable
+- notes
+- created_at, updated_at, archived_at
+```
+
+Two identifiers, deliberately. The asset tag is what the company writes on the
+label and controls. The serial number is what the manufacturer stamped on it and
+nobody controls. Conflating them means either trusting a manufacturer to be
+unique across vendors, or being unable to label a machine whose serial number is
+unreadable.
+
+### Assignment
+
+```
+AssetAssignment
+- id, asset_id
+- assignee_type             employee | location | asset | storage_location (level 2)
+- assignee_id
+- assigned_by_user_id
+- assigned_at
+- expected_return_at        nullable
+- returned_at               nullable, null means the assignment is active
+- returned_to_location_id   nullable
+- checkout_notes, checkin_notes
+- condition_at_checkout, condition_at_checkin
+```
+
+Same append only pattern as `05-locations`, where the full reasoning is written.
+
+A single `employee_id` column on the asset would answer "who has it now" and
+nothing else. This table answers four questions: who has it, who had it before,
+in what condition each time, and when it was supposed to come back.
+
+The assignee is polymorphic across three types, the same technique
+`11-domain-events` uses for subjects. A display assigned to a meeting room, a
+docking station assigned to a laptop, and a laptop assigned to a person are the
+same operation against different targets.
+
+### Checkout and checkin as operations
+
+These are the two operations that make the module more than a spreadsheet, and
+they are specified as sequences rather than as updates.
+
+**CheckoutAsset**
+
+1. Validate that the status type is `deployable`.
+2. Validate that no assignment is active.
+3. Create the `AssetAssignment` with the condition and the expected return date.
+4. Update `current_location_id`.
+5. Publish `asset.checked_out`.
+6. Request acceptance if the category requires it.
+7. Write to the audit log.
+
+**CheckinAsset**
+
+1. Close the active `AssetAssignment`, setting `returned_at` and the condition.
+2. Record the location it returned to.
+3. Update the status.
+4. Publish `asset.checked_in`.
+5. Write to the audit log.
+
+Steps 1 and 2 of checkout are the ones people skip. Without them an asset can be
+handed to two people at once, or handed out while it is in for repair, and the
+inventory quietly stops describing reality.
+
+### Permissions declared by this module
+
+Per `13-module-system`, a module declares its own permissions.
+
+| Permission | |
+| --- | --- |
+| `asset.view` | See the inventory. |
+| `asset.manage` | Create, change and archive assets and the catalogue. |
+| `asset.checkout` | Hand equipment out and take it back. |
+
+`asset.view` targets an asset rather than an employee, so the scopes of
+`04-permissions-and-roles` do not apply to it directly. It is granted at company
+scope only, until there is a reason for anything narrower.
+
+The IT/Workplace administrator role named in the source document is created when
+this module ships, holding all three.
+
+### Events published
+
+| Event | When |
+| --- | --- |
+| `asset.checked_out` | An asset is assigned. |
+| `asset.checked_in` | An assignment is closed. |
+| `asset.return_overdue` | An expected return date passes with the assignment still open. |
+| `asset.reported_lost` | An asset moves to a status meaning lost. |
+
+The rest of the module catalogue is declared by the specs that own those
+features. See `19-playbook-integration` for the full list.
+
+### Out of scope for level 1
+
+Everything below is named so that it is clear it was considered and deferred, not
+forgotten.
+
+- Storage locations, specified above and deliberately held at level 2. Level 1
+  records the office an asset is in and nothing finer. The `Asset` column and the
+  fourth assignee type are named above so that adding them later is an addition
+  rather than a restructuring.
+- Suppliers, accessories, consumables, components. Level 2, see
+  `15-quantitative-inventory` and `17-lifecycle-operations`.
+- Software licences. Level 2, see `16-software-licences`.
+- Maintenance, audits, attachments, custom fields. Level 2, see
+  `17-lifecycle-operations`.
+- Labels, QR codes, barcodes, bulk import and export, bulk actions. Level 2.
+- Requests, reservations, acceptance with signatures, depreciation. Level 3, see
+  `18-self-service`.
+- Depreciation and financial reporting. Level 3.
+
+## 4. Acceptance Criteria
+
+- [ ] AC-01. A category, a manufacturer and an asset model can be created, and an
+      asset requires a model.
+- [ ] AC-02. Two assets of the same company cannot share an asset tag; two assets
+      of different companies can.
+- [ ] AC-03. An asset can be created with no serial number.
+- [ ] AC-04. Every company has the system asset statuses, and a company can add
+      its own declaring one of the four types.
+- [ ] AC-05. An asset with an active assignment shows as assigned without its
+      status changing.
+- [ ] AC-06. Checking out a deployable, unassigned asset creates an assignment
+      and updates the current location.
+- [ ] AC-07. Checking out an asset that is already assigned is refused.
+- [ ] AC-08. Checking out an asset whose status type is not deployable is
+      refused.
+- [ ] AC-09. Checking in closes the assignment, records the returned condition
+      and the location, and leaves the row in place.
+- [ ] AC-10. An asset can be assigned to a location and to another asset, not
+      only to an employee.
+- [ ] AC-11. Asking an asset for its assignments returns every holder with the
+      conditions and dates. Asking an employee returns everything they hold and
+      have held.
+- [ ] AC-12. An assignment whose expected return date has passed while still open
+      publishes `asset.return_overdue` once.
+- [ ] AC-13. Checkout publishes `asset.checked_out`; checkin publishes
+      `asset.checked_in`.
+- [ ] AC-14. Checkout and checkin each write an audit log entry naming who did it.
+- [ ] AC-15. A user without `asset.checkout` cannot hand equipment out.
+- [ ] AC-16. Archiving an asset keeps its assignment history readable.
+- [ ] AC-17. Every screen and permission of this module is unavailable while the
+      module is disabled.
+- [ ] AC-18. *(Level 2)* A storage location can be created with a name, a type
+      and an office, and with no parent.
+- [ ] AC-19. *(Level 2)* A storage location can be nested several levels deep,
+      and a parent that would create a cycle is refused.
+- [ ] AC-20. *(Level 2)* Archiving a storage location keeps the record of what
+      was stored in it and removes it from the list of places to put things.
+- [ ] AC-21. *(Level 2)* Checking an asset in records the storage location it was
+      put back into, and checking it out clears it.
+- [ ] AC-22. *(Level 2)* Asking a storage location returns everything currently
+      in it, and asking one with children returns what is in the whole subtree.
+- [ ] AC-23. *(Level 2)* An asset assigned to a storage location is unavailable;
+      an asset merely stored in one is available.
+
+## 5. Implementation status
+
+Nothing in this spec exists. There is no asset table, no catalogue and no module
+system to hang it on.
+
+Three things have to exist first.
+
+- `13-module-system`, or this becomes core by accident. It is the first module,
+  which makes it the thing that proves the boundary is real.
+- `05-locations`, for the default and current location. That half exists already.
+- `11-domain-events`, for the events. Without it the module works and publishes
+  nothing, which is acceptable as an interim state.
+
+### Suggested build order
+
+1. The catalogue: categories, manufacturers, models, statuses. Administration
+   screens for each. Nothing is assignable yet and the module is already useful
+   as a record of what the company owns.
+2. Assets themselves, with the list and the detail screen.
+3. Assignments, checkout and checkin. This is where the module earns its keep.
+4. The overdue check, as a scheduled job.
