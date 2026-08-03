@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -11,6 +12,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
+use App\Services\DomainEvents;
 use Carbon\Carbon;
 
 /**
@@ -40,9 +42,26 @@ class CreateEmployee
         $this->authorize();
         $this->sanitize();
         $this->create();
+        $this->publish();
         $this->log();
 
         return $this->employee;
+    }
+
+    /**
+     * An employee record being created is not somebody arriving. The events for
+     * arriving and leaving are published from the lifecycle status, once that
+     * exists, and this one only says that a record was written.
+     */
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::EmployeeCreated,
+            company: $this->company,
+            subject: $this->employee,
+            actor: $this->author,
+            payload: ['name' => $this->employee->name],
+        );
     }
 
     private function authorize(): void

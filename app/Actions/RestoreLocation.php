@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Location;
 use App\Models\User;
+use App\Services\DomainEvents;
 
 /**
  * Reopen an office the company had closed. It comes back as an ordinary office
@@ -25,9 +27,21 @@ class RestoreLocation
     {
         $this->authorize();
         $this->restore();
+        $this->publish();
         $this->log();
 
         return $this->location;
+    }
+
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::LocationReopened,
+            company: $this->location->company,
+            subject: $this->location,
+            actor: $this->author,
+            payload: ['name' => $this->location->name],
+        );
     }
 
     private function authorize(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\SizeRangeEnum;
 use App\Enums\UserActionEnum;
@@ -12,6 +13,7 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\DomainEvents;
 
 /**
  * Update the information of a company. Only somebody who may look after the
@@ -39,9 +41,21 @@ class UpdateCompany
         $this->authorize();
         $this->sanitize();
         $this->update();
+        $this->publish();
         $this->log();
 
         return $this->company;
+    }
+
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::CompanyUpdated,
+            company: $this->company,
+            subject: $this->company,
+            actor: $this->author,
+            payload: ['name' => $this->company->name],
+        );
     }
 
     private function authorize(): void

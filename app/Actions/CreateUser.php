@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Helpers\TextSanitizer;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\DomainEvents;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -29,8 +31,24 @@ class CreateUser
     {
         $this->sanitize();
         $this->create();
+        $this->publish();
 
         return $this->user;
+    }
+
+    /**
+     * Nobody is recorded as the actor. A user is created by registration, where
+     * the person the account is for does not exist yet to be named as having
+     * done it.
+     */
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::UserCreated,
+            company: $this->company,
+            subject: $this->user,
+            payload: ['email' => $this->user->email],
+        );
     }
 
     private function sanitize(): void

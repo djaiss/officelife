@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Enums\PlanEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -12,6 +13,7 @@ use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\DomainEvents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -55,6 +57,7 @@ class CreateCompany
             $this->attachEmployee();
         });
 
+        $this->publish();
         $this->log();
 
         return $this->company;
@@ -129,6 +132,21 @@ class CreateCompany
     {
         $this->owner->employee_id = $this->employee->id;
         $this->owner->save();
+    }
+
+    /**
+     * Published outside the transaction, along with the log, so that a company
+     * that failed to be created leaves no record of having happened.
+     */
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::CompanyCreated,
+            company: $this->company,
+            subject: $this->company,
+            actor: $this->owner,
+            payload: ['name' => $this->company->name],
+        );
     }
 
     private function log(): void

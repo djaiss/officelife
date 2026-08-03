@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\DomainEventTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -11,6 +12,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\Location;
 use App\Models\User;
+use App\Services\DomainEvents;
 use InvalidArgumentException;
 
 /**
@@ -37,6 +39,7 @@ class CreateLocation
         $this->sanitize();
         $this->validate();
         $this->create();
+        $this->publish();
         $this->log();
 
         return $this->location;
@@ -92,6 +95,17 @@ class CreateLocation
             'address' => $this->address,
             'timezone' => $this->timezone,
         ]);
+    }
+
+    private function publish(): void
+    {
+        DomainEvents::publish(
+            type: DomainEventTypeEnum::LocationCreated,
+            company: $this->company,
+            subject: $this->location,
+            actor: $this->author,
+            payload: ['name' => $this->location->name],
+        );
     }
 
     private function log(): void
