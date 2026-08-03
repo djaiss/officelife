@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ModuleEnum;
 use App\Enums\PlanEnum;
 use App\Enums\SizeRangeEnum;
 use App\Enums\WorkModeEnum;
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $billing_email
  * @property Carbon|null $trial_ends_at
  * @property int|null $owner_user_id
+ * @property array<string, mixed>|null $settings
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -68,6 +70,7 @@ class Company extends Model
         'billing_email',
         'trial_ends_at',
         'owner_user_id',
+        'settings',
     ];
 
     /**
@@ -84,6 +87,7 @@ class Company extends Model
             'founded_at' => 'date',
             'trial_ends_at' => 'datetime',
             'is_self_hosted' => 'boolean',
+            'settings' => 'array',
         ];
     }
 
@@ -128,10 +132,30 @@ class Company extends Model
     }
 
     /**
+     * Get the assets the company owns.
+     *
+     * @return HasMany<Asset, $this>
+     */
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class);
+    }
+
+    /**
      * Get whether the company is still within its trial period.
      */
     public function isOnTrial(): bool
     {
         return $this->trial_ends_at !== null && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Get whether the company has turned a module on. A module nobody turned on
+     * is off: there is no module that is enabled by default, and the core is not
+     * a module.
+     */
+    public function hasModule(ModuleEnum $module): bool
+    {
+        return in_array($module->value, $this->settings['modules'] ?? [], true);
     }
 }

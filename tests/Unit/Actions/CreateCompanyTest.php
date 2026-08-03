@@ -98,7 +98,7 @@ class CreateCompanyTest extends TestCase
         )->execute();
 
         $this->assertEquals(
-            [Role::ADMINISTRATOR, Role::MEMBER, Role::PEOPLE_ADMINISTRATOR],
+            [Role::ADMINISTRATOR, Role::IT_ADMINISTRATOR, Role::MEMBER, Role::PEOPLE_ADMINISTRATOR],
             $company->roles()->pluck('slug')->sort()->values()->all(),
         );
     }

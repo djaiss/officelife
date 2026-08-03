@@ -20,6 +20,9 @@ enum PermissionEnum: string
     case EmployeeUpdatePrivate = 'employee.update_private';
     case RoleManage = 'role.manage';
     case CompanyManage = 'company.manage';
+    case AssetView = 'asset.view';
+    case AssetManage = 'asset.manage';
+    case AssetCheckout = 'asset.checkout';
 
     /**
      * Whether the permission is about one employee at a time, and therefore
@@ -35,7 +38,38 @@ enum PermissionEnum: string
             self::EmployeeUpdatePrivate => true,
             self::EmployeeCreate,
             self::RoleManage,
-            self::CompanyManage => false,
+            self::CompanyManage,
+            self::AssetView,
+            self::AssetManage,
+            self::AssetCheckout => false,
+        };
+    }
+
+    /**
+     * The module the permission belongs to, or null when it belongs to the core.
+     * A permission of a module the company has not turned on is denied, whatever
+     * a role grants, which is the only part of the module boundary somebody can
+     * observe.
+     *
+     * The permissions of every module live in this enum rather than in one of
+     * their own. That is a deliberate simplification while there is a single
+     * module: composing several enums means replacing every match in this file
+     * with an interface, for no gain the user can see. It is revisited when a
+     * second module arrives.
+     */
+    public function module(): ?ModuleEnum
+    {
+        return match ($this) {
+            self::AssetView,
+            self::AssetManage,
+            self::AssetCheckout => ModuleEnum::Assets,
+            self::EmployeeView,
+            self::EmployeeCreate,
+            self::EmployeeUpdate,
+            self::EmployeeViewPrivate,
+            self::EmployeeUpdatePrivate,
+            self::RoleManage,
+            self::CompanyManage => null,
         };
     }
 
@@ -69,6 +103,9 @@ enum PermissionEnum: string
             self::EmployeeUpdatePrivate => PermissionGroupEnum::SensitiveData,
             self::RoleManage,
             self::CompanyManage => PermissionGroupEnum::Administration,
+            self::AssetView,
+            self::AssetManage,
+            self::AssetCheckout => PermissionGroupEnum::Assets,
         };
     }
 
@@ -86,6 +123,9 @@ enum PermissionEnum: string
             self::EmployeeUpdatePrivate => 'Change the private details of a colleague',
             self::RoleManage => 'Administer the company, its roles and who holds them',
             self::CompanyManage => 'Change the settings of the company',
+            self::AssetView => 'See the equipment the company owns',
+            self::AssetManage => 'Add, change and archive equipment and its catalogue',
+            self::AssetCheckout => 'Hand equipment out and take it back',
         };
     }
 }

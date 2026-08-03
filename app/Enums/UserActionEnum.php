@@ -35,6 +35,27 @@ enum UserActionEnum: string
     case MagicLinkCreation = 'magic_link_created';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
+    case ModuleEnabled = 'module_enabled';
+    case ModuleDisabled = 'module_disabled';
+    case ManufacturerCreation = 'manufacturer_created';
+    case ManufacturerUpdate = 'manufacturer_updated';
+    case ManufacturerDeletion = 'manufacturer_deleted';
+    case AssetCategoryCreation = 'asset_category_created';
+    case AssetCategoryUpdate = 'asset_category_updated';
+    case AssetCategoryDeletion = 'asset_category_deleted';
+    case AssetModelCreation = 'asset_model_created';
+    case AssetModelUpdate = 'asset_model_updated';
+    case AssetModelDeletion = 'asset_model_deleted';
+    case AssetStatusCreation = 'asset_status_created';
+    case AssetStatusUpdate = 'asset_status_updated';
+    case AssetStatusDeletion = 'asset_status_deleted';
+    case AssetCreation = 'asset_created';
+    case AssetUpdate = 'asset_updated';
+    case AssetDeletion = 'asset_deleted';
+    case AssetArchive = 'asset_archived';
+    case AssetRestoration = 'asset_restored';
+    case AssetCheckout = 'asset_checked_out';
+    case AssetCheckin = 'asset_checked_in';
 
     /**
      * What the action reads as in the logs, written about whoever performed it.
@@ -73,6 +94,27 @@ enum UserActionEnum: string
             self::MagicLinkCreation => 'Asked for a sign-in link',
             self::ApiKeyCreation => 'Created the API key called :name',
             self::ApiKeyDeletion => 'Revoked the API key called :name',
+            self::ModuleEnabled => 'Turned the :name module on',
+            self::ModuleDisabled => 'Turned the :name module off',
+            self::ManufacturerCreation => 'Added the manufacturer called :name',
+            self::ManufacturerUpdate => 'Updated the manufacturer called :name',
+            self::ManufacturerDeletion => 'Deleted the manufacturer called :name',
+            self::AssetCategoryCreation => 'Added the equipment category called :name',
+            self::AssetCategoryUpdate => 'Updated the equipment category called :name',
+            self::AssetCategoryDeletion => 'Deleted the equipment category called :name',
+            self::AssetModelCreation => 'Added the equipment model called :name',
+            self::AssetModelUpdate => 'Updated the equipment model called :name',
+            self::AssetModelDeletion => 'Deleted the equipment model called :name',
+            self::AssetStatusCreation => 'Added the equipment status called :name',
+            self::AssetStatusUpdate => 'Updated the equipment status called :name',
+            self::AssetStatusDeletion => 'Deleted the equipment status called :name',
+            self::AssetCreation => 'Added the equipment tagged :tag',
+            self::AssetUpdate => 'Updated the equipment tagged :tag',
+            self::AssetDeletion => 'Deleted the equipment tagged :tag',
+            self::AssetArchive => 'Archived the equipment tagged :tag',
+            self::AssetRestoration => 'Brought the equipment tagged :tag back',
+            self::AssetCheckout => 'Handed the equipment tagged :tag to :assignee',
+            self::AssetCheckin => 'Took the equipment tagged :tag back',
         };
     }
 }

@@ -14,6 +14,7 @@ enum PermissionGroupEnum: string
     case People = 'people';
     case SensitiveData = 'sensitive_data';
     case Administration = 'administration';
+    case Assets = 'assets';
 
     /**
      * What the group is called. The sentence doubles as the translation key.
@@ -24,6 +25,7 @@ enum PermissionGroupEnum: string
             self::People => 'People',
             self::SensitiveData => 'Sensitive data',
             self::Administration => 'Administration',
+            self::Assets => 'Assets',
         };
     }
 
@@ -37,6 +39,7 @@ enum PermissionGroupEnum: string
             self::People => 'The employee record itself',
             self::SensitiveData => 'Fields kept off the screen for anybody not allowed to see them',
             self::Administration => 'The company and the way access to it is handed out',
+            self::Assets => 'The equipment the company owns and who is holding it',
         };
     }
 }

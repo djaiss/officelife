@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Give a company the three roles it starts life with. Nobody asks for this: it
+ * Give a company the four roles it starts life with. Nobody asks for this: it
  * runs when the company is created, so there is never a company without a way
  * of handing out permissions.
  *
@@ -66,6 +66,9 @@ class CreateDefaultRoles
                     ['permission' => PermissionEnum::EmployeeUpdatePrivate, 'scope' => ScopeEnum::Company],
                     ['permission' => PermissionEnum::RoleManage, 'scope' => ScopeEnum::Company],
                     ['permission' => PermissionEnum::CompanyManage, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetView, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetManage, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetCheckout, 'scope' => ScopeEnum::Company],
                 ],
             ],
             [
@@ -80,6 +83,16 @@ class CreateDefaultRoles
                 ],
             ],
             [
+                'name' => 'IT administrator',
+                'slug' => Role::IT_ADMINISTRATOR,
+                'grants' => [
+                    ['permission' => PermissionEnum::EmployeeView, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetView, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetManage, 'scope' => ScopeEnum::Company],
+                    ['permission' => PermissionEnum::AssetCheckout, 'scope' => ScopeEnum::Company],
+                ],
+            ],
+            [
                 'name' => 'Member',
                 'slug' => Role::MEMBER,
                 'grants' => [
@@ -87,6 +100,7 @@ class CreateDefaultRoles
                     ['permission' => PermissionEnum::EmployeeUpdate, 'scope' => ScopeEnum::Self],
                     ['permission' => PermissionEnum::EmployeeViewPrivate, 'scope' => ScopeEnum::Self],
                     ['permission' => PermissionEnum::EmployeeUpdatePrivate, 'scope' => ScopeEnum::Self],
+                    ['permission' => PermissionEnum::AssetView, 'scope' => ScopeEnum::Company],
                 ],
             ],
         ];

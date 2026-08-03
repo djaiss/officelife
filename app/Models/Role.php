@@ -46,6 +46,8 @@ class Role extends Model
 
     public const string MEMBER = 'member';
 
+    public const string IT_ADMINISTRATOR = 'it-administrator';
+
     protected $table = 'roles';
 
     /**

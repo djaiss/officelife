@@ -24,9 +24,9 @@ class CreateDefaultRolesTest extends TestCase
 
         $roles = new CreateDefaultRoles(company: $company)->execute();
 
-        $this->assertCount(3, $roles);
+        $this->assertCount(4, $roles);
         $this->assertEquals(
-            [Role::ADMINISTRATOR, Role::PEOPLE_ADMINISTRATOR, Role::MEMBER],
+            [Role::ADMINISTRATOR, Role::PEOPLE_ADMINISTRATOR, Role::IT_ADMINISTRATOR, Role::MEMBER],
             $roles->pluck('slug')->all(),
         );
 
@@ -90,6 +90,7 @@ class CreateDefaultRolesTest extends TestCase
         $this->assertEquals(ScopeEnum::Self, $scopes[PermissionEnum::EmployeeUpdate->value]);
         $this->assertEquals(ScopeEnum::Self, $scopes[PermissionEnum::EmployeeViewPrivate->value]);
         $this->assertEquals(ScopeEnum::Self, $scopes[PermissionEnum::EmployeeUpdatePrivate->value]);
-        $this->assertCount(4, $role->permissions);
+        $this->assertEquals(ScopeEnum::Company, $scopes[PermissionEnum::AssetView->value]);
+        $this->assertCount(5, $role->permissions);
     }
 }
