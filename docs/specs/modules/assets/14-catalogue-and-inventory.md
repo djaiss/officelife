@@ -90,6 +90,7 @@ somebody else by mistake.
 | FR-06 | An asset has an asset tag, the internal identifier of the company, unique within it, and separately a serial number, which comes from the manufacturer. |
 | FR-07 | An asset status describes the operational state and has a system type: deployable, pending, undeployable, archived. |
 | FR-08 | Being assigned is not a status. It is derived from an active assignment. |
+| FR-08b | An asset holding an active assignment reads as Deployed everywhere it is displayed or counted, without that being stored on the asset. |
 | FR-09 | A company may add its own statuses on top of the system ones. |
 | FR-10 | An asset has a default location and a current location. |
 | FR-11 | Assignment is recorded in an append only history table, never updated in place. |
@@ -231,6 +232,47 @@ behaviour, plus whatever the company adds. The `type` is what the code branches
 on. The name is what people read. That is why a company can add "Awaiting repair"
 without the code learning about it: it declares itself as `undeployable` and
 behaves accordingly.
+
+### Why AssetStatus is a table and PermissionEnum is not
+
+The two sit next to each other in the codebase and are modelled opposite ways, so
+the reason is worth stating.
+
+A permission is defined by the code that checks it. A permission row nothing
+checks grants nothing, and a permission checked in code with no row would crash.
+There is no version of it that a company can meaningfully edit, which is why
+`04-permissions-and-roles` makes it an enum.
+
+A status is different, and the split runs through the middle of it. The `type`
+is code: four closed values, and the code branches on them. The row is company
+data: a label a company puts on its own equipment, over one of those four types.
+"In transit", "Awaiting wipe" and "Pending disposal" are real statuses that no
+product should have to ship in advance, and they behave correctly without the
+code learning about them because each declares its type.
+
+The `key` column is the seam between the two. It is set on the handful of system
+rows the code has to recognise by name, which today is `lost` and nothing else,
+and null on everything a company adds. It is deliberately small: a status needing
+a key is a status the code branches on, and that list should stay short.
+
+### Deployed is shown, not stored
+
+FR-08 says being assigned is not a status. That is a statement about the
+database, and on its own it produces a bad answer to a fair question: somebody
+looking at a list of equipment expects to read "Deployed", and should not have to
+know that it is computed.
+
+So the module exposes a display status, derived on read: an asset with an active
+assignment reads as **Deployed**, and every other asset reads as the name of its
+`AssetStatus`. Lists, counts, exports and screens all read that one value.
+
+It is derived rather than stored because `AssetAssignment` already answers the
+question definitively. A `deployed` row in `AssetStatus` would be a second source
+of truth for the same fact, and the two can disagree: somebody sets an asset back
+to "Ready to deploy" while the assignment is still open, and the inventory starts
+lying while the checkout guard, which reads the assignment, keeps working. It
+would also force checkin to remember which status to restore, since an asset
+checked out from "Pending" should not come back as "Ready to deploy".
 
 Two fields on `AssetModel` are deferred to later levels and named here so the
 column order does not have to change: `depreciation_method_id` (level 3, see
@@ -376,8 +418,9 @@ forgotten.
 - [ ] AC-03. An asset can be created with no serial number.
 - [ ] AC-04. Every company has the system asset statuses, and a company can add
       its own declaring one of the four types.
-- [ ] AC-05. An asset with an active assignment shows as assigned without its
-      status changing.
+- [ ] AC-05. An asset with an active assignment reads as Deployed while the
+      `AssetStatus` stored against it is unchanged, and reads as that status
+      again once the assignment is closed.
 - [ ] AC-06. Checking out a deployable, unassigned asset creates an assignment
       and updates the current location.
 - [ ] AC-07. Checking out an asset that is already assigned is refused.
