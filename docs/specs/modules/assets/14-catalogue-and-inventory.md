@@ -85,6 +85,7 @@ somebody else by mistake.
 | FR-01 | Every catalogue object and every asset belongs to exactly one company. |
 | FR-02 | A category groups assets and carries the rules that apply to the whole family: whether acceptance is required, the text to accept, whether a checkout sends an email. |
 | FR-02b | Turning the module on gives a company a catalogue of categories to start from, unless it already has one. They belong to the company and can be renamed, added to and deleted. |
+| FR-02c | A name the product chose reads in the language of whoever is looking. A name a company typed reads as they typed it, in every language. Renaming one we chose makes it theirs. |
 | FR-03 | A manufacturer is who makes the equipment. A supplier is who sells it. They are separate entities. |
 | FR-04 | An asset model belongs to a manufacturer and a category, and carries the attributes shared by every asset of that model. |
 | FR-05 | Every asset belongs to exactly one asset model. |
@@ -190,6 +191,33 @@ life cycle, and nothing can be recorded against them yet.
 Deciding on a company's behalf what its colleagues must agree to before holding a
 laptop is not ours to do, so no category arrives asking for acceptance and none
 carries terms.
+
+### Names we chose, and names they chose
+
+Two names in this module were written by us rather than by a company: the seven
+categories and the five statuses. Both have to read in the language of whoever is
+looking, and neither may be translated once a company has renamed it.
+
+So both tables carry two columns and exactly one of them is ever set.
+
+```
+name                  what the company typed, null while it still goes by ours
+name_translation_key  the key we shipped it under, null once they have renamed it
+```
+
+Reading `name` returns the typed value when there is one, and the translation of
+the key otherwise. Renaming clears the key, which is the moment the row stops
+being ours and becomes theirs. A name somebody chose is not ours to translate,
+in any language, ever.
+
+The consequence worth stating: **uniqueness becomes a question about the current
+language.** A category we shipped holds no name, so a clash has to be looked for
+against what each row currently reads as rather than against the column. A French
+company can therefore create a category called "Laptops", because the one we
+shipped reads to them as "Ordinateurs portables". The database keeps a unique
+index on each column separately, which stops the same key being shipped twice and
+the same typed name being used twice, and the resolved comparison in the actions
+covers the rest.
 
 The five statuses every company gets, inserted once for the installation as
 shared rows with no company of their own:
@@ -500,6 +528,10 @@ forgotten.
 - [x] AC-01b. Turning the module on gives the company seven categories, leaves a
       company that already has some alone, and gives none to a company that never
       turned it on.
+- [x] AC-01c. A category or status we shipped reads in the language of whoever is
+      looking. One a company typed reads as they typed it whatever the language.
+      Renaming one we shipped clears its key and stops it moving with the
+      language.
 - [x] AC-02. Two assets of the same company cannot share an asset tag; two assets
       of different companies can.
 - [x] AC-03. An asset can be created with no serial number.

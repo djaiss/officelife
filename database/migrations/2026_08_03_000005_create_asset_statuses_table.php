@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('company_id')->nullable()->comment('company the status belongs to, null for the statuses every company gets');
             $table->string('key', 30)->nullable()->comment('identifier the code recognises a system status by, null for a status a company added');
-            $table->string('name')->comment('name of the status, as it reads on the screen');
+            $table->string('name')->nullable()->comment('name the company gave the status, null for the statuses we ship, which read from a translation key instead');
+            $table->string('name_translation_key')->nullable()->comment('key the name is translated from, set on the statuses we ship and never on one a company adds');
             $table->string('type', 20)->comment('how the status behaves, one of the cases of AssetStatusTypeEnum');
             $table->string('color', 7)->nullable()->comment('hex colour the status is shown in');
             $table->boolean('is_system')->default(false)->comment('whether the status is one every company gets and nobody may change');
@@ -25,6 +26,7 @@ return new class extends Migration
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
             $table->unique(['company_id', 'name']);
+            $table->unique(['company_id', 'name_translation_key']);
         });
 
         $this->seedSystemStatuses();
@@ -58,7 +60,8 @@ return new class extends Migration
             DB::table('asset_statuses')->insert([
                 'company_id' => null,
                 'key' => $key,
-                'name' => $name,
+                'name' => null,
+                'name_translation_key' => $name,
                 'type' => $type->value,
                 'color' => $color,
                 'is_system' => true,

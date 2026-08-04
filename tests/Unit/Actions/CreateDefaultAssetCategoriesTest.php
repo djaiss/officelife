@@ -9,6 +9,7 @@ use App\Enums\AssetCategoryTypeEnum;
 use App\Models\AssetCategory;
 use App\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -42,6 +43,49 @@ class CreateDefaultAssetCategoriesTest extends TestCase
             $this->assertEquals(AssetCategoryTypeEnum::Asset, $category->type);
             $this->assertFalse($category->requires_acceptance);
             $this->assertNull($category->eula_text);
+        }
+    }
+
+    #[Test]
+    public function it_stores_a_key_to_translate_rather_than_a_name(): void
+    {
+        new CreateDefaultAssetCategories(company: Company::factory()->create())->execute();
+
+        $this->assertDatabaseHas('asset_categories', [
+            'name' => null,
+            'name_translation_key' => 'Laptops',
+        ]);
+    }
+
+    #[Test]
+    public function it_reads_in_the_language_of_whoever_is_looking(): void
+    {
+        $company = Company::factory()->create();
+
+        new CreateDefaultAssetCategories(company: $company)->execute();
+
+        $laptops = $company->assetCategories()->where('name_translation_key', 'Laptops')->firstOrFail();
+
+        $this->assertEquals('Laptops', $laptops->name);
+
+        App::setLocale('fr_FR');
+        $this->assertEquals('Ordinateurs portables', $laptops->fresh()->name);
+
+        App::setLocale('de_DE');
+        $this->assertEquals('Notebooks', $laptops->fresh()->name);
+    }
+
+    #[Test]
+    public function it_translates_every_category_it_creates(): void
+    {
+        $company = Company::factory()->create();
+
+        new CreateDefaultAssetCategories(company: $company)->execute();
+
+        App::setLocale('fr_FR');
+
+        foreach ($company->assetCategories()->get() as $category) {
+            $this->assertNotEquals($category->name_translation_key, $category->name);
         }
     }
 

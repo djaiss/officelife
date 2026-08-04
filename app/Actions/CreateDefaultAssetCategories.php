@@ -77,6 +77,11 @@ class CreateDefaultAssetCategories
     }
 
     /**
+     * The name goes in as a translation key rather than as text, so a category
+     * we chose reads in the language of whoever is looking. It becomes plain
+     * text the moment a company renames it, because a name they chose is theirs
+     * and not ours to translate.
+     *
      * Nothing asks to be accepted. Deciding on somebody's behalf what their
      * colleagues have to agree to before holding a laptop is not ours to do.
      */
@@ -84,7 +89,8 @@ class CreateDefaultAssetCategories
     {
         $this->categories->push(AssetCategory::query()->create([
             'company_id' => $this->company->id,
-            'name' => $name,
+            'name' => null,
+            'name_translation_key' => $name,
             'type' => AssetCategoryTypeEnum::Asset,
             'requires_acceptance' => false,
             'eula_text' => null,

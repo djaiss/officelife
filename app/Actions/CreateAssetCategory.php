@@ -71,10 +71,15 @@ class CreateAssetCategory
             throw new InvalidArgumentException('A category that asks for acceptance needs terms to accept');
         }
 
+        // A category we shipped holds a translation key rather than a name, so
+        // the clash has to be looked for against what each one currently reads
+        // as. That makes uniqueness depend on the language: a French company can
+        // call something Laptops, because the one we shipped reads as
+        // "Ordinateurs portables" to them.
         $taken = AssetCategory::query()
             ->where('company_id', $this->company->id)
-            ->where('name', $this->name)
-            ->exists();
+            ->get()
+            ->contains(fn (AssetCategory $category): bool => $category->name === $this->name);
 
         if ($taken) {
             throw new InvalidArgumentException('The company already has a category called '.$this->name);

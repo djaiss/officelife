@@ -65,18 +65,23 @@ class UpdateAssetCategory
 
         $taken = AssetCategory::query()
             ->where('company_id', $this->category->company_id)
-            ->where('name', $this->name)
             ->whereKeyNot($this->category->id)
-            ->exists();
+            ->get()
+            ->contains(fn (AssetCategory $category): bool => $category->name === $this->name);
 
         if ($taken) {
             throw new InvalidArgumentException('The company already has a category called '.$this->name);
         }
     }
 
+    /**
+     * Renaming a category we shipped makes it theirs. The translation key goes,
+     * and the name stops moving with the language of whoever is looking.
+     */
     private function update(): void
     {
         $this->category->name = $this->name;
+        $this->category->name_translation_key = null;
         $this->category->requires_acceptance = $this->requiresAcceptance;
         $this->category->eula_text = $this->eulaText;
         $this->category->send_checkout_email = $this->sendCheckoutEmail;

@@ -13,7 +13,8 @@ return new class extends Migration
         Schema::create('asset_categories', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('company_id')->comment('company the category belongs to');
-            $table->string('name')->comment('name of the category, as it reads on the screen');
+            $table->string('name')->nullable()->comment('name the company gave the category, null while it still goes by the name we shipped it with');
+            $table->string('name_translation_key')->nullable()->comment('key the name is translated from, set on the categories we create and cleared the moment a company renames one');
             $table->string('type', 20)->comment('which family of equipment it groups, one of the cases of AssetCategoryTypeEnum');
             $table->boolean('requires_acceptance')->default(false)->comment('whether somebody handed one has to accept the terms first');
             $table->text('eula_text')->nullable()->comment('the terms they accept');
@@ -22,6 +23,7 @@ return new class extends Migration
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
             $table->unique(['company_id', 'name']);
+            $table->unique(['company_id', 'name_translation_key']);
         });
     }
 

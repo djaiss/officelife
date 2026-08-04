@@ -70,7 +70,7 @@ class EnableModuleTest extends TestCase
         new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
 
         $this->assertCount(7, $company->assetCategories()->get());
-        $this->assertTrue($company->assetCategories()->where('name', 'Laptops')->exists());
+        $this->assertContains('Laptops', $company->assetCategories()->get()->pluck('name')->all());
     }
 
     #[Test]
@@ -82,7 +82,7 @@ class EnableModuleTest extends TestCase
         $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
 
         new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
-        $company->assetCategories()->where('name', 'Tablets')->delete();
+        $company->assetCategories()->where('name_translation_key', 'Tablets')->delete();
         new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
 
         $this->assertCount(6, $company->assetCategories()->get());

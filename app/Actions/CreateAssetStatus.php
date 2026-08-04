@@ -69,12 +69,14 @@ class CreateAssetStatus
             throw new InvalidArgumentException('A status needs a name');
         }
 
+        // The statuses we ship hold a translation key rather than a name, so the
+        // clash has to be looked for against what each one currently reads as.
         $taken = AssetStatus::query()
             ->where(function ($query): void {
                 $query->where('company_id', $this->company->id)->orWhereNull('company_id');
             })
-            ->where('name', $this->name)
-            ->exists();
+            ->get()
+            ->contains(fn (AssetStatus $status): bool => $status->name === $this->name);
 
         if ($taken) {
             throw new InvalidArgumentException('There is already a status called '.$this->name);
@@ -87,6 +89,7 @@ class CreateAssetStatus
             'company_id' => $this->company->id,
             'key' => null,
             'name' => $this->name,
+            'name_translation_key' => null,
             'type' => $this->type,
             'color' => $this->color,
             'is_system' => false,

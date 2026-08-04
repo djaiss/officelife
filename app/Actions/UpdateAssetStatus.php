@@ -71,9 +71,9 @@ class UpdateAssetStatus
             ->where(function ($query): void {
                 $query->where('company_id', $this->status->company_id)->orWhereNull('company_id');
             })
-            ->where('name', $this->name)
             ->whereKeyNot($this->status->id)
-            ->exists();
+            ->get()
+            ->contains(fn (AssetStatus $status): bool => $status->name === $this->name);
 
         if ($taken) {
             throw new InvalidArgumentException('There is already a status called '.$this->name);

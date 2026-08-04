@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\AssetStatusTypeEnum;
 use Carbon\Carbon;
 use Database\Factories\AssetStatusFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $company_id
  * @property string|null $key
  * @property string $name
+ * @property string|null $name_translation_key
  * @property AssetStatusTypeEnum $type
  * @property string|null $color
  * @property bool $is_system
@@ -69,6 +71,7 @@ class AssetStatus extends Model
         'company_id',
         'key',
         'name',
+        'name_translation_key',
         'type',
         'color',
         'is_system',
@@ -105,6 +108,23 @@ class AssetStatus extends Model
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'status_id');
+    }
+
+    /**
+     * Get what the status is called, which is whatever the company typed, and
+     * the translation of the key we shipped it with until they type anything.
+     *
+     * The five we ship read in the language of whoever is looking. One a company
+     * added reads as they named it, in every language, because a name somebody
+     * chose is not ours to translate.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): string => $value ?? __($this->name_translation_key ?? ''),
+        );
     }
 
     /**

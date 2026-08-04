@@ -8,6 +8,7 @@ use App\Enums\AssetStatusTypeEnum;
 use App\Models\Asset;
 use App\Models\AssetStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -35,6 +36,41 @@ class AssetStatusTest extends TestCase
         foreach ($system as $status) {
             $this->assertTrue($status->is_system);
         }
+    }
+
+    #[Test]
+    public function it_stores_a_key_to_translate_rather_than_a_name_for_the_ones_it_ships(): void
+    {
+        $this->assertDatabaseHas('asset_statuses', [
+            'key' => AssetStatus::READY_TO_DEPLOY,
+            'name' => null,
+            'name_translation_key' => 'Ready to deploy',
+        ]);
+    }
+
+    #[Test]
+    public function it_reads_a_shipped_status_in_the_language_of_whoever_is_looking(): void
+    {
+        $status = AssetStatus::query()->where('key', AssetStatus::AWAITING_REPAIR)->firstOrFail();
+
+        $this->assertEquals('Awaiting repair', $status->name);
+
+        App::setLocale('fr_FR');
+        $this->assertEquals('En attente de réparation', $status->fresh()->name);
+
+        App::setLocale('es_ES');
+        $this->assertEquals('A la espera de reparación', $status->fresh()->name);
+    }
+
+    #[Test]
+    public function it_leaves_a_status_a_company_named_in_the_words_they_chose(): void
+    {
+        $status = AssetStatus::factory()->create(['name' => 'Gone walkabout']);
+
+        App::setLocale('fr_FR');
+
+        $this->assertEquals('Gone walkabout', $status->fresh()->name);
+        $this->assertNull($status->fresh()->name_translation_key);
     }
 
     #[Test]

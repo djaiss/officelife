@@ -18,6 +18,7 @@ use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
@@ -143,6 +144,47 @@ class AssetCategoryActionsTest extends TestCase
             'name' => 'Phones',
             'send_checkout_email' => true,
         ]);
+    }
+
+    #[Test]
+    public function it_makes_a_category_theirs_when_they_rename_one_we_shipped(): void
+    {
+        Queue::fake();
+
+        $category = AssetCategory::factory()->create([
+            'company_id' => $this->company->id,
+            'name' => null,
+            'name_translation_key' => 'Laptops',
+        ]);
+
+        new UpdateAssetCategory(
+            author: $this->author,
+            category: $category,
+            name: 'Work machines',
+        )->execute();
+
+        $this->assertDatabaseHas('asset_categories', [
+            'id' => $category->id,
+            'name' => 'Work machines',
+            'name_translation_key' => null,
+        ]);
+
+        App::setLocale('fr_FR');
+        $this->assertEquals('Work machines', $category->fresh()->name);
+    }
+
+    #[Test]
+    public function it_refuses_a_name_that_a_category_we_shipped_already_reads_as(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        AssetCategory::factory()->create([
+            'company_id' => $this->company->id,
+            'name' => null,
+            'name_translation_key' => 'Laptops',
+        ]);
+
+        new CreateAssetCategory(author: $this->author, company: $this->company, name: 'Laptops')->execute();
     }
 
     #[Test]
