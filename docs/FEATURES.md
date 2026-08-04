@@ -76,4 +76,4 @@ A chronological list of every feature and improvement shipped during development
 * Assets: Let somebody take equipment back, recording the state it came back in and where it went.
 * Assets: Showed equipment somebody is holding as deployed, worked out from who has it rather than stored.
 * Assets: Read the history of equipment from both ends, from the item and from whoever held it.
-* Assets: Flagged equipment that is late coming back, once rather than every day.
+* Assets: Swept the fleet once a day and flagged equipment that is late coming back, once rather than every day.

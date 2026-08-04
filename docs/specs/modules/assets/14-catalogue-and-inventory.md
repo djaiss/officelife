@@ -535,7 +535,7 @@ noted against AC-14 and AC-17.
 | The history read from both ends | `Asset::assignments()`, `Employee::assetAssignments()`, `Location::assetAssignments()` |
 | The three permissions, and the module gate that denies them while the module is off | `app/Enums/PermissionEnum.php`, `app/Permissions/PendingPermissionCheck.php` |
 | The IT administrator role, and the grants added to Administrator and Member | `app/Actions/CreateDefaultRoles.php`, plus a migration for companies that already exist |
-| The daily overdue check | `app/Console/Commands/CheckOverdueAssetReturns.php`, scheduled in `routes/console.php` |
+| The daily overdue check | `app/Jobs/CheckOverdueAssetReturns.php`, scheduled in `routes/console.php` |
 | Around 140 tests across models, actions, enums and the command | `tests/Unit/` |
 
 The three things this spec said had to exist first were built alongside it:

@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
 use App\Enums\DomainEventTypeEnum;
 use App\Models\AssetAssignment;
 use App\Services\DomainEvents;
-use Illuminate\Console\Command;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 
 /**
- * Flag equipment that was due back and has not come back.
+ * Flag equipment that was due back and has not come back. Runs once a day, off
+ * the schedule, since nothing a person does makes a piece of equipment late.
  *
  * Each assignment is flagged once rather than every day the condition holds,
  * which is what the stamp on the row is for. Without it, a laptop four months
  * late would say so a hundred and twenty times.
  *
- * What happens next is not this command's business. It publishes the event, and
+ * What happens next is not this job's business. It publishes the event, and
  * chasing whoever has the equipment is a playbook a company configures.
  */
-class CheckOverdueAssetReturns extends Command
+class CheckOverdueAssetReturns implements ShouldQueue
 {
-    protected $signature = 'assets:check-overdue-returns';
+    use Queueable;
 
-    protected $description = 'Flag equipment that is late coming back';
-
-    public function handle(): int
+    public function handle(): void
     {
         $assignments = AssetAssignment::query()
             ->with('asset.company')
@@ -36,13 +36,8 @@ class CheckOverdueAssetReturns extends Command
             ->get();
 
         foreach ($assignments as $assignment) {
-            $this->line('Flagging '.$assignment->asset->asset_tag.' as late');
             $this->flag($assignment);
         }
-
-        $this->info($assignments->count().' pieces of equipment flagged as late.');
-
-        return self::SUCCESS;
     }
 
     private function flag(AssetAssignment $assignment): void

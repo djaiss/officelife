@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Console;
+namespace Tests\Unit\Jobs;
 
 use App\Enums\DomainEventTypeEnum;
+use App\Jobs\CheckOverdueAssetReturns;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\DomainEvent;
@@ -27,7 +28,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
         $asset = Asset::factory()->create();
         $assignment = AssetAssignment::factory()->overdue()->create(['asset_id' => $asset->id]);
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(1, $this->overdueEvents());
         $this->assertNotNull($assignment->fresh()->overdue_notified_at);
@@ -44,9 +45,9 @@ class CheckOverdueAssetReturnsTest extends TestCase
     {
         AssetAssignment::factory()->overdue()->create();
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
+        new CheckOverdueAssetReturns()->handle();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(1, $this->overdueEvents());
     }
@@ -59,7 +60,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
             'returned_at' => now(),
         ]);
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(0, $this->overdueEvents());
     }
@@ -69,7 +70,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
     {
         AssetAssignment::factory()->create(['expected_return_at' => null]);
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(0, $this->overdueEvents());
     }
@@ -79,7 +80,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
     {
         AssetAssignment::factory()->create(['expected_return_at' => now()->addWeek()]);
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(0, $this->overdueEvents());
     }
@@ -89,7 +90,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
     {
         AssetAssignment::factory()->overdue()->count(3)->create();
 
-        $this->artisan('assets:check-overdue-returns')->assertSuccessful();
+        new CheckOverdueAssetReturns()->handle();
 
         $this->assertEquals(3, $this->overdueEvents());
     }
