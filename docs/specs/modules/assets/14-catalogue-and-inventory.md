@@ -534,7 +534,7 @@ noted against AC-14 and AC-17.
 | Checkout and checkin, with every validation of section 3 | `app/Actions/CheckoutAsset.php`, `CheckinAsset.php` |
 | The history read from both ends | `Asset::assignments()`, `Employee::assetAssignments()`, `Location::assetAssignments()` |
 | The three permissions, and the module gate that denies them while the module is off | `app/Enums/PermissionEnum.php`, `app/Permissions/PendingPermissionCheck.php` |
-| The IT administrator role, and the grants added to Administrator and Member | `app/Actions/CreateDefaultRoles.php`, plus a migration for companies that already exist |
+| The IT administrator role, and the grants added to Administrator and Member | `app/Actions/CreateDefaultRoles.php` |
 | The daily overdue check | `app/Jobs/CheckOverdueAssetReturns.php`, scheduled in `routes/console.php` |
 | Around 140 tests across models, actions, enums and the command | `tests/Unit/` |
 
