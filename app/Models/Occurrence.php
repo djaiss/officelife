@@ -4,42 +4,61 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\DomainEventActorEnum;
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceActorEnum;
+use App\Enums\OccurrenceTypeEnum;
 use Carbon\Carbon;
-use Database\Factories\DomainEventFactory;
+use Database\Factories\OccurrenceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Class DomainEvent
+ * Class Occurrence
  *
- * Something that happened, written down. Every event is persisted before
- * anything reacts to it, which is what separates this from the Laravel event
- * system: it can be read days later, and an event reported by an integration
- * sits in the same table as one raised in here.
+ * One thing that happened in a company, written down at the moment it happened.
+ * Somebody arrived, a laptop was handed over, an office was closed, an issue was
+ * opened on GitHub. Each of those is an occurrence.
  *
- * It is not the log of user actions. That records what somebody did so that they
- * can read it back on their own settings screen. This exists so that playbooks
- * and integrations have something to react to.
+ * Four things define it.
+ *
+ * It is a fact, not an intention. An occurrence says a thing happened. It never
+ * says what should be done about it, and it is never changed or deleted
+ * afterwards, because the past does not change.
+ *
+ * It is written down before anything reacts to it. That is what separates this
+ * from the Laravel event system, where an event exists only for as long as it
+ * takes to handle. An occurrence can be read days later, whether or not anything
+ * was listening at the time.
+ *
+ * It does not care what caused it. A person, the schedule, or a tool outside the
+ * application: all three write the same kind of row, so an issue opened on
+ * GitHub sits beside an employee arriving and a playbook can react to either.
+ *
+ * It is what playbooks will trigger on. That is the whole reason it exists.
+ * Until playbooks are built, nothing reads this table, and that is the intended
+ * state rather than an oversight.
+ *
+ * It is not the log of user actions. That records what somebody did so that
+ * person can read it back on their own settings screen: it is a feature, with a
+ * reader and a screen. This is infrastructure, read by the application rather
+ * than by anybody.
  *
  * @property int $id
  * @property int|null $company_id
- * @property DomainEventTypeEnum $type
+ * @property OccurrenceTypeEnum $type
  * @property string $source
  * @property string|null $subject_type
  * @property int|null $subject_id
- * @property DomainEventActorEnum $actor_type
+ * @property OccurrenceActorEnum $actor_type
  * @property int|null $actor_id
  * @property array<string, mixed>|null $payload
  * @property Carbon $occurred_at
  * @property Carbon|null $created_at
  */
-class DomainEvent extends Model
+class Occurrence extends Model
 {
-    /** @use HasFactory<DomainEventFactory> */
+    /** @use HasFactory<OccurrenceFactory> */
     use HasFactory;
 
     /**
@@ -48,7 +67,7 @@ class DomainEvent extends Model
      */
     public const string SOURCE_INTERNAL = 'internal';
 
-    protected $table = 'domain_events';
+    protected $table = 'occurrences';
 
     /**
      * An event is written once and never changed, so there is nothing to stamp
@@ -81,8 +100,8 @@ class DomainEvent extends Model
     protected function casts(): array
     {
         return [
-            'type' => DomainEventTypeEnum::class,
-            'actor_type' => DomainEventActorEnum::class,
+            'type' => OccurrenceTypeEnum::class,
+            'actor_type' => OccurrenceActorEnum::class,
             'payload' => 'array',
             'occurred_at' => 'datetime',
         ];

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PlanEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -13,7 +13,6 @@ use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -140,13 +139,13 @@ class CreateCompany
      */
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::CompanyCreated,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::CompanyCreated,
             company: $this->company,
             subject: $this->company,
             actor: $this->owner,
             payload: ['name' => $this->company->name],
-        );
+        )->execute();
     }
 
     private function log(): void

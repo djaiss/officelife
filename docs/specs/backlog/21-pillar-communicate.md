@@ -5,7 +5,7 @@
 | **Identifier** | `backlog/21-pillar-communicate` |
 | **Status** | Placeholder |
 | **Source** | Sections 3.3 and 6 of the monolithic specification |
-| **Depends on** | `03-employees`, `06-teams`, `11-domain-events`, `13-module-system` |
+| **Depends on** | `03-employees`, `06-teams`, `11-occurrences`, `13-module-system` |
 
 ## Why this is a placeholder and not a spec
 
@@ -55,7 +55,7 @@ first.
 
 ## What already exists to build on
 
-- `11-domain-events` publishes `employee.arrived`, which is what an automatic
+- `11-occurrences` publishes `employee.arrived`, which is what an automatic
   arrival announcement is generated from. That is the single clearest example of
   the pattern above.
 - `06-teams` is what groups would be populated from.

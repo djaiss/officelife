@@ -136,8 +136,8 @@ on the user. Neither falls back to a hardcoded value at the point of use.
 | `user.deactivated` | A user is suspended. |
 
 The action log described below is not a replacement for these. It records what
-somebody did for that person to read back. Domain events exist so that playbooks
-can react. See `11-domain-events`.
+somebody did for that person to read back. Occurrences exist so that playbooks
+can react. See `11-occurrences`.
 
 ### Out of scope
 
@@ -206,7 +206,7 @@ FR-01 through FR-16 are satisfied. AC-01 through AC-12 are covered by tests.
 
 | Gap | Requirement |
 | --- | --- |
-| No domain events published; the event system does not exist | FR none, AC-13 |
+| No occurrences published; the event system does not exist | FR none, AC-13 |
 | No single sign on provider implemented, only the column | FR-06 |
 | No invitation flow for creating a colleague account | Out of scope for now |
 | No screen listing or revoking active sessions | Out of scope for now |

@@ -64,7 +64,7 @@ A chronological list of every feature and improvement shipped during development
 * Settings: Added the offices of the company to the sidebar, for whoever may change its settings.
 * Docs: Split the product specification into modular Spec-Kit files under docs/specs, covering the core, the assets module and the backlog.
 * Modules: Let a company turn a module on and off, and denied the permissions of a module it has not turned on.
-* Events: Wrote down everything that happens in a log playbooks will one day react to.
+* Occurrences: Wrote down everything that happens in a log playbooks will one day react to.
 * Permissions: Gave every company an IT administrator role, and let a member see the equipment the company owns.
 * Assets: Added the catalogue a company defines once: manufacturers, categories and models.
 * Assets: Gave every company the five states a piece of equipment can be in, and let it add its own.

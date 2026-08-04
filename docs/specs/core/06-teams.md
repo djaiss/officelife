@@ -129,7 +129,7 @@ may not become its own ancestor. Checked in the application, not by a constraint
 
 Everything that says "team" elsewhere in the specification means the primary team
 unless it says otherwise. That covers the future `selected_teams` scope in
-`04-permissions-and-roles` and the triggers in `11-domain-events`.
+`04-permissions-and-roles` and the triggers in `11-occurrences`.
 
 ### Events published
 

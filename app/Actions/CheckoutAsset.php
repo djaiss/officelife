@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Enums\AssetAssigneeTypeEnum;
 use App\Enums\AssetConditionEnum;
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -16,7 +16,6 @@ use App\Models\AssetAssignment;
 use App\Models\Employee;
 use App\Models\Location;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -174,8 +173,8 @@ class CheckoutAsset
 
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::AssetCheckedOut,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::AssetCheckedOut,
             company: $this->asset->company,
             subject: $this->asset,
             actor: $this->author,
@@ -184,7 +183,7 @@ class CheckoutAsset
                 'assignee_type' => $this->assignment->assignee_type->value,
                 'assignee_id' => $this->assignment->assignee_id,
             ],
-        );
+        )->execute();
     }
 
     private function log(): void

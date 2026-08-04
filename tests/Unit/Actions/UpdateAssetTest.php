@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateAsset;
-use App\Enums\DomainEventTypeEnum;
 use App\Enums\ModuleEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -14,7 +14,7 @@ use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\AssetStatus;
 use App\Models\Company;
-use App\Models\DomainEvent;
+use App\Models\Occurrence;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -101,9 +101,9 @@ class UpdateAssetTest extends TestCase
             assetTag: $asset->asset_tag,
         )->execute();
 
-        $this->assertDatabaseHas('domain_events', [
+        $this->assertDatabaseHas('occurrences', [
             'company_id' => $this->company->id,
-            'type' => DomainEventTypeEnum::AssetReportedLost->value,
+            'type' => OccurrenceTypeEnum::AssetReportedLost->value,
             'subject_type' => Asset::class,
             'subject_id' => $asset->id,
         ]);
@@ -130,7 +130,7 @@ class UpdateAssetTest extends TestCase
 
         $this->assertEquals(
             0,
-            DomainEvent::query()->where('type', DomainEventTypeEnum::AssetReportedLost)->count(),
+            Occurrence::query()->where('type', OccurrenceTypeEnum::AssetReportedLost)->count(),
         );
     }
 
@@ -154,7 +154,7 @@ class UpdateAssetTest extends TestCase
 
         $this->assertEquals(
             0,
-            DomainEvent::query()->where('type', DomainEventTypeEnum::AssetReportedLost)->count(),
+            Occurrence::query()->where('type', OccurrenceTypeEnum::AssetReportedLost)->count(),
         );
     }
 

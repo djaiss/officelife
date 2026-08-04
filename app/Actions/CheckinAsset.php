@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\AssetConditionEnum;
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -15,7 +15,6 @@ use App\Models\AssetAssignment;
 use App\Models\AssetStatus;
 use App\Models\Location;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -109,8 +108,8 @@ class CheckinAsset
 
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::AssetCheckedIn,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::AssetCheckedIn,
             company: $this->asset->company,
             subject: $this->asset,
             actor: $this->author,
@@ -118,7 +117,7 @@ class CheckinAsset
                 'tag' => $this->asset->asset_tag,
                 'condition' => $this->condition?->value,
             ],
-        );
+        )->execute();
     }
 
     private function log(): void

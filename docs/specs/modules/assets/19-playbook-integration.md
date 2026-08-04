@@ -7,7 +7,7 @@
 | **Module** | Assets |
 | **Level** | Spans levels 1 to 3 |
 | **Source** | Section 7.1.7 of the monolithic specification |
-| **Depends on** | `08-employee-lifecycle-status`, `11-domain-events`, `12-playbooks`, `14-catalogue-and-inventory` |
+| **Depends on** | `08-employee-lifecycle-status`, `11-occurrences`, `12-playbooks`, `14-catalogue-and-inventory` |
 | **Depended on by** | Nothing |
 
 ## 1. Context / Overview
@@ -52,7 +52,7 @@ something is due for audit, and when stock is running low, without checking.
 
 | ID | Requirement |
 | --- | --- |
-| FR-01 | The module declares its event types, which join the catalogue in `11-domain-events`. |
+| FR-01 | The module declares its event types, which join the catalogue in `11-occurrences`. |
 | FR-02 | The module declares playbook step types, so a playbook step can act on the inventory. |
 | FR-03 | An onboarding playbook triggered by `employee.hired` can reserve equipment, line up licences, and create human tasks. |
 | FR-04 | An offboarding playbook triggered by `employee.departure_scheduled` can list what somebody holds, revoke their licence seats, and create recovery tasks. |
@@ -119,7 +119,7 @@ quietly did not assign a laptop is worse than one that says it could not.
 
 ### The full event catalogue of the module
 
-Declared here, joining `11-domain-events` when the module is enabled.
+Declared here, joining `11-occurrences` when the module is enabled.
 
 | Event | Published by |
 | --- | --- |
@@ -197,7 +197,7 @@ chasing in `18-self-service`.
 ## 5. Implementation status
 
 Nothing in this spec exists, and it is the last piece of the module to build
-rather than the first. It needs `11-domain-events`, `12-playbooks`,
+rather than the first. It needs `11-occurrences`, `12-playbooks`,
 `08-employee-lifecycle-status` and at least level 1 of the module.
 
 It is specified now because it is the reason for building the module at all. A

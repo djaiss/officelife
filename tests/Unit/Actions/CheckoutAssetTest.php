@@ -7,8 +7,8 @@ namespace Tests\Unit\Actions;
 use App\Actions\CheckoutAsset;
 use App\Enums\AssetAssigneeTypeEnum;
 use App\Enums\AssetConditionEnum;
-use App\Enums\DomainEventTypeEnum;
 use App\Enums\ModuleEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -268,9 +268,9 @@ class CheckoutAssetTest extends TestCase
 
         new CheckoutAsset(author: $this->author, asset: $asset, assignee: $employee)->execute();
 
-        $this->assertDatabaseHas('domain_events', [
+        $this->assertDatabaseHas('occurrences', [
             'company_id' => $this->company->id,
-            'type' => DomainEventTypeEnum::AssetCheckedOut->value,
+            'type' => OccurrenceTypeEnum::AssetCheckedOut->value,
             'subject_type' => Asset::class,
             'subject_id' => $asset->id,
             'actor_id' => $this->author->id,

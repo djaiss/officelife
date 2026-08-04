@@ -149,7 +149,7 @@ be filtered, sorted or joined on gets a column.
 | `company.updated` | The details of a company change. |
 
 Both are published through the central publisher described in
-`11-domain-events`, never through `event()` directly.
+`11-occurrences`, never through `event()` directly.
 
 ### Out of scope
 
@@ -217,7 +217,7 @@ covered by the existing tests.
 | No `settings` JSON column on `companies` | FR-10, AC-10 |
 | No soft delete on `companies`; `DestroyCompany` deletes the row outright | FR-12, AC-09 |
 | No screen to change the company details; `UpdateCompany` exists but no route or controller reaches it | FR-11 |
-| No event published on creation or update; the domain event system does not exist yet | `11-domain-events`, AC-11 |
+| No event published on creation or update; the occurrence system does not exist yet | `11-occurrences`, AC-11 |
 | Tenancy is enforced case by case in the actions rather than by a shared scope | AC-08 |
 
 ### Divergences from the source document to note

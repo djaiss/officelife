@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Location;
 use App\Models\User;
-use App\Services\DomainEvents;
 
 /**
  * Close an office of a company. The row stays, so what was written down about
@@ -35,13 +34,13 @@ class ArchiveLocation
 
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::LocationArchived,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::LocationArchived,
             company: $this->location->company,
             subject: $this->location,
             actor: $this->author,
             payload: ['name' => $this->location->name],
-        );
+        )->execute();
     }
 
     private function authorize(): void

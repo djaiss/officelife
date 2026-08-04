@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -12,7 +12,6 @@ use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Carbon\Carbon;
 
 /**
@@ -55,13 +54,13 @@ class CreateEmployee
      */
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::EmployeeCreated,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::EmployeeCreated,
             company: $this->company,
             subject: $this->employee,
             actor: $this->author,
             payload: ['name' => $this->employee->name],
-        );
+        )->execute();
     }
 
     private function authorize(): void

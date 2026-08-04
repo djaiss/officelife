@@ -6,8 +6,8 @@ namespace Tests\Unit\Actions;
 
 use App\Actions\CheckinAsset;
 use App\Enums\AssetConditionEnum;
-use App\Enums\DomainEventTypeEnum;
 use App\Enums\ModuleEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -165,9 +165,9 @@ class CheckinAssetTest extends TestCase
 
         new CheckinAsset(author: $this->author, asset: $asset)->execute();
 
-        $this->assertDatabaseHas('domain_events', [
+        $this->assertDatabaseHas('occurrences', [
             'company_id' => $this->company->id,
-            'type' => DomainEventTypeEnum::AssetCheckedIn->value,
+            'type' => OccurrenceTypeEnum::AssetCheckedIn->value,
             'subject_type' => Asset::class,
             'subject_id' => $asset->id,
         ]);

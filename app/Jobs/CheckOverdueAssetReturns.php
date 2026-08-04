@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Actions\PublishOccurrence;
+use App\Enums\OccurrenceTypeEnum;
 use App\Models\AssetAssignment;
-use App\Services\DomainEvents;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -42,8 +42,8 @@ class CheckOverdueAssetReturns implements ShouldQueue
 
     private function flag(AssetAssignment $assignment): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::AssetReturnOverdue,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::AssetReturnOverdue,
             company: $assignment->asset->company,
             subject: $assignment->asset,
             payload: [
@@ -52,7 +52,7 @@ class CheckOverdueAssetReturns implements ShouldQueue
                 'assignee_type' => $assignment->assignee_type->value,
                 'assignee_id' => $assignment->assignee_id,
             ],
-        );
+        )->execute();
 
         $assignment->overdue_notified_at = now();
         $assignment->save();

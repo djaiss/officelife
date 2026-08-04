@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -12,7 +12,6 @@ use App\Jobs\LogUserAction;
 use App\Models\Company;
 use App\Models\Location;
 use App\Models\User;
-use App\Services\DomainEvents;
 use InvalidArgumentException;
 
 /**
@@ -99,13 +98,13 @@ class CreateLocation
 
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::LocationCreated,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::LocationCreated,
             company: $this->company,
             subject: $this->location,
             actor: $this->author,
             payload: ['name' => $this->location->name],
-        );
+        )->execute();
     }
 
     private function log(): void

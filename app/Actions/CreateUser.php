@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Helpers\TextSanitizer;
 use App\Models\Company;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -43,12 +42,12 @@ class CreateUser
      */
     private function publish(): void
     {
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::UserCreated,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::UserCreated,
             company: $this->company,
             subject: $this->user,
             payload: ['email' => $this->user->email],
-        );
+        )->execute();
     }
 
     private function sanitize(): void

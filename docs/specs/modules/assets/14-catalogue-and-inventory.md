@@ -7,7 +7,7 @@
 | **Module** | Assets |
 | **Level** | 1, the only asset scope committed to the first version |
 | **Source** | Sections 7.1.1, 7.1.2, 7.1.3 and 7.1.8 of the monolithic specification |
-| **Depends on** | `03-employees`, `04-permissions-and-roles`, `05-locations`, `11-domain-events`, `13-module-system` |
+| **Depends on** | `03-employees`, `04-permissions-and-roles`, `05-locations`, `11-occurrences`, `13-module-system` |
 | **Depended on by** | `15-quantitative-inventory`, `16-software-licences`, `17-lifecycle-operations`, `18-self-service`, `19-playbook-integration` |
 
 ## 1. Context / Overview
@@ -361,7 +361,7 @@ nothing else. This table answers four questions: who has it, who had it before,
 in what condition each time, and when it was supposed to come back.
 
 The assignee is polymorphic across three types, the same technique
-`11-domain-events` uses for subjects. A display assigned to a meeting room, a
+`11-occurrences` uses for subjects. A display assigned to a meeting room, a
 docking station assigned to a laptop, and a laptop assigned to a person are the
 same operation against different targets.
 
@@ -539,7 +539,7 @@ noted against AC-14 and AC-17.
 | Around 140 tests across models, actions, enums and the command | `tests/Unit/` |
 
 The three things this spec said had to exist first were built alongside it:
-`13-module-system` at the depth described there, `11-domain-events` as a log
+`13-module-system` at the depth described there, `11-occurrences` as a log
 nothing consumes yet, and the company half of `05-locations` which was already
 there.
 

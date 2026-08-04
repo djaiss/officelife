@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Jobs;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Jobs\CheckOverdueAssetReturns;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
-use App\Models\DomainEvent;
+use App\Models\Occurrence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -19,7 +19,7 @@ class CheckOverdueAssetReturnsTest extends TestCase
 
     private function overdueEvents(): int
     {
-        return DomainEvent::query()->where('type', DomainEventTypeEnum::AssetReturnOverdue)->count();
+        return Occurrence::query()->where('type', OccurrenceTypeEnum::AssetReturnOverdue)->count();
     }
 
     #[Test]
@@ -32,8 +32,8 @@ class CheckOverdueAssetReturnsTest extends TestCase
 
         $this->assertEquals(1, $this->overdueEvents());
         $this->assertNotNull($assignment->fresh()->overdue_notified_at);
-        $this->assertDatabaseHas('domain_events', [
-            'type' => DomainEventTypeEnum::AssetReturnOverdue->value,
+        $this->assertDatabaseHas('occurrences', [
+            'type' => OccurrenceTypeEnum::AssetReturnOverdue->value,
             'subject_type' => Asset::class,
             'subject_id' => $asset->id,
             'actor_type' => 'system',

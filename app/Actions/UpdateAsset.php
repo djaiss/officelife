@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\DomainEventTypeEnum;
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -14,7 +14,6 @@ use App\Models\AssetModel;
 use App\Models\AssetStatus;
 use App\Models\Location;
 use App\Models\User;
-use App\Services\DomainEvents;
 use Carbon\Carbon;
 use InvalidArgumentException;
 
@@ -133,13 +132,13 @@ class UpdateAsset
             return;
         }
 
-        DomainEvents::publish(
-            type: DomainEventTypeEnum::AssetReportedLost,
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::AssetReportedLost,
             company: $this->asset->company,
             subject: $this->asset,
             actor: $this->author,
             payload: ['tag' => $this->asset->asset_tag],
-        );
+        )->execute();
     }
 
     private function log(): void

@@ -9,7 +9,7 @@ namespace App\Enums;
  * scheduled check, for instance), or something outside the application reported
  * it.
  */
-enum DomainEventActorEnum: string
+enum OccurrenceActorEnum: string
 {
     case User = 'user';
     case System = 'system';

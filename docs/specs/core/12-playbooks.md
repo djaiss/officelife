@@ -5,7 +5,7 @@
 | **Identifier** | `core/12-playbooks` |
 | **Status** | Specified |
 | **Source** | Sections 3.5 and 4.7 of the monolithic specification |
-| **Depends on** | `03-employees`, `04-permissions-and-roles`, `08-employee-lifecycle-status`, `11-domain-events` |
+| **Depends on** | `03-employees`, `04-permissions-and-roles`, `08-employee-lifecycle-status`, `11-occurrences` |
 | **Depended on by** | `19-playbook-integration`, and every module that wants to participate in a process |
 
 ## 1. Context / Overview
@@ -111,7 +111,7 @@ PlaybookRun
 - id, company_id
 - playbook_template_id     the template it came from
 - subject_type, subject_id polymorphic, normally an employee
-- triggered_by_event_id    nullable, the DomainEvent that started it
+- triggered_by_event_id    nullable, the Occurrence that started it
 - started_by_user_id       nullable, set when started by hand
 - status                   running | completed | cancelled
 - started_at, completed_at
@@ -127,7 +127,7 @@ PlaybookRunStep
 ```
 
 `PlaybookTrigger`, which ties an event type to a template, is specified in
-`11-domain-events` rather than here, because it belongs to the event
+`11-occurrences` rather than here, because it belongs to the event
 infrastructure.
 
 ### Snapshotting
@@ -185,7 +185,7 @@ no branching, no step that depends on the outcome of another, and no loop.
 The temptation to add branching will arrive early, since a template that differs
 for contractors is an obvious need. The first version answers it with two
 templates and two triggers, each conditioned on the employment type through the
-trigger conditions in `11-domain-events`. That covers most real cases without a
+trigger conditions in `11-occurrences`. That covers most real cases without a
 workflow engine.
 
 ### Default templates
@@ -264,7 +264,7 @@ Nothing in this spec exists.
 
 It is the most dependent spec in the core. Before it can be built:
 
-- `11-domain-events` has to exist, or there is nothing to trigger on.
+- `11-occurrences` has to exist, or there is nothing to trigger on.
 - `08-employee-lifecycle-status` has to exist, or there are no life cycle events
   worth triggering on.
 - `09-managers` has to exist, or `subject_manager` cannot be resolved.
@@ -278,6 +278,6 @@ does the minimum.
 
 1. Templates and steps, with a screen to edit them. No running yet.
 2. Runs started by hand, with snapshotting and assignment resolution.
-3. Runs started by triggers, once `11-domain-events` is in place.
+3. Runs started by triggers, once `11-occurrences` is in place.
 4. Notifications and overdue reminders.
 5. Default templates, added to existing companies through a migration.

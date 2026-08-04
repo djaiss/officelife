@@ -12,7 +12,7 @@ namespace App\Enums;
  * A type is added along with the code that publishes it. A type nothing
  * publishes is a trigger somebody can configure that will never fire.
  */
-enum DomainEventTypeEnum: string
+enum OccurrenceTypeEnum: string
 {
     case CompanyCreated = 'company.created';
     case CompanyUpdated = 'company.updated';

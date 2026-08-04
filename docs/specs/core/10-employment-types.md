@@ -175,4 +175,4 @@ both of which are downstream.
 2. Custom types and their administration screen, which can share the screen used
    for lifecycle statuses in `08-employee-lifecycle-status`, since the two lists
    are administered the same way.
-3. The event, once `11-domain-events` exists.
+3. The event, once `11-occurrences` exists.

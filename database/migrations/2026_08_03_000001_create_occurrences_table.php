@@ -10,10 +10,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('domain_events', function (Blueprint $table): void {
+        Schema::create('occurrences', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('company_id')->nullable()->comment('company the event happened in, null when it is about the installation rather than one company');
-            $table->string('type', 50)->comment('what happened, as entity.action, one of the cases of DomainEventTypeEnum');
+            $table->string('type', 50)->comment('what happened, as entity.action, one of the cases of OccurrenceTypeEnum');
             $table->string('source', 50)->default('internal')->comment('where the event came from: the application itself, or a named integration');
             $table->string('subject_type')->nullable()->comment('class of the thing the event is about');
             $table->unsignedBigInteger('subject_id')->nullable()->comment('id of the thing the event is about');
@@ -32,6 +32,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('domain_events');
+        Schema::dropIfExists('occurrences');
     }
 };
