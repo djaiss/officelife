@@ -31,9 +31,24 @@ class EnableModule
     {
         $this->authorize();
         $this->enable();
+        $this->seed();
         $this->log();
 
         return $this->company;
+    }
+
+    /**
+     * Give the module whatever a company needs before it is worth opening.
+     *
+     * The core knowing which module needs what is the same pragmatic coupling as
+     * PermissionEnum::module(), and is revisited at the same point: the second
+     * module, when a manifest earns its keep.
+     */
+    private function seed(): void
+    {
+        match ($this->module) {
+            ModuleEnum::Assets => new CreateDefaultAssetCategories(company: $this->company)->execute(),
+        };
     }
 
     private function authorize(): void

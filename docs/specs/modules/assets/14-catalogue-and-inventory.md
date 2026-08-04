@@ -84,6 +84,7 @@ somebody else by mistake.
 | --- | --- |
 | FR-01 | Every catalogue object and every asset belongs to exactly one company. |
 | FR-02 | A category groups assets and carries the rules that apply to the whole family: whether acceptance is required, the text to accept, whether a checkout sends an email. |
+| FR-02b | Turning the module on gives a company a catalogue of categories to start from, unless it already has one. They belong to the company and can be renamed, added to and deleted. |
 | FR-03 | A manufacturer is who makes the equipment. A supplier is who sells it. They are separate entities. |
 | FR-04 | An asset model belongs to a manufacturer and a category, and carries the attributes shared by every asset of that model. |
 | FR-05 | Every asset belongs to exactly one asset model. |
@@ -161,6 +162,34 @@ be filed under a category of a family nothing is built for.
 `AssetStatus.key` is what lets the code recognise the handful of statuses it
 branches on by name. Today that is `lost` and nothing else, and the list is meant
 to stay short. It is null for every status a company adds.
+
+### The categories a company starts with
+
+Turning the module on creates seven categories, unless the company already has
+some. Laptops, Desktops, Monitors, Phones, Tablets, Docking stations, Security
+badges. All of family `asset`, none asking to be accepted.
+
+They are seeded for a different reason from the statuses, and the difference is
+worth keeping straight. The statuses exist because checkout branches on them: the
+module does not work without them. The categories exist because recording the
+first laptop would otherwise mean inventing a category, then a manufacturer, then
+a model, which is three levels of setup before anything is worth looking at.
+Nothing in the code knows their names.
+
+That is also why they are company rows rather than shared ones, why they arrive
+on enabling the module rather than on creating the company, and why a company
+that already has categories is left alone. A company that never turns Assets on
+never sees them.
+
+The list stops at seven deliberately. Printers, networking equipment and servers
+are real for companies with their own office IT and dead rows for everybody else,
+so they are left to whoever needs them. Keyboards, mice and cables are absent
+because they are accessories and consumables, a different family with a different
+life cycle, and nothing can be recorded against them yet.
+
+Deciding on a company's behalf what its colleagues must agree to before holding a
+laptop is not ours to do, so no category arrives asking for acceptance and none
+carries terms.
 
 The five statuses every company gets, inserted once for the installation as
 shared rows with no company of their own:
@@ -468,6 +497,9 @@ forgotten.
 
 - [x] AC-01. A category, a manufacturer and an asset model can be created, and an
       asset requires a model.
+- [x] AC-01b. Turning the module on gives the company seven categories, leaves a
+      company that already has some alone, and gives none to a company that never
+      turned it on.
 - [x] AC-02. Two assets of the same company cannot share an asset tag; two assets
       of different companies can.
 - [x] AC-03. An asset can be created with no serial number.
@@ -530,6 +562,7 @@ noted against AC-14 and AC-17.
 | `AssetCategoryTypeEnum`, `AssetStatusTypeEnum`, `AssetAssigneeTypeEnum`, `AssetConditionEnum` | `app/Enums/` |
 | The derived display status, FR-08b | `Asset::displayStatus()` |
 | Twelve catalogue actions, create, change and delete for each of the four | `app/Actions/` |
+| The seven categories a company starts with, created on enabling the module | `app/Actions/CreateDefaultAssetCategories.php`, called from `EnableModule` |
 | Five asset actions: create, change, archive, restore, delete | `app/Actions/` |
 | Checkout and checkin, with every validation of section 3 | `app/Actions/CheckoutAsset.php`, `CheckinAsset.php` |
 | The history read from both ends | `Asset::assignments()`, `Employee::assetAssignments()`, `Location::assetAssignments()` |

@@ -67,6 +67,7 @@ A chronological list of every feature and improvement shipped during development
 * Occurrences: Wrote down everything that happens in a log playbooks will one day react to.
 * Permissions: Gave every company an IT administrator role, and let a member see the equipment the company owns.
 * Assets: Added the catalogue a company defines once: manufacturers, categories and models.
+* Assets: Gave a company seven categories to start from when it turns the module on, so recording the first laptop is not three levels of setup.
 * Assets: Gave every company the five states a piece of equipment can be in, and let it add its own.
 * Assets: Recorded the equipment the company owns, each item with its own tag and the serial number the manufacturer stamped on it.
 * Assets: Let somebody archive a piece of equipment, keeping everybody who has held it.

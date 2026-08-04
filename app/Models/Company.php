@@ -142,6 +142,16 @@ class Company extends Model
     }
 
     /**
+     * Get the families the company files its equipment under.
+     *
+     * @return HasMany<AssetCategory, $this>
+     */
+    public function assetCategories(): HasMany
+    {
+        return $this->hasMany(AssetCategory::class);
+    }
+
+    /**
      * Get whether the company is still within its trial period.
      */
     public function isOnTrial(): bool

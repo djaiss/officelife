@@ -60,6 +60,35 @@ class EnableModuleTest extends TestCase
     }
 
     #[Test]
+    public function it_gives_the_assets_module_a_catalogue_to_start_from(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+
+        new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
+
+        $this->assertCount(7, $company->assetCategories()->get());
+        $this->assertTrue($company->assetCategories()->where('name', 'Laptops')->exists());
+    }
+
+    #[Test]
+    public function it_leaves_the_catalogue_alone_when_the_module_is_turned_back_on(): void
+    {
+        Queue::fake();
+
+        $company = Company::factory()->create();
+        $author = $this->grant(User::factory()->create(['company_id' => $company->id]), PermissionEnum::CompanyManage);
+
+        new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
+        $company->assetCategories()->where('name', 'Tablets')->delete();
+        new EnableModule(author: $author, company: $company, module: ModuleEnum::Assets)->execute();
+
+        $this->assertCount(6, $company->assetCategories()->get());
+    }
+
+    #[Test]
     public function it_does_not_list_a_module_twice_when_it_is_already_on(): void
     {
         Queue::fake();
