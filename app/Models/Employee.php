@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Employee
@@ -119,6 +120,17 @@ class Employee extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class);
+    }
+
+    /**
+     * Get every piece of equipment the employee has held, and everything they
+     * hold now. An assignment with no return date is one they still have.
+     *
+     * @return MorphMany<AssetAssignment, $this>
+     */
+    public function assetAssignments(): MorphMany
+    {
+        return $this->morphMany(AssetAssignment::class, 'assignee');
     }
 
     /**

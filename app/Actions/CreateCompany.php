@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PlanEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -55,6 +56,7 @@ class CreateCompany
             $this->attachEmployee();
         });
 
+        $this->publish();
         $this->log();
 
         return $this->company;
@@ -129,6 +131,21 @@ class CreateCompany
     {
         $this->owner->employee_id = $this->employee->id;
         $this->owner->save();
+    }
+
+    /**
+     * Published outside the transaction, along with the log, so that a company
+     * that failed to be created leaves no record of having happened.
+     */
+    private function publish(): void
+    {
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::CompanyCreated,
+            company: $this->company,
+            subject: $this->company,
+            actor: $this->owner,
+            payload: ['name' => $this->company->name],
+        )->execute();
     }
 
     private function log(): void

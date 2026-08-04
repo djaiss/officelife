@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -37,6 +38,7 @@ class CreateLocation
         $this->sanitize();
         $this->validate();
         $this->create();
+        $this->publish();
         $this->log();
 
         return $this->location;
@@ -92,6 +94,17 @@ class CreateLocation
             'address' => $this->address,
             'timezone' => $this->timezone,
         ]);
+    }
+
+    private function publish(): void
+    {
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::LocationCreated,
+            company: $this->company,
+            subject: $this->location,
+            actor: $this->author,
+            payload: ['name' => $this->location->name],
+        )->execute();
     }
 
     private function log(): void

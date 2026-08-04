@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -25,9 +26,21 @@ class ArchiveLocation
     {
         $this->authorize();
         $this->archive();
+        $this->publish();
         $this->log();
 
         return $this->location;
+    }
+
+    private function publish(): void
+    {
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::LocationArchived,
+            company: $this->location->company,
+            subject: $this->location,
+            actor: $this->author,
+            payload: ['name' => $this->location->name],
+        )->execute();
     }
 
     private function authorize(): void

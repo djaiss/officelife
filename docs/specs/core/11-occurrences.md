@@ -1,9 +1,9 @@
-# 11. Domain events
+# 11. Occurrences
 
 | | |
 | --- | --- |
-| **Identifier** | `core/11-domain-events` |
-| **Status** | Specified |
+| **Identifier** | `core/11-occurrences` |
+| **Status** | Partially implemented |
 | **Source** | Section 5 of the monolithic specification |
 | **Depends on** | `01-company-and-tenancy` |
 | **Depended on by** | `12-playbooks`, and every spec that publishes an event |
@@ -62,9 +62,9 @@ by whatever that playbook does.
 | FR-05 | An event records its actor: a user, the system, or an integration. |
 | FR-06 | An event carries a JSON payload, whose shape is versionable per type. |
 | FR-07 | An event records when it occurred, separately from when it was written. |
-| FR-08 | Business code publishes through one central service and never calls the Laravel `event()` helper directly. |
-| FR-09 | Publishing dispatches exactly one internal Laravel event, whatever the business event type. |
-| FR-10 | One listener resolves the active triggers matching the event and queues one job per match. |
+| FR-08 | Business code publishes through one action and never writes to the table directly. |
+| FR-09 | Publishing writes the row before anything reacts to it. |
+| FR-10 | Once playbooks exist, publishing resolves the active triggers matching the occurrence and queues one job per match. |
 | FR-11 | Playbook execution is asynchronous, so a slow or failing playbook never blocks the action that caused it. |
 | FR-12 | A trigger ties an event type to a playbook template, within one company, and can be switched off without being deleted. |
 | FR-13 | A trigger may carry conditions. In the first version, simple equality against a field of the payload. |
@@ -75,7 +75,7 @@ by whatever that playbook does.
 ### Data model
 
 ```
-DomainEvent
+Occurrence
 - id
 - company_id               nullable, null for system level events
 - type                     "employee.arrived"
@@ -98,29 +98,38 @@ PlaybookTrigger
 
 ### The single entry point
 
-All business code publishes through one service.
+All business code publishes through one action.
 
 ```
-DomainEvents::publish(
-    type: 'employee.arrived',
+new PublishOccurrence(
+    type: OccurrenceTypeEnum::EmployeeArrived,
+    company: $company,
     subject: $employee,
     actor: $user,
     payload: [...],
-);
+)->execute();
 ```
 
-That service does three things in order: persist the `DomainEvent`, then dispatch
-one internal Laravel event, `DomainEventOccurred`, carrying the persisted record.
+It writes the `Occurrence` row and that is all it does today. Nothing reads the
+table, which is the intended state until playbooks exist.
 
-Exactly one listener subscribes to it, `DispatchPlaybookTriggers`. It resolves
-the active `PlaybookTrigger` rows matching the type and the company, evaluates
-their conditions, and queues one `RunPlaybookJob` per match.
+Once they do, the same action resolves the active `PlaybookTrigger` rows matching
+the type and the company, evaluates their conditions, and queues one
+`RunPlaybookJob` per match. The order is the part that matters: the row is
+written first, so the log stays a record of what happened rather than a record of
+what happened to be listened to.
 
-The shape matters more than it looks. One publisher, one internal event, one
-listener. Nothing else in the codebase subscribes to business events directly.
-Anybody wanting to react to something writes a playbook or a trigger, not a
-listener. If a second listener ever appears, the guarantee that the log is a
-complete record of what could have happened is gone.
+There is deliberately no internal Laravel event in between. An earlier draft had
+the action dispatch one, with a single listener resolving the triggers. That
+bought nothing: with one publisher and one listener, the event was a hop between
+two pieces of code that already know about each other, and it meant shipping a
+class nothing subscribed to. If a second consumer ever appears, the seam can be
+introduced then, and the log will already contain everything it would have
+carried.
+
+The rule that does matter, and that this keeps: nothing else in the codebase
+reacts to business events directly. Anybody wanting to react to something writes
+a playbook trigger, not a listener.
 
 ### Why asynchronous
 
@@ -208,8 +217,7 @@ stores a full payload rather than only the fields anybody currently reads.
 - [ ] AC-01. Publishing an event writes a row with its type, subject, actor,
       payload and occurrence time.
 - [ ] AC-02. The row is written before any listener runs.
-- [ ] AC-03. Publishing dispatches exactly one internal Laravel event, whatever
-      the business type.
+- [x] AC-03. Publishing writes exactly one row for each thing that happened.
 - [ ] AC-04. An active trigger matching the type queues one job.
 - [ ] AC-05. Two active triggers matching the same event queue two jobs.
 - [ ] AC-06. An inactive trigger queues nothing.
@@ -228,9 +236,32 @@ stores a full payload rather than only the fields anybody currently reads.
 
 ## 5. Implementation status
 
-Nothing in this spec exists.
+The log is built. Nothing reads it, which is the intended state until playbooks
+exist.
 
-What exists that should not be confused with it:
+### Already built
+
+| Element | Where |
+| --- | --- |
+| `occurrences` table, with the company, type, source, polymorphic subject, actor, payload and both timestamps | `database/migrations/2026_08_03_000001_create_occurrences_table.php` |
+| `Occurrence` model and factory | `app/Models/Occurrence.php` |
+| `OccurrenceTypeEnum`, the catalogue, with a `module()` method so a module declares its own types | `app/Enums/OccurrenceTypeEnum.php` |
+| `OccurrenceActorEnum` | `app/Enums/OccurrenceActorEnum.php` |
+| The single entry point | `app/Actions/PublishOccurrence.php` |
+| Publishing from the actions that already ship: company, user, employee and location | `app/Actions/` |
+| Publishing from the assets module: checked out, checked in, reported lost, return overdue | `app/Actions/CheckoutAsset.php`, `CheckinAsset.php`, `UpdateAsset.php`, `app/Jobs/CheckOverdueAssetReturns.php` |
+
+FR-01 to FR-09 and FR-14 are satisfied. AC-01 to AC-03 and AC-11 to AC-13 pass.
+
+### Not built
+
+| Gap | Requirement |
+| --- | --- |
+| No `playbook_triggers` table, and nothing resolves triggers | FR-10, FR-12, FR-13, AC-04 to AC-09 |
+| No queued playbook execution | FR-11, AC-10 |
+| No entry point for an integration to submit an occurrence | The source column accepts one; nothing writes it but a test |
+
+### What exists that should not be confused with it
 
 - `app/Jobs/LogUserAction.php` and `app/Models/Log.php` record what a user did,
   for that user to read on their own settings screen. It is a feature, not
@@ -238,18 +269,18 @@ What exists that should not be confused with it:
   and nothing subscribes to it.
 - `app/Models/EmailSent.php` records emails sent.
 
-Neither is a domain event log, and neither should be extended into one. The
-domain event log has different readers (playbooks and integrations rather than
+Neither is an occurrence log, and neither should be extended into one. The
+occurrence log has different readers (playbooks and integrations rather than
 people), a different shape, and a different lifetime.
 
 ### Suggested build order
 
-1. The `domain_events` table, the publisher service, and `DomainEventOccurred`.
+1. The `occurrences` table and the publishing action.
    Publish from the actions that already exist (company, user, employee,
    location). At this point nothing consumes them and the log is purely
    observable.
-2. The `playbook_triggers` table, `DispatchPlaybookTriggers`, and
-   `RunPlaybookJob`, once `12-playbooks` has something to run.
+2. The `playbook_triggers` table and `RunPlaybookJob`, resolved from inside the
+   publishing action, once `12-playbooks` has something to run.
 3. An entry point for integrations to submit events, once there is an
    integration.
 

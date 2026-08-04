@@ -63,3 +63,19 @@ A chronological list of every feature and improvement shipped during development
 * Settings/administration/locations: Let somebody add an office from a dialog asking only for its name, city and country.
 * Settings: Added the offices of the company to the sidebar, for whoever may change its settings.
 * Docs: Split the product specification into modular Spec-Kit files under docs/specs, covering the core, the assets module and the backlog.
+* Modules: Let a company turn a module on and off, and denied the permissions of a module it has not turned on.
+* Occurrences: Wrote down everything that happens in a log playbooks will one day react to.
+* Permissions: Gave every company an IT administrator role, and let a member see the equipment the company owns.
+* Assets: Added the catalogue a company defines once: manufacturers, categories and models.
+* Assets: Gave a company seven categories to start from when it turns the module on, so recording the first laptop is not three levels of setup.
+* Assets: Read the category and status names we ship in the language of whoever is looking, and left the ones a company typed in the words they chose.
+* Assets: Gave every company the five states a piece of equipment can be in, and let it add its own.
+* Assets: Recorded the equipment the company owns, each item with its own tag and the serial number the manufacturer stamped on it.
+* Assets: Let somebody archive a piece of equipment, keeping everybody who has held it.
+* Assets: Let somebody hand equipment to a colleague, to an office, or to another piece of equipment.
+* Assets: Refused to hand out equipment somebody already has, or that is not ready to be handed out.
+* Assets: Refused to leave a chain of equipment holding itself.
+* Assets: Let somebody take equipment back, recording the state it came back in and where it went.
+* Assets: Showed equipment somebody is holding as deployed, worked out from who has it rather than stored.
+* Assets: Read the history of equipment from both ends, from the item and from whoever held it.
+* Assets: Swept the fleet once a day and flagged equipment that is late coming back, once rather than every day.

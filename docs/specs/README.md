@@ -56,7 +56,7 @@ docs/specs/
 │   ├── 08-employee-lifecycle-status.md    the five system statuses, custom statuses, transitions
 │   ├── 09-managers.md                     the reporting relationship and its history
 │   ├── 10-employment-types.md             full time, part time, contractor, intern, and custom
-│   ├── 11-domain-events.md                the event catalogue, the persisted log, the publisher
+│   ├── 11-occurrences.md                  the event catalogue, the persisted log, the publisher
 │   ├── 12-playbooks.md                    triggers, steps, assignments, the V1 execution engine
 │   └── 13-module-system.md                enabling and disabling modules per company
 │

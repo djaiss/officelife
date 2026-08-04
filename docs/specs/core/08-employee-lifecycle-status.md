@@ -6,7 +6,7 @@
 | **Status** | Specified |
 | **Source** | Section 2.7 of the monolithic specification |
 | **Depends on** | `01-company-and-tenancy`, `03-employees`, `04-permissions-and-roles` |
-| **Depended on by** | `11-domain-events`, `12-playbooks`, `19-playbook-integration`, the directory, every headcount figure |
+| **Depended on by** | `11-occurrences`, `12-playbooks`, `19-playbook-integration`, the directory, every headcount figure |
 
 ## 1. Context / Overview
 
@@ -225,4 +225,4 @@ Three things are blocked on this spec.
    on the employee, and the transition action. This makes the state explicit.
 2. `isEmployed()` and the directory read the status instead of the dates.
 3. Custom statuses and their administration screen.
-4. The events, once `11-domain-events` exists.
+4. The events, once `11-occurrences` exists.

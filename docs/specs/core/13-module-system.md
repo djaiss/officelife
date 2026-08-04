@@ -5,7 +5,7 @@
 | **Identifier** | `core/13-module-system` |
 | **Status** | Specified |
 | **Source** | Sections 6 and 6.1 of the monolithic specification |
-| **Depends on** | `01-company-and-tenancy`, `04-permissions-and-roles`, `11-domain-events` |
+| **Depends on** | `01-company-and-tenancy`, `04-permissions-and-roles`, `11-occurrences` |
 | **Depended on by** | Every spec in `modules/` and `backlog/` |
 
 ## 1. Context / Overview
@@ -92,7 +92,7 @@ same as on the cloud.
 | FR-05 | Disabling a module hides its screens and navigation and stops its triggers firing. It does not delete its data. |
 | FR-06 | A module declares its own permissions. Those permissions are only offered when the module is enabled. |
 | FR-07 | A permission belonging to a disabled module denies, whatever a role grants. |
-| FR-08 | A module declares its own event types, which join the catalogue in `11-domain-events`. |
+| FR-08 | A module declares its own event types, which join the catalogue in `11-occurrences`. |
 | FR-09 | A module declares its own playbook step types, so that a playbook can reach into it. |
 | FR-10 | A module declares its own navigation entries. |
 | FR-11 | A module owns its migrations, and its tables are recognisable as belonging to it. |

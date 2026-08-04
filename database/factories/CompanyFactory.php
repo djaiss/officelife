@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ModuleEnum;
 use App\Enums\PlanEnum;
 use App\Enums\SizeRangeEnum;
 use App\Enums\WorkModeEnum;
@@ -58,6 +59,17 @@ class CompanyFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'trial_ends_at' => now()->addDays(30),
+        ]);
+    }
+
+    /**
+     * A company that has turned a module on. Every test about a module needs
+     * this, since the permissions of a module deny until it is on.
+     */
+    public function withModule(ModuleEnum $module): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'settings' => ['modules' => [$module->value]],
         ]);
     }
 }

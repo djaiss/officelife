@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -40,9 +41,26 @@ class CreateEmployee
         $this->authorize();
         $this->sanitize();
         $this->create();
+        $this->publish();
         $this->log();
 
         return $this->employee;
+    }
+
+    /**
+     * An employee record being created is not somebody arriving. The events for
+     * arriving and leaving are published from the lifecycle status, once that
+     * exists, and this one only says that a record was written.
+     */
+    private function publish(): void
+    {
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::EmployeeCreated,
+            company: $this->company,
+            subject: $this->employee,
+            actor: $this->author,
+            payload: ['name' => $this->employee->name],
+        )->execute();
     }
 
     private function authorize(): void

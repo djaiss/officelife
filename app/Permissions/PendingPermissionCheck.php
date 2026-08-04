@@ -79,11 +79,30 @@ class PendingPermissionCheck
             return new PermissionDecision(false);
         }
 
+        // A permission belonging to a module the company has not turned on
+        // denies, ahead of the owner bypass: a module that is off is a part of
+        // the product that does not exist for that company, and the person who
+        // owns it is no exception.
+        if ($this->belongsToADisabledModule($company)) {
+            return new PermissionDecision(false);
+        }
+
         if ($this->ownsTheCompany()) {
             return new PermissionDecision(true);
         }
 
         return new PermissionDecision(in_array(ScopeEnum::Company, $this->grantedScopes(), true));
+    }
+
+    /**
+     * Get whether the permission belongs to a module the company has left off.
+     * A core permission belongs to no module and is never held back this way.
+     */
+    private function belongsToADisabledModule(Company $company): bool
+    {
+        $module = $this->permission->module();
+
+        return $module !== null && ! $company->hasModule($module);
     }
 
     /**

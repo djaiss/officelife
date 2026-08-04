@@ -3,11 +3,11 @@
 | | |
 | --- | --- |
 | **Identifier** | `modules/assets/14-catalogue-and-inventory` |
-| **Status** | Specified |
+| **Status** | Implemented, backend only |
 | **Module** | Assets |
 | **Level** | 1, the only asset scope committed to the first version |
 | **Source** | Sections 7.1.1, 7.1.2, 7.1.3 and 7.1.8 of the monolithic specification |
-| **Depends on** | `03-employees`, `04-permissions-and-roles`, `05-locations`, `11-domain-events`, `13-module-system` |
+| **Depends on** | `03-employees`, `04-permissions-and-roles`, `05-locations`, `11-occurrences`, `13-module-system` |
 | **Depended on by** | `15-quantitative-inventory`, `16-software-licences`, `17-lifecycle-operations`, `18-self-service`, `19-playbook-integration` |
 
 ## 1. Context / Overview
@@ -84,12 +84,15 @@ somebody else by mistake.
 | --- | --- |
 | FR-01 | Every catalogue object and every asset belongs to exactly one company. |
 | FR-02 | A category groups assets and carries the rules that apply to the whole family: whether acceptance is required, the text to accept, whether a checkout sends an email. |
+| FR-02b | Turning the module on gives a company a catalogue of categories to start from, unless it already has one. They belong to the company and can be renamed, added to and deleted. |
+| FR-02c | A name the product chose reads in the language of whoever is looking. A name a company typed reads as they typed it, in every language. Renaming one we chose makes it theirs. |
 | FR-03 | A manufacturer is who makes the equipment. A supplier is who sells it. They are separate entities. |
 | FR-04 | An asset model belongs to a manufacturer and a category, and carries the attributes shared by every asset of that model. |
 | FR-05 | Every asset belongs to exactly one asset model. |
 | FR-06 | An asset has an asset tag, the internal identifier of the company, unique within it, and separately a serial number, which comes from the manufacturer. |
 | FR-07 | An asset status describes the operational state and has a system type: deployable, pending, undeployable, archived. |
 | FR-08 | Being assigned is not a status. It is derived from an active assignment. |
+| FR-08b | An asset holding an active assignment reads as Deployed everywhere it is displayed or counted, without that being stored on the asset. |
 | FR-09 | A company may add its own statuses on top of the system ones. |
 | FR-10 | An asset has a default location and a current location. |
 | FR-11 | Assignment is recorded in an append only history table, never updated in place. |
@@ -143,12 +146,89 @@ AssetModel
 - notes
 
 AssetStatus
-- id, company_id            null for a system status
+- id, company_id            null for a status every company gets
+- key                       what the code recognises a system status by, null for a company one
 - name
 - type                      deployable | pending | undeployable | archived
 - color
 - is_system
 ```
+
+`AssetCategory.type` is one of the five families of section 7.1.1: `asset`,
+`accessory`, `consumable`, `component`, `licence`. Only `asset` can be recorded
+against today, and the other four are declared now so that a company laying out
+its catalogue does not have to migrate it when the rest arrives. A model may not
+be filed under a category of a family nothing is built for.
+
+`AssetStatus.key` is what lets the code recognise the handful of statuses it
+branches on by name. Today that is `lost` and nothing else, and the list is meant
+to stay short. It is null for every status a company adds.
+
+### The categories a company starts with
+
+Turning the module on creates seven categories, unless the company already has
+some. Laptops, Desktops, Monitors, Phones, Tablets, Docking stations, Security
+badges. All of family `asset`, none asking to be accepted.
+
+They are seeded for a different reason from the statuses, and the difference is
+worth keeping straight. The statuses exist because checkout branches on them: the
+module does not work without them. The categories exist because recording the
+first laptop would otherwise mean inventing a category, then a manufacturer, then
+a model, which is three levels of setup before anything is worth looking at.
+Nothing in the code knows their names.
+
+That is also why they are company rows rather than shared ones, why they arrive
+on enabling the module rather than on creating the company, and why a company
+that already has categories is left alone. A company that never turns Assets on
+never sees them.
+
+The list stops at seven deliberately. Printers, networking equipment and servers
+are real for companies with their own office IT and dead rows for everybody else,
+so they are left to whoever needs them. Keyboards, mice and cables are absent
+because they are accessories and consumables, a different family with a different
+life cycle, and nothing can be recorded against them yet.
+
+Deciding on a company's behalf what its colleagues must agree to before holding a
+laptop is not ours to do, so no category arrives asking for acceptance and none
+carries terms.
+
+### Names we chose, and names they chose
+
+Two names in this module were written by us rather than by a company: the seven
+categories and the five statuses. Both have to read in the language of whoever is
+looking, and neither may be translated once a company has renamed it.
+
+So both tables carry two columns and exactly one of them is ever set.
+
+```
+name                  what the company typed, null while it still goes by ours
+name_translation_key  the key we shipped it under, null once they have renamed it
+```
+
+Reading `name` returns the typed value when there is one, and the translation of
+the key otherwise. Renaming clears the key, which is the moment the row stops
+being ours and becomes theirs. A name somebody chose is not ours to translate,
+in any language, ever.
+
+The consequence worth stating: **uniqueness becomes a question about the current
+language.** A category we shipped holds no name, so a clash has to be looked for
+against what each row currently reads as rather than against the column. A French
+company can therefore create a category called "Laptops", because the one we
+shipped reads to them as "Ordinateurs portables". The database keeps a unique
+index on each column separately, which stops the same key being shipped twice and
+the same typed name being used twice, and the resolved comparison in the actions
+covers the rest.
+
+The five statuses every company gets, inserted once for the installation as
+shared rows with no company of their own:
+
+| key | name | type |
+| --- | --- | --- |
+| `ready_to_deploy` | Ready to deploy | `deployable` |
+| `pending` | Pending | `pending` |
+| `awaiting_repair` | Awaiting repair | `undeployable` |
+| `lost` | Lost | `undeployable` |
+| `retired` | Retired | `archived` |
 
 ### Storage locations (level 2)
 
@@ -232,6 +312,47 @@ on. The name is what people read. That is why a company can add "Awaiting repair
 without the code learning about it: it declares itself as `undeployable` and
 behaves accordingly.
 
+### Why AssetStatus is a table and PermissionEnum is not
+
+The two sit next to each other in the codebase and are modelled opposite ways, so
+the reason is worth stating.
+
+A permission is defined by the code that checks it. A permission row nothing
+checks grants nothing, and a permission checked in code with no row would crash.
+There is no version of it that a company can meaningfully edit, which is why
+`04-permissions-and-roles` makes it an enum.
+
+A status is different, and the split runs through the middle of it. The `type`
+is code: four closed values, and the code branches on them. The row is company
+data: a label a company puts on its own equipment, over one of those four types.
+"In transit", "Awaiting wipe" and "Pending disposal" are real statuses that no
+product should have to ship in advance, and they behave correctly without the
+code learning about them because each declares its type.
+
+The `key` column is the seam between the two. It is set on the handful of system
+rows the code has to recognise by name, which today is `lost` and nothing else,
+and null on everything a company adds. It is deliberately small: a status needing
+a key is a status the code branches on, and that list should stay short.
+
+### Deployed is shown, not stored
+
+FR-08 says being assigned is not a status. That is a statement about the
+database, and on its own it produces a bad answer to a fair question: somebody
+looking at a list of equipment expects to read "Deployed", and should not have to
+know that it is computed.
+
+So the module exposes a display status, derived on read: an asset with an active
+assignment reads as **Deployed**, and every other asset reads as the name of its
+`AssetStatus`. Lists, counts, exports and screens all read that one value.
+
+It is derived rather than stored because `AssetAssignment` already answers the
+question definitively. A `deployed` row in `AssetStatus` would be a second source
+of truth for the same fact, and the two can disagree: somebody sets an asset back
+to "Ready to deploy" while the assignment is still open, and the inventory starts
+lying while the checkout guard, which reads the assignment, keeps working. It
+would also force checkin to remember which status to restore, since an asset
+checked out from "Pending" should not come back as "Ready to deploy".
+
 Two fields on `AssetModel` are deferred to later levels and named here so the
 column order does not have to change: `depreciation_method_id` (level 3, see
 `18-self-service`) and `fieldset_id` (level 2, see
@@ -279,7 +400,16 @@ AssetAssignment
 - returned_to_location_id   nullable
 - checkout_notes, checkin_notes
 - condition_at_checkout, condition_at_checkin
+- overdue_notified_at       when it was flagged late, so it is flagged once
 ```
+
+The two conditions are a closed list, `new`, `good`, `fair`, `poor`, `damaged`,
+rather than free text, because "what state did it come back in" has to be
+answerable across a fleet rather than one item at a time.
+
+`overdue_notified_at` exists so that the daily check flags an assignment once per
+crossing rather than every day the condition holds. Without it, equipment four
+months late would say so a hundred and twenty times.
 
 Same append only pattern as `05-locations`, where the full reasoning is written.
 
@@ -288,9 +418,13 @@ nothing else. This table answers four questions: who has it, who had it before,
 in what condition each time, and when it was supposed to come back.
 
 The assignee is polymorphic across three types, the same technique
-`11-domain-events` uses for subjects. A display assigned to a meeting room, a
+`11-occurrences` uses for subjects. A display assigned to a meeting room, a
 docking station assigned to a laptop, and a laptop assigned to a person are the
 same operation against different targets.
+
+Equipment holding equipment may not close on itself. The chain is walked upward
+on every checkout, and meeting the asset being handed over anywhere in it is
+refused, the same application level check `06-teams` uses for team parents.
 
 ### Checkout and checkin as operations
 
@@ -307,6 +441,22 @@ they are specified as sequences rather than as updates.
 6. Request acceptance if the category requires it.
 7. Write to the audit log.
 
+Step 4 takes the office as a parameter rather than working it out. An employee
+has no office to read it from yet: `05-locations` has the company side built and
+the `EmployeeLocation` side unbuilt. Whoever hands the equipment over says where
+it is going, and a checkout that says nothing leaves the equipment where it was.
+It defaults from the employee once that half of `05-locations` ships, which is an
+addition rather than a change.
+
+Step 6 does nothing at this level. Acceptance is level 3, in `18-self-service`.
+The category flag is stored and read by nothing yet, which is recorded in the
+action rather than silently left out.
+
+Step 7 writes to the log of user actions for now. The audit log of
+`04-permissions-and-roles` does not exist, and its first real consumer is
+compensation and permission changes rather than this module, so building it here
+would design it around the wrong caller.
+
 **CheckinAsset**
 
 1. Close the active `AssetAssignment`, setting `returned_at` and the condition.
@@ -314,6 +464,10 @@ they are specified as sequences rather than as updates.
 3. Update the status.
 4. Publish `asset.checked_in`.
 5. Write to the audit log.
+
+Step 3 happens only when a status is passed in, which is how something returned
+damaged goes to Awaiting repair. Nothing is set automatically and there is
+nothing to put back, because checkout never changed the status.
 
 Steps 1 and 2 of checkout are the ones people skip. Without them an asset can be
 handed to two people at once, or handed out while it is in for repair, and the
@@ -369,36 +523,48 @@ forgotten.
 
 ## 4. Acceptance Criteria
 
-- [ ] AC-01. A category, a manufacturer and an asset model can be created, and an
+- [x] AC-01. A category, a manufacturer and an asset model can be created, and an
       asset requires a model.
-- [ ] AC-02. Two assets of the same company cannot share an asset tag; two assets
+- [x] AC-01b. Turning the module on gives the company seven categories, leaves a
+      company that already has some alone, and gives none to a company that never
+      turned it on.
+- [x] AC-01c. A category or status we shipped reads in the language of whoever is
+      looking. One a company typed reads as they typed it whatever the language.
+      Renaming one we shipped clears its key and stops it moving with the
+      language.
+- [x] AC-02. Two assets of the same company cannot share an asset tag; two assets
       of different companies can.
-- [ ] AC-03. An asset can be created with no serial number.
-- [ ] AC-04. Every company has the system asset statuses, and a company can add
+- [x] AC-03. An asset can be created with no serial number.
+- [x] AC-04. Every company has the system asset statuses, and a company can add
       its own declaring one of the four types.
-- [ ] AC-05. An asset with an active assignment shows as assigned without its
-      status changing.
-- [ ] AC-06. Checking out a deployable, unassigned asset creates an assignment
+- [x] AC-05. An asset with an active assignment reads as Deployed while the
+      `AssetStatus` stored against it is unchanged, and reads as that status
+      again once the assignment is closed.
+- [x] AC-06. Checking out a deployable, unassigned asset creates an assignment
       and updates the current location.
-- [ ] AC-07. Checking out an asset that is already assigned is refused.
-- [ ] AC-08. Checking out an asset whose status type is not deployable is
+- [x] AC-07. Checking out an asset that is already assigned is refused.
+- [x] AC-08. Checking out an asset whose status type is not deployable is
       refused.
-- [ ] AC-09. Checking in closes the assignment, records the returned condition
+- [x] AC-09. Checking in closes the assignment, records the returned condition
       and the location, and leaves the row in place.
-- [ ] AC-10. An asset can be assigned to a location and to another asset, not
+- [x] AC-10. An asset can be assigned to a location and to another asset, not
       only to an employee.
-- [ ] AC-11. Asking an asset for its assignments returns every holder with the
+- [x] AC-11. Asking an asset for its assignments returns every holder with the
       conditions and dates. Asking an employee returns everything they hold and
       have held.
-- [ ] AC-12. An assignment whose expected return date has passed while still open
+- [x] AC-12. An assignment whose expected return date has passed while still open
       publishes `asset.return_overdue` once.
-- [ ] AC-13. Checkout publishes `asset.checked_out`; checkin publishes
+- [x] AC-13. Checkout publishes `asset.checked_out`; checkin publishes
       `asset.checked_in`.
-- [ ] AC-14. Checkout and checkin each write an audit log entry naming who did it.
-- [ ] AC-15. A user without `asset.checkout` cannot hand equipment out.
-- [ ] AC-16. Archiving an asset keeps its assignment history readable.
-- [ ] AC-17. Every screen and permission of this module is unavailable while the
-      module is disabled.
+- [x] AC-14. Checkout and checkin each write an audit log entry naming who did
+      it. *(Met by the log of user actions. The audit log of
+      `04-permissions-and-roles` does not exist yet.)*
+- [x] AC-15. A user without `asset.checkout` cannot hand equipment out.
+- [x] AC-16. Archiving an asset keeps its assignment history readable.
+- [x] AC-17a. Every permission of this module denies while the module is
+      disabled, the owner of the company included.
+- [ ] AC-17b. Every screen of this module is unavailable while the module is
+      disabled. *(There are no screens yet.)*
 - [ ] AC-18. *(Level 2)* A storage location can be created with a name, a type
       and an office, and with no parent.
 - [ ] AC-19. *(Level 2)* A storage location can be nested several levels deep,
@@ -414,22 +580,40 @@ forgotten.
 
 ## 5. Implementation status
 
-Nothing in this spec exists. There is no asset table, no catalogue and no module
-system to hang it on.
+Built, apart from the screens. Every requirement of level 1 is satisfied and
+every acceptance criterion from AC-01 to AC-16 passes, with the two annotations
+noted against AC-14 and AC-17.
 
-Three things have to exist first.
+### Already built
 
-- `13-module-system`, or this becomes core by accident. It is the first module,
-  which makes it the thing that proves the boundary is real.
-- `05-locations`, for the default and current location. That half exists already.
-- `11-domain-events`, for the events. Without it the module works and publishes
-  nothing, which is acceptable as an interim state.
+| Element | Where |
+| --- | --- |
+| `manufacturers`, `asset_categories`, `asset_models`, `asset_statuses`, `assets`, `asset_assignments` | `database/migrations/2026_08_03_0000{02..07}_*.php` |
+| The five statuses every company gets, inserted once for the installation | `2026_08_03_000005_create_asset_statuses_table.php` |
+| `Manufacturer`, `AssetCategory`, `AssetModel`, `AssetStatus`, `Asset`, `AssetAssignment` and their factories | `app/Models/`, `database/factories/` |
+| `AssetCategoryTypeEnum`, `AssetStatusTypeEnum`, `AssetAssigneeTypeEnum`, `AssetConditionEnum` | `app/Enums/` |
+| The derived display status, FR-08b | `Asset::displayStatus()` |
+| Twelve catalogue actions, create, change and delete for each of the four | `app/Actions/` |
+| The seven categories a company starts with, created on enabling the module | `app/Actions/CreateDefaultAssetCategories.php`, called from `EnableModule` |
+| Five asset actions: create, change, archive, restore, delete | `app/Actions/` |
+| Checkout and checkin, with every validation of section 3 | `app/Actions/CheckoutAsset.php`, `CheckinAsset.php` |
+| The history read from both ends | `Asset::assignments()`, `Employee::assetAssignments()`, `Location::assetAssignments()` |
+| The three permissions, and the module gate that denies them while the module is off | `app/Enums/PermissionEnum.php`, `app/Permissions/PendingPermissionCheck.php` |
+| The IT administrator role, and the grants added to Administrator and Member | `app/Actions/CreateDefaultRoles.php` |
+| The daily overdue check | `app/Jobs/CheckOverdueAssetReturns.php`, scheduled in `routes/console.php` |
+| Around 140 tests across models, actions, enums and the command | `tests/Unit/` |
 
-### Suggested build order
+The three things this spec said had to exist first were built alongside it:
+`13-module-system` at the depth described there, `11-occurrences` as a log
+nothing consumes yet, and the company half of `05-locations` which was already
+there.
 
-1. The catalogue: categories, manufacturers, models, statuses. Administration
-   screens for each. Nothing is assignable yet and the module is already useful
-   as a record of what the company owns.
-2. Assets themselves, with the list and the detail screen.
-3. Assignments, checkout and checkin. This is where the module earns its keep.
-4. The overdue check, as a scheduled job.
+### Not built
+
+| Gap | Why |
+| --- | --- |
+| Every screen, controller, route and view model | Deliberately out of scope. The data model and the actions come first. |
+| The audit log proper | `04-permissions-and-roles`. Its first real consumer is compensation and permission changes, so building it here would design it around the wrong caller. AC-14 is met by the log of user actions in the meantime. |
+| Acceptance on checkout, step 6 | Level 3, `18-self-service`. The category flag is stored and read by nothing. |
+| The office an employee works from, as a default for checkout | The `EmployeeLocation` half of `05-locations`. The office is passed in explicitly until then. |
+| Suppliers, storage locations, and the rest of levels 2 and 3 | As listed under **Out of scope for level 1**. |

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\SizeRangeEnum;
 use App\Enums\UserActionEnum;
@@ -39,9 +40,21 @@ class UpdateCompany
         $this->authorize();
         $this->sanitize();
         $this->update();
+        $this->publish();
         $this->log();
 
         return $this->company;
+    }
+
+    private function publish(): void
+    {
+        new PublishOccurrence(
+            type: OccurrenceTypeEnum::CompanyUpdated,
+            company: $this->company,
+            subject: $this->company,
+            actor: $this->author,
+            payload: ['name' => $this->company->name],
+        )->execute();
     }
 
     private function authorize(): void
