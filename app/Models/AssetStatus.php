@@ -118,12 +118,16 @@ class AssetStatus extends Model
      * added reads as they named it, in every language, because a name somebody
      * chose is not ours to translate.
      *
-     * @return Attribute<string, never>
+     * Writing goes straight to the column. Only reading falls back, so a status
+     * still carrying our key stores no name of its own.
+     *
+     * @return Attribute<string, string|null>
      */
     protected function name(): Attribute
     {
         return Attribute::make(
             get: fn (?string $value): string => $value ?? __($this->name_translation_key ?? ''),
+            set: fn (?string $value): ?string => $value,
         );
     }
 
