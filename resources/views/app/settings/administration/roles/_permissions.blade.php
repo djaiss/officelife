@@ -31,6 +31,8 @@
       $search[$permission['value']] = mb_strtolower($permission['value'].' '.$permission['label']);
     }
   }
+
+  $collapsed = array_fill_keys(array_keys($sections), true);
 @endphp
 
 <div class="mt-6 flex flex-wrap items-end gap-x-4 gap-y-1">
@@ -46,7 +48,7 @@
 <div
   x-data="{
     query: '',
-    collapsed: {},
+    collapsed: @js($collapsed),
     search: @js($search),
     sections: @js($sections),
     term() { return this.query.trim().toLowerCase() },
