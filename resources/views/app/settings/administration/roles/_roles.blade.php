@@ -31,7 +31,7 @@
         href="{{ $entry['url'] }}"
         data-turbo="true"
         @if ($entry['selected']) aria-current="page" @endif
-        class="flex items-center gap-2.25 rounded-md px-2.5 py-2 {{ $entry['selected'] ? 'bg-hover' : 'hover:bg-hover' }}"
+        class="flex items-center gap-2.25 rounded-md border border-transparent px-2.5 py-2 transition-colors {{ $entry['selected'] ? 'border-nav-active-border bg-nav-active' : 'hover:border-nav-hover-border hover:bg-nav-hover' }}"
       >
         <span class="min-w-0">
           <span class="block truncate text-sm text-ink {{ $entry['selected'] ? 'font-semibold' : 'font-medium' }}">{{ $entry['name'] }}</span>

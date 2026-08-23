@@ -21,6 +21,16 @@
     --color-hairline-strong: var(--hairline-strong);
     --color-hairline-soft: var(--hairline-soft);
     --color-hover: var(--hover);
+
+    /*
+     * The states of a navigation item. They are their own tokens rather than the
+     * plain hover one, because a menu item sits on the sunken column and needs to
+     * separate from it far more than a hovered row on a white card does.
+     */
+    --color-nav-hover: var(--nav-hover);
+    --color-nav-hover-border: var(--nav-hover-border);
+    --color-nav-active: var(--nav-active);
+    --color-nav-active-border: var(--nav-active-border);
     --color-focus: var(--focus);
     --color-ink: var(--ink);
     --color-body: var(--body);
@@ -130,6 +140,10 @@
     --hairline-strong: #e2e2de;
     --hairline-soft: #f1f1ee;
     --hover: #f4f4f1;
+    --nav-hover: #ecece6;
+    --nav-hover-border: #e0e0d8;
+    --nav-active: #e2e2da;
+    --nav-active-border: #cbcbc0;
     --focus: #b9b9b3;
     --ink: #1d1d20;
     --body: #74747a;
@@ -162,6 +176,10 @@
     --hairline-strong: #33333a;
     --hairline-soft: #26262b;
     --hover: #26262c;
+    --nav-hover: #2c2c33;
+    --nav-hover-border: #3a3a43;
+    --nav-active: #35353e;
+    --nav-active-border: #4c4c58;
     --focus: #55555f;
     --ink: #f0f0ee;
     --body: #9d9da4;
