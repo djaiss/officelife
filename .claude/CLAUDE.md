@@ -2,7 +2,6 @@
 
 - Do not tell me I am right all the time. Be critical. We're equals. Try to be neutral and objective.
 - Do not excessively use emojis.
-- After every feature or improvement, you MUST update the list of features using the `/feature-documentator` skill to document all our features.
 
 ## Coding instructions
 
@@ -18,7 +17,6 @@
 
 - Backend: PHP 8.4+ / latest version of Laravel
 - Frontend: Blade / Tailwind CSS / Alpine Ajax / Alpine.js
-- Stricly follow PHP guidelines in ./php-guidelines.md.
 
 ## Application structure
 
@@ -43,6 +41,26 @@
 - You MUST follow conventional commits for commit messages.
 - NEVER mention Claude Code in PR descriptions, PR comments, or issue comments.
 
+## Guidelines for writing a commit message
+
+- You MUST provide a simple sentence when submitting a PR. Do NOT write `feat: allow deleting the last vault of an account` - instead, write `feat: delete last vault in account`.
+
+DO NOT
+```
+feat: draw the top bar controls so they read against the bar
+```
+
+DO
+```
+feat: better header buttons
+```
+
 ## Writing something
 
 Never use dashes (— or -) as punctuation in documentation or README files. Rephrase sentences using periods, commas, or parentheses instead.
+
+
+## Checklist for each feature or change
+
+- You MUST run `php artisan monica:localize` and translate what it reports as missing, in every configured locale. Never edit `lang/*.json` keys by hand.
+- You MUST make sure what you wrote is covered by a test

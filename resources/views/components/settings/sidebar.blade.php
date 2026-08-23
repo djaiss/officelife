@@ -30,7 +30,13 @@
 ])
 
 @php
-  $item = 'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm max-lg:py-2.5';
+  /*
+   * Every item carries a border, transparent when the item is neither hovered nor
+   * current, so that gaining one does not nudge the label sideways.
+   */
+  $item = 'flex items-center gap-2.5 rounded-md border border-transparent px-2.5 py-1.5 text-sm transition-colors max-lg:py-2.5';
+  $selected = 'border-nav-active-border bg-nav-active font-semibold text-ink';
+  $unselected = 'text-body hover:border-nav-hover-border hover:bg-nav-hover hover:text-ink';
 @endphp
 
 <aside
@@ -65,7 +71,7 @@
       href="{{ route('settings.profile.index') }}"
       data-turbo="true"
       @if ($current === 'profile') aria-current="page" @endif
-      class="{{ $item }} {{ $current === 'profile' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      class="{{ $item }} {{ $current === 'profile' ? $selected : $unselected }}"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <circle cx="8" cy="6" r="2.6"></circle>
@@ -78,7 +84,7 @@
       href="{{ route('settings.logs.index') }}"
       data-turbo="true"
       @if ($current === 'logs') aria-current="page" @endif
-      class="{{ $item }} {{ $current === 'logs' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      class="{{ $item }} {{ $current === 'logs' ? $selected : $unselected }}"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <path d="M4 2.4h5.2L12.4 5.6V13.6H4z"></path>
@@ -92,7 +98,7 @@
       href="{{ route('settings.security.index') }}"
       data-turbo="true"
       @if ($current === 'security') aria-current="page" @endif
-      class="{{ $item }} {{ $current === 'security' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      class="{{ $item }} {{ $current === 'security' ? $selected : $unselected }}"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <rect x="3.4" y="7" width="9.2" height="6.6" rx="1.5"></rect>
@@ -105,7 +111,7 @@
       href="{{ route('settings.preferences.index') }}"
       data-turbo="true"
       @if ($current === 'preferences') aria-current="page" @endif
-      class="{{ $item }} {{ $current === 'preferences' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+      class="{{ $item }} {{ $current === 'preferences' ? $selected : $unselected }}"
     >
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
         <rect x="2.4" y="3.2" width="11.2" height="9.6" rx="1.5"></rect>
@@ -123,7 +129,7 @@
         href="{{ route('settings.locations.index') }}"
         data-turbo="true"
         @if ($current === 'locations') aria-current="page" @endif
-        class="{{ $item }} {{ $current === 'locations' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+        class="{{ $item }} {{ $current === 'locations' ? $selected : $unselected }}"
       >
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
           <path d="M8 14s4.4-4 4.4-7A4.4 4.4 0 0 0 3.6 7c0 3 4.4 7 4.4 7Z"></path>
@@ -144,7 +150,7 @@
         href="{{ route('settings.roles.index') }}"
         data-turbo="true"
         @if ($current === 'roles') aria-current="page" @endif
-        class="{{ $item }} {{ $current === 'roles' ? 'bg-hover font-semibold text-ink' : 'text-body hover:bg-hover' }}"
+        class="{{ $item }} {{ $current === 'roles' ? $selected : $unselected }}"
       >
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="shrink-0" aria-hidden="true">
           <path d="M8 2.2 13.2 4v4c0 3-2.2 5-5.2 5.8C5 13 2.8 11 2.8 8V4L8 2.2Z"></path>
