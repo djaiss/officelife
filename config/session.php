@@ -169,9 +169,17 @@ return [
     | to the server if the browser has a HTTPS connection. This will keep
     | the cookie from being sent to you when it can't be done securely.
     |
+    | Left unset, Laravel takes the flag from the scheme of the request being
+    | answered, which hands http and https two rival cookies of the same name
+    | on the same host. A browser may then hold the secure one, refuse to send
+    | it over http, and refuse to let the http page replace it, so every form
+    | on that page posts without a session and is turned away as a forged
+    | request. The flag therefore follows the scheme the application declares
+    | it is reached at, and stays the same whichever scheme answers.
+    |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => env('SESSION_SECURE_COOKIE', str_starts_with((string) env('APP_URL', 'http://localhost'), 'https://')),
 
     /*
     |--------------------------------------------------------------------------
