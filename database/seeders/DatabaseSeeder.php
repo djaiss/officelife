@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
             name: 'Dunder Mifflin',
             firstName: 'Michael',
             lastName: 'Scott',
-            email: 'michael.scott@dundermifflin.com',
-            password: 'password',
+            email: (string) config('officelife.seed_email'),
+            password: (string) config('officelife.seed_password'),
         )->execute();
 
         User::factory()->count(5)->create([

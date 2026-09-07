@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\App\Auth\EmailVerificationController;
 use App\Http\Controllers\App\Auth\LocaleController;
+use App\Http\Controllers\App\Auth\LocalSignInController;
 use App\Http\Controllers\App\Auth\LoginController;
 use App\Http\Controllers\App\Auth\MagicLinkController;
 use App\Http\Controllers\App\Auth\NewPasswordController;
@@ -22,6 +23,11 @@ Route::middleware(['guest', 'set.locale'])->group(function (): void {
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('login', [LoginController::class, 'new'])->name('auth.login.new');
     Route::post('login', [LoginController::class, 'create'])->name('auth.login.create');
+});
+
+// Signing in as the seeded account, on a machine somebody develops on.
+Route::middleware(['guest', 'set.locale'])->group(function (): void {
+    Route::post('local-sign-in', [LocalSignInController::class, 'create'])->name('auth.localSignIn.create');
 });
 
 // Signing in without a password, through a link sent by email.
