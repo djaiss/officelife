@@ -79,4 +79,19 @@ return [
 
     'privacy_url' => env('OFFICELIFE_PRIVACY_URL', 'https://officelife.io/privacy'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Seeded account
+    |--------------------------------------------------------------------------
+    |
+    | Who the seeder creates the company around, and the password it gives them.
+    | The sign in shortcut on a machine somebody develops on reads the same two
+    | values, so there is a single place that says who the default account is.
+    |
+    */
+
+    'seed_email' => env('OFFICELIFE_SEED_EMAIL', 'michael.scott@dundermifflin.com'),
+
+    'seed_password' => env('OFFICELIFE_SEED_PASSWORD', 'password'),
+
 ];

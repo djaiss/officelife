@@ -59,16 +59,18 @@
         </x-box>
 
         {{-- The shortcut that signs the seeded account in, only ever on a machine somebody develops on --}}
-        @env(config('login-link.allowed_environments'))
+        @if($viewModel->localSignInEmail())
           <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
-            <x-login-link
-              label="Sign in as Michael Scott"
-              email="michael.scott@dundermifflin.com"
-              :redirect-url="route('home.index')"
-              class="inline cursor-pointer font-semibold text-ink underline underline-offset-2 decoration-hairline-strong transition-colors duration-150 hover:text-brand hover:decoration-brand"
-            />
+            <x-form method="post" :action="route('auth.localSignIn.create')">
+              <button
+                type="submit"
+                class="inline cursor-pointer font-semibold text-ink underline underline-offset-2 decoration-hairline-strong transition-colors duration-150 hover:text-brand hover:decoration-brand"
+              >
+                Sign in as {{ $viewModel->localSignInEmail() }}
+              </button>
+            </x-form>
           </x-box>
-        @endenv
+        @endif
 
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Wanna skip the password?') }}
