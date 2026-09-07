@@ -6,7 +6,9 @@ description: "When the user wants to create or update their product marketing co
 
 # Product Marketing Context
 
-You help users create and maintain a product marketing context document. This captures foundational positioning and messaging information that other marketing skills reference, so users don't repeat themselves.
+You help users create and maintain a product marketing context document. This
+captures foundational positioning and messaging information that other marketing
+skills reference, so users don't repeat themselves.
 
 The document is stored at `.claude/product-marketing-context.md`.
 
@@ -23,22 +25,28 @@ First, check if `.claude/product-marketing-context.md` already exists.
 
 **If it doesn't exist, offer two options:**
 
-1. **Auto-draft from codebase** (recommended): You'll study the repo—README, landing pages, marketing copy, package.json, etc.—and draft a V1 of the context document. The user then reviews, corrects, and fills gaps. This is faster than starting from scratch.
+1. **Auto-draft from codebase** (recommended): You'll study the repo—README,
+   landing pages, marketing copy, package.json, etc.—and draft a V1 of the
+   context document. The user then reviews, corrects, and fills gaps. This is
+   faster than starting from scratch.
 
-2. **Start from scratch**: Walk through each section conversationally, gathering info one section at a time.
+2. **Start from scratch**: Walk through each section conversationally, gathering
+   info one section at a time.
 
-Most users prefer option 1. After presenting the draft, ask: "What needs correcting? What's missing?"
+Most users prefer option 1. After presenting the draft, ask: "What needs
+correcting? What's missing?"
 
 ### Step 2: Gather Information
 
 **If auto-drafting:**
-1. Read the codebase: README, landing pages, marketing copy, about pages, meta descriptions, package.json, any existing docs
+1. Read the codebase: README, landing pages, marketing copy, about pages, meta
+   descriptions, package.json, any existing docs
 2. Draft all sections based on what you find
 3. Present the draft and ask what needs correcting or is missing
 4. Iterate until the user is satisfied
 
-**If starting from scratch:**
-Walk through each section below conversationally, one at a time. Don't dump all questions at once.
+**If starting from scratch:** Walk through each section below conversationally,
+one at a time. Don't dump all questions at once.
 
 For each section:
 1. Briefly explain what you're capturing
@@ -46,7 +54,8 @@ For each section:
 3. Confirm accuracy
 4. Move to the next
 
-**Important:** Push for verbatim customer language. Exact phrases are more valuable than polished descriptions.
+**Important:** Push for verbatim customer language. Exact phrases are more
+valuable than polished descriptions.
 
 ---
 
@@ -78,9 +87,12 @@ If multiple stakeholders are involved in buying, capture for each:
 - Emotional tension (stress, fear, doubt)
 
 ### 5. Competitive Landscape
-- **Direct competitors**: Same solution, same problem (e.g., Calendly vs SavvyCal)
-- **Secondary competitors**: Different solution, same problem (e.g., Calendly vs Superhuman scheduling)
-- **Indirect competitors**: Conflicting approach (e.g., Calendly vs personal assistant)
+- **Direct competitors**: Same solution, same problem (e.g., Calendly vs
+  SavvyCal)
+- **Secondary competitors**: Different solution, same problem (e.g., Calendly vs
+  Superhuman scheduling)
+- **Indirect competitors**: Conflicting approach (e.g., Calendly vs personal
+  assistant)
 - How each falls short for customers
 
 ### 6. Differentiation
@@ -127,7 +139,8 @@ The JTBD Four Forces:
 
 ## Step 3: Create the Document
 
-After gathering information, create `.claude/product-marketing-context.md` with this structure:
+After gathering information, create `.claude/product-marketing-context.md` with
+this structure:
 
 ```markdown
 # Product Marketing Context
@@ -227,14 +240,17 @@ After gathering information, create `.claude/product-marketing-context.md` with 
 - Show the completed document
 - Ask if anything needs adjustment
 - Save to `.claude/product-marketing-context.md`
-- Tell them: "Other marketing skills will now use this context automatically. Run `/product-marketing-context` anytime to update it."
+- Tell them: "Other marketing skills will now use this context automatically.
+  Run `/product-marketing-context` anytime to update it."
 
 ---
 
 ## Tips
 
-- **Be specific**: Ask "What's the #1 frustration that brings them to you?" not "What problem do they solve?"
+- **Be specific**: Ask "What's the #1 frustration that brings them to you?" not
+  "What problem do they solve?"
 - **Capture exact words**: Customer language beats polished descriptions
 - **Ask for examples**: "Can you give me an example?" unlocks better answers
 - **Validate as you go**: Summarize each section and confirm before moving on
-- **Skip what doesn't apply**: Not every product needs all sections (e.g., Personas for B2C)
+- **Skip what doesn't apply**: Not every product needs all sections (e.g.,
+  Personas for B2C)

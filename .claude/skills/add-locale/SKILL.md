@@ -5,11 +5,17 @@ description: Add a new locale to the application. Use when the user wants to sup
 
 # Add a new locale
 
-You MUST use ISO 15897 names for region-specific languages, e.g. `fr_FR` for French from France and `es_ES` for Spanish from Spain.
+You MUST use ISO 15897 names for region-specific languages, e.g. `fr_FR` for
+French from France and `es_ES` for Spanish from Spain.
 
 You MUST follow these steps, in order:
 
-1. You MUST register the locale in the `locales` array of `config/monica.php`, with a `label` (the language in its own words), a `region` (the country in its own words), a `date_format` (the order that language reads dates in), a `number_format` (one of the `NumberFormatEnum` values) and a `flag` (a CSS `background` value drawn with gradients, never an image):
+1. You MUST register the locale in the `locales` array of
+   `config/officelife.php`, with a `label` (the language in its own words), a
+   `region` (the country in its own words), a `date_format` (the order that
+   language reads dates in), a `number_format` (one of the `NumberFormatEnum`
+   values) and a `flag` (a CSS `background` value drawn with gradients, never an
+   image):
    ```php
    'nl_NL' => [
        'label' => 'Nederlands',
@@ -19,8 +25,27 @@ You MUST follow these steps, in order:
        'flag' => 'linear-gradient(to bottom, #ae1c28 0 33%, #fff 33% 66%, #21468b 66%)',
    ],
    ```
-2. You MUST run `php artisan monica:localize`. It creates `lang/{locale}.json` and reports how many strings the new locale is missing. You MUST NOT create or order that file by hand.
-3. You MUST translate every key it reports as missing, adding it to `lang/{locale}.json`. Keep the `:placeholders` untouched, and match the plain, calm tone of `lang/en.json`.
-4. You MUST run `php artisan monica:localize` again and confirm the new locale reports nothing missing.
-5. You MUST NOT touch the language pickers or the validation rules. They all read `config('monica.locales')`, so a registered locale shows up on its own.
-6. You MUST run `php artisan test` afterwards, since a test that counts the locales may need updating.
+2. You MUST run `php artisan officelife:localize`. It creates
+   `lang/{locale}.json` and reports how many strings the new locale is missing.
+   You MUST NOT create or order that file by hand.
+3. You MUST translate every key it reports as missing, adding it to
+   `lang/{locale}.json`. Keep the `:placeholders` untouched, and match the
+   plain, calm tone of `lang/en.json`.
+4. You MUST run `php artisan officelife:localize` again and confirm the new
+   locale reports nothing missing.
+5. You MUST NOT touch the language pickers or the validation rules. They all
+   read `config('officelife.locales')`, so a registered locale shows up on its
+   own.
+6. You MUST run `php artisan test` afterwards, since a test that counts the
+   locales may need updating.
+7. You MUST run `php artisan officelife:localize --check` to confirm the new
+   locale is in sync with the code.
+
+You MAY also declare how the new language punctuates, as a `typography` key in
+the same `config/officelife.php` entry, and write its section in
+[`.claude/rules/translations.md`](../../rules/translations.md). It is optional:
+a locale that declares nothing is not checked, which is where eight of the nine
+stand. French is written there in full and is the example to copy. Declare it
+only if you read the language, since the check then refuses every value that
+breaks it, including the ones already translated.
+
