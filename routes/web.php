@@ -18,12 +18,18 @@ use App\Http\Controllers\App\Settings\Administration\LocationArchiveController;
 use App\Http\Controllers\App\Settings\Administration\LocationController;
 use App\Http\Controllers\App\Settings\Administration\RoleController;
 use App\Http\Controllers\App\Settings\Administration\RolePeopleController;
+use App\Http\Controllers\App\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 // The landing page, until there is a dashboard to send people to.
 Route::get('/', function () {
     return view('welcome');
 })->name('home.index');
+
+// The way into every setting, which is what the two groups below hold.
+Route::middleware(['auth', 'set.locale'])->group(function (): void {
+    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+});
 
 // The screens where somebody looks after their own account.
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
