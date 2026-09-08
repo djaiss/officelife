@@ -42,6 +42,9 @@ class PreferenceControllerTest extends TestCase
         $response->assertSee('Time format', escape: false);
         $response->assertSee('24-hour', escape: false);
         $response->assertSee('Français', escape: false);
+        $response->assertSee('How the application reads to you, on every device you sign in from.', escape: false);
+        $response->assertSee('The language the interface is drawn in.', escape: false);
+        $response->assertSee('How every clock time is written. Dates are unaffected.', escape: false);
         $response->assertSee('Michael Scott', escape: false);
         $response->assertSee('Dunder Mifflin', escape: false);
     }
