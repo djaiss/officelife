@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings\Account\Security;
 
-use App\Enums\PermissionEnum;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\HtmlString;
@@ -61,35 +60,12 @@ class TwoFactorEnrolmentViewModel
     }
 
     /**
-     * The record the avatar draws from, so the sidebar can show the photo when
+     * The record the avatar draws from, so the screen can show the photo when
      * there is one. An account that belongs to nobody who works here has none.
      */
     public function employee(): ?Employee
     {
         return $this->employee;
-    }
-
-    /**
-     * Whether the sidebar offers the roles of the company.
-     */
-    public function canManageRoles(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::RoleManage)
-            ->forCompany($this->user->company)
-            ->allowed();
-    }
-
-    /**
-     * Whether the sidebar offers the settings of the company itself, such as its
-     * offices.
-     */
-    public function canManageCompany(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::CompanyManage)
-            ->forCompany($this->user->company)
-            ->allowed();
     }
 
     public function companyName(): string

@@ -35,11 +35,29 @@ class SecurityControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Security and access', escape: false);
-        $response->assertSee('Change password', escape: false);
+        $response->assertSee('Password', escape: false);
         $response->assertSee('Current password', escape: false);
         $response->assertSee('Dwight Schrute', escape: false);
         $response->assertSee('Dunder Mifflin', escape: false);
         $response->assertSee('Last changed 2 days ago', escape: false);
+    }
+
+    #[Test]
+    public function it_carries_the_top_bar_and_the_way_back_to_the_settings_hub(): void
+    {
+        $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('settings.security.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('id="top-bar-menu"', escape: false);
+        $response->assertSee('Dunder Mifflin', escape: false);
+        $response->assertSee(route('settings.index'), escape: false);
     }
 
     #[Test]

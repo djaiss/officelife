@@ -18,6 +18,22 @@
       <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"></path>
       @break
 
+    @case('password')
+      <rect x="3.5" y="9.5" width="17" height="6" rx="3"></rect>
+      <path d="M8 12.5h.01M12 12.5h.01M16 12.5h.01"></path>
+      @break
+
+    @case('two-factor')
+      <rect x="7" y="2.5" width="10" height="19" rx="2.4"></rect>
+      <path d="M9.6 11.4l1.7 1.8 3.3-3.6"></path>
+      @break
+
+    @case('api-keys')
+      <circle cx="15.4" cy="8.6" r="4"></circle>
+      <path d="M12.6 11.4 4.5 19.5"></path>
+      <path d="M7 17l2 2"></path>
+      @break
+
     @case('preferences')
       <path d="M4 8h16M4 16h16"></path>
       <circle cx="9.5" cy="8" r="2.2"></circle>
