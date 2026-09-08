@@ -24,12 +24,13 @@
   $errorId = $error ? $id.'-error' : null;
   $describedBy = trim(($helpId ?? '').' '.($errorId ?? ''));
 
-  /* 16px on a phone, the way x-input is, so tapping it does not zoom the page in. */
+  /* The button the browser draws is dressed as <x-button.secondary>, so the two
+     read the same wherever they sit beside each other. */
   $classes = [
-    'block w-full cursor-pointer text-base text-muted sm:text-sm',
-    'file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-hairline-strong',
-    'file:bg-canvas file:px-3 file:py-2 file:text-base file:font-semibold file:text-ink sm:file:text-sm',
-    'hover:file:bg-hover',
+    'block w-full cursor-pointer text-[15px] text-muted',
+    'file:mr-3 file:cursor-pointer file:rounded-[10px] file:border-[1.5px] file:border-hairline-strong',
+    'file:bg-card file:px-4 file:py-2.5 file:text-[15px] file:font-semibold file:text-ink',
+    'hover:file:border-ink hover:file:bg-hover',
   ];
 @endphp
 

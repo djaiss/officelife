@@ -3,7 +3,7 @@
   otherwise. The icon slot sits before the label.
 
   The border is transparent and draws nothing. It is there so the button is the
-  same height as <x-button.secondary>, which spends the same two pixels on a
+  same height as <x-button.secondary>, which spends the same width on a
   hairline, and the two line up when they sit side by side.
 
   @var string|null $href
@@ -15,7 +15,7 @@
 ])
 
 @php
-  $classes = 'relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border border-transparent py-2 text-sm font-semibold whitespace-nowrap transition-colors duration-150 bg-accent text-accent-foreground hover:bg-accent/88 focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none disabled:pointer-events-none disabled:bg-disabled disabled:text-on-disabled [:where(&)]:px-5';
+  $classes = 'relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border-[1.5px] border-transparent py-2.5 text-[15px] font-semibold whitespace-nowrap transition-colors duration-150 bg-accent text-accent-foreground hover:bg-accent/88 focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none disabled:pointer-events-none disabled:bg-disabled disabled:text-on-disabled [:where(&)]:px-5';
 @endphp
 
 @isset($href)

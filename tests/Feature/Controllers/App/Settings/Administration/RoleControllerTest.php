@@ -84,7 +84,7 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create(['company_id' => $company->id]);
         $this->makeMember($user);
 
-        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+        $response = $this->actingAs($user)->get(route('settings.preferences.index'));
 
         $response->assertOk();
         $response->assertDontSee('Roles and permissions');
@@ -97,7 +97,7 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create(['company_id' => $company->id]);
         $this->grant($user, PermissionEnum::RoleManage);
 
-        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+        $response = $this->actingAs($user)->get(route('settings.preferences.index'));
 
         $response->assertOk();
         $response->assertSee('Roles and permissions');

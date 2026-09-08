@@ -102,29 +102,6 @@ class ProfileViewModel
         return $this->user->email;
     }
 
-    /**
-     * Whether the sidebar offers the roles of the company.
-     */
-    public function canManageRoles(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::RoleManage)
-            ->forCompany($this->user->company)
-            ->allowed();
-    }
-
-    /**
-     * Whether the sidebar offers the settings of the company itself, such as its
-     * offices.
-     */
-    public function canManageCompany(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::CompanyManage)
-            ->forCompany($this->user->company)
-            ->allowed();
-    }
-
     public function companyName(): string
     {
         return $this->user->company->name;
