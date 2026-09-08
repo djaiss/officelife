@@ -1,43 +1,42 @@
+{{-- What somebody chose about the way the application reads to them: the language of the interface, and the clock times are written on. --}}
 {{--
-  What somebody chose about the way the application reads to them: the language
-  of the interface, and the clock times are written on.
-
-  Each row is its own form, and carries the other row's current value along so
-  that saving one never quietly resets the other. The time format saves over
-  ajax; the language reloads the page, since every word on it is drawn in it.
-
   @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
 --}}
-<x-app-layout :title="__('Preferences')">
-  <x-slot:sidebar>
-    <x-settings.sidebar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" :can-manage-roles="$viewModel->canManageRoles()" :can-manage-company="$viewModel->canManageCompany()" current="preferences" />
-  </x-slot:sidebar>
+<x-top-bar-layout :title="__('Preferences')">
+  <x-slot:top-bar>
+    <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
+  </x-slot:top-bar>
 
-  <x-slot:breadcrumb>
-    <nav class="text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
-      {{ __('Settings') }}
-      <span class="px-1 text-placeholder" aria-hidden="true">/</span>
-      <span class="text-ink" aria-current="page">{{ __('Preferences') }}</span>
-    </nav>
-  </x-slot:breadcrumb>
+  <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
+    <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
+    <span class="text-muted-soft" aria-hidden="true">/</span>
+    <a href="{{ route('settings.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Settings') }}</a>
+    <span class="text-muted-soft" aria-hidden="true">/</span>
+    <span class="font-medium text-ink" aria-current="page">{{ __('Preferences') }}</span>
+  </nav>
 
-  <x-page-header
-    :title="__('Preferences')"
-    :description="__('These settings apply to your account only, on every device you sign in from.')"
-  />
+  <div class="mb-11">
+    <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Preferences') }}</h1>
+    <p class="text-lg leading-normal text-pretty text-body">{{ __('How the application reads to you, on every device you sign in from.') }}</p>
+  </div>
 
-  <div class="space-y-2">
-    <x-box :title="__('General')" padding="p-0">
+  <div class="space-y-4">
+    <x-section :title="__('General')" icon="preferences" :hue="310">
       <x-slot:help>
-        <x-help :title="__('General')" align="right">
+        <x-help :title="__('General')">
           {{ __('These are yours alone. Changing them here changes nothing for your colleagues, and nothing about how your company is set up.') }}
         </x-help>
       </x-slot:help>
 
-      <x-box.row class="grid gap-x-6 gap-y-3 px-4.5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+      {{--
+        Each row is its own form, and carries the other row's current value along
+        so that saving one never quietly resets the other. The language reloads
+        the page, since every word on it is drawn in it.
+      --}}
+      <div class="grid gap-x-10 gap-y-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
-          <p class="text-sm font-medium text-ink">{{ __('Language') }}</p>
-          <p class="mt-0.5 text-sm text-muted">{{ __('The language used across the :app interface.', ['app' => config('app.name')]) }}</p>
+          <p class="font-semibold text-ink">{{ __('Language') }}</p>
+          <p class="mt-1 text-[15px] leading-relaxed text-body">{{ __('The language the interface is drawn in.') }}</p>
         </div>
 
         <x-form method="put" :action="route('settings.preferences.update')" id="language-form">
@@ -50,12 +49,12 @@
             :title="__('Interface language')"
           />
         </x-form>
-      </x-box.row>
+      </div>
 
-      <x-box.row class="grid gap-x-6 gap-y-3 px-4.5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+      <div class="mt-6 grid gap-x-10 gap-y-3.5 border-t border-hairline-soft pt-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
-          <p class="text-sm font-medium text-ink">{{ __('Time format') }}</p>
-          <p class="mt-0.5 text-sm text-muted">{{ __('How times are written across the application.') }}</p>
+          <p class="font-semibold text-ink">{{ __('Time format') }}</p>
+          <p class="mt-1 text-[15px] leading-relaxed text-body">{{ __('How every clock time is written. Dates are unaffected.') }}</p>
         </div>
 
         {{--
@@ -79,11 +78,11 @@
             monospaced-hints
           />
         </x-form>
-      </x-box.row>
-    </x-box>
+      </div>
+    </x-section>
 
     <p id="time-preview" class="text-sm text-muted-soft">
       {{ __('It is :time where you are, in :language.', ['time' => $viewModel->timePreview(), 'language' => $viewModel->localeLabel()]) }}
     </p>
   </div>
-</x-app-layout>
+</x-top-bar-layout>
