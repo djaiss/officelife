@@ -25,7 +25,7 @@
     type="button"
     @click="open = ! open"
     :aria-expanded="open ? 'true' : 'false'"
-    class="flex w-full cursor-pointer items-start gap-x-3 px-4 py-3.5 text-left focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
+    class="flex w-full cursor-pointer items-start gap-x-3 px-4.5 py-3.5 text-left focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
   >
     <span class="mt-1.5 size-2 shrink-0 rounded-full {{ $delivery }}" aria-hidden="true"></span>
     <span class="sr-only">{{ $deliveryLabel }}</span>
@@ -51,7 +51,7 @@
   </button>
 
   {{-- rounded-b-[inherit]: the last row open would otherwise square off the panel. --}}
-  <div x-cloak x-show="open" x-transition class="rounded-b-[inherit] border-t border-hairline-soft bg-card px-4 py-3.5">
+  <div x-cloak x-show="open" x-transition class="rounded-b-[inherit] border-t border-hairline-soft bg-card px-4.5 py-3.5">
     <p class="text-center text-xs text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
 
     {{-- Purify leaves bare paragraphs behind, so the spacing between them is ours to give. --}}

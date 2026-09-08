@@ -22,13 +22,13 @@
     <p class="text-lg leading-normal text-pretty text-body">{{ __('Every email we sent to your account, most recent first.') }}</p>
   </div>
 
-  <x-section :title="__('Every email')" icon="emails" :hue="50">
+  <x-section :title="__('Every email')" icon="emails" :hue="50" padding="p-0">
     {{--
       The list grows in place: the link at the bottom asks for the next page,
       alpine-ajax appends the rows that come back, and swaps the link for the one
       that came with them, or drops it on the last page.
     --}}
-    <div id="emails-sent-container" x-merge="append" class="overflow-hidden rounded-xl ring-[1.5px] ring-hairline">
+    <div id="emails-sent-container" x-merge="append">
       @forelse ($viewModel->emailsSent() as $emailSent)
         @include('app.settings.account.logs._email-sent-row', ['emailSent' => $emailSent])
       @empty
@@ -45,7 +45,7 @@
       @endforelse
 
       @if ($viewModel->emailsSent()->hasMorePages())
-        <div id="pagination" class="border-t border-hairline-soft px-4 py-3 text-center text-sm">
+        <div id="pagination" class="border-t border-hairline-soft px-4.5 py-3 text-center text-sm">
           <x-link x-target="emails-sent-container pagination" :href="$viewModel->emailsSent()->nextPageUrl()">{{ __('Load more') }}</x-link>
         </div>
       @endif
