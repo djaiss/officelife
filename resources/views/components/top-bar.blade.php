@@ -36,7 +36,7 @@
 @endphp
 
 <header class="flex flex-wrap items-center gap-5 pt-4.5 pb-4">
-  <x-avatar-initials :name="$companyName" :size="28" tone="accent" />
+  <x-logo-illustration class="h-7 w-auto" />
 
   <nav class="relative flex min-w-55 flex-1 items-center justify-center">
     <button
