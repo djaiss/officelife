@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings\Account\Logs;
 
-use App\Enums\PermissionEnum;
 use App\Models\EmailSent;
 use App\Models\Employee;
 use App\Models\Log;
@@ -93,29 +92,6 @@ class LogsViewModel
     public function employee(): ?Employee
     {
         return $this->employee;
-    }
-
-    /**
-     * Whether the sidebar offers the roles of the company.
-     */
-    public function canManageRoles(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::RoleManage)
-            ->forCompany($this->user->company)
-            ->allowed();
-    }
-
-    /**
-     * Whether the sidebar offers the settings of the company itself, such as its
-     * offices.
-     */
-    public function canManageCompany(): bool
-    {
-        return $this->user
-            ->permission(PermissionEnum::CompanyManage)
-            ->forCompany($this->user->company)
-            ->allowed();
     }
 
     public function companyName(): string

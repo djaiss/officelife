@@ -43,6 +43,8 @@ class LogControllerTest extends TestCase
         $response = $this->actingAs($user)->get(route('settings.logs.index'));
 
         $response->assertStatus(200);
+        $response->assertSee('What we recorded about your account, and what we sent you.', escape: false);
+        $response->assertSee('Activity', escape: false);
         $response->assertSee('Michael Scott', escape: false);
         $response->assertSee('company_updated', escape: false);
         $response->assertSee('Updated the company called Dunder Mifflin', escape: false);

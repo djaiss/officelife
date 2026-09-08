@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Logs;
 
-use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Models\Company;
 use App\Models\EmailSent;
@@ -160,19 +159,5 @@ class LogsViewModelTest extends TestCase
         $viewModel = new LogsViewModel(user: $user, employee: null);
 
         $this->assertEquals('accountant@vancerefrigeration.com', $viewModel->name());
-    }
-
-    #[Test]
-    public function it_knows_whether_the_administration_section_belongs_in_the_sidebar(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-
-        $this->assertFalse(new LogsViewModel(user: $user, employee: null)->canManageRoles());
-
-        $this->grant($user, PermissionEnum::RoleManage);
-        $user->forgetGrants();
-
-        $this->assertTrue(new LogsViewModel(user: $user, employee: null)->canManageRoles());
     }
 }
