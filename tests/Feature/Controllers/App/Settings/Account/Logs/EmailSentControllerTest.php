@@ -39,6 +39,8 @@ class EmailSentControllerTest extends TestCase
         $response = $this->actingAs($user)->get(route('settings.emailsSent.index'));
 
         $response->assertStatus(200);
+        $response->assertSee('Every email we sent to your account, most recent first.', escape: false);
+        $response->assertSee('Every email', escape: false);
         $response->assertSee('pam.beesly@dundermifflin.com', escape: false);
         $response->assertSee('A sign-in from a new place', escape: false);
         $response->assertSee('Pam Beesly', escape: false);

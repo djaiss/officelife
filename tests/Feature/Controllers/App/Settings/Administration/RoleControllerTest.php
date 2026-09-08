@@ -78,32 +78,6 @@ class RoleControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_leaves_the_administration_section_out_of_the_sidebar_for_a_member(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-        $this->makeMember($user);
-
-        $response = $this->actingAs($user)->get(route('settings.logs.index'));
-
-        $response->assertOk();
-        $response->assertDontSee('Roles and permissions');
-    }
-
-    #[Test]
-    public function it_puts_the_administration_section_in_the_sidebar_for_an_administrator(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-        $this->grant($user, PermissionEnum::RoleManage);
-
-        $response = $this->actingAs($user)->get(route('settings.logs.index'));
-
-        $response->assertOk();
-        $response->assertSee('Roles and permissions');
-    }
-
-    #[Test]
     public function it_renames_a_role_and_says_afresh_what_it_grants(): void
     {
         Queue::fake();

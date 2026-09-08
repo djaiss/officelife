@@ -40,6 +40,11 @@
       <circle cx="15" cy="16" r="2.2"></circle>
       @break
 
+    @case('emails')
+      <rect x="3" y="5.5" width="18" height="13" rx="2.2"></rect>
+      <path d="m3.6 7 8.4 6 8.4-6"></path>
+      @break
+
     @case('logs')
       <rect x="5" y="3" width="14" height="18" rx="2.2"></rect>
       <path d="M9 8.5h6M9 12.5h6M9 16.5h4"></path>
