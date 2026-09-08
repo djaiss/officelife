@@ -64,6 +64,25 @@ class ProfileControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_carries_the_top_bar_and_the_way_back_to_the_settings_hub(): void
+    {
+        $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
+        $employee = Employee::factory()->create(['company_id' => $company->id]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+        $this->makeMember($user);
+
+        $response = $this->actingAs($user)->get(route('settings.profile.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('id="top-bar-menu"', escape: false);
+        $response->assertSee('Dunder Mifflin', escape: false);
+        $response->assertSee(route('settings.index'), escape: false);
+    }
+
+    #[Test]
     public function it_points_to_the_logs_screen(): void
     {
         $company = Company::factory()->create();

@@ -119,7 +119,8 @@
     </div>
   </nav>
 
-  <div class="flex items-center gap-2.25">
+  {{-- The id is the target of the ajax form on the profile screen, so a saved name lands up here too. --}}
+  <div id="top-bar-identity" class="flex items-center gap-2.25">
     <span class="text-sm text-body">{{ $name }}</span>
 
     <x-avatar :employee="$employee" :name="$name" :size="28" />

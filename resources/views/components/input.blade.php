@@ -37,15 +37,13 @@
   $errorId = $error ? $id.'-error' : null;
   $describedBy = trim(($helpId ?? '').' '.($errorId ?? ''));
 
-  /* Safari on iOS zooms the page in whenever a field it is given is under 16px,
-     so the field is 16px on a phone and back to 14px from sm up. */
   $classes = [
     'block w-full appearance-none',
-    'px-3 py-2.5 text-base sm:text-sm',
-    'rounded-md border border-hairline-strong bg-input text-ink placeholder-placeholder',
+    'px-3.25 py-2.75 text-base',
+    'rounded-[10px] border-[1.5px] border-hairline-strong bg-input text-ink placeholder-placeholder',
     'transition-colors duration-150',
     'hover:border-focus hover:bg-hover',
-    'focus:border-focus focus:bg-canvas focus:outline-none',
+    'focus:border-focus focus:bg-canvas focus:ring-3 focus:ring-focus/15 focus:outline-none',
     'disabled:cursor-default disabled:opacity-60',
     'aria-invalid:border-error',
   ];
