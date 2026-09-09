@@ -20,29 +20,80 @@ class RolesViewModelTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_lists_the_roles_of_the_company_with_what_each_one_holds(): void
+    public function it_lists_the_roles_of_the_company_with_what_each_one_covers(): void
     {
         $company = Company::factory()->create();
         $user = User::factory()->create(['company_id' => $company->id]);
 
         $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Regional manager']);
         RolePermission::factory()->create(['role_id' => $role->id, 'permission' => PermissionEnum::EmployeeView]);
+        RolePermission::factory()->create(['role_id' => $role->id, 'permission' => PermissionEnum::AssetView]);
         $user->roles()->attach($role->id);
 
         Role::factory()->create(['company_id' => $company->id, 'name' => 'Temp']);
         Role::factory()->create(['company_id' => Company::factory()->create()->id, 'name' => 'Elsewhere']);
 
-        $viewModel = new RolesViewModel(user: $user, role: $role);
+        $rows = new RolesViewModel(user: $user, role: $role)->rows();
 
-        $list = $viewModel->list();
+        $this->assertCount(2, $rows);
+        $this->assertEquals('Regional manager', $rows[0]['name']);
+        $this->assertEquals('People and Assets', $rows[0]['summary']);
+        $this->assertEquals('2 of 10 permissions', $rows[0]['permissions']);
+        $this->assertEquals('1 person', $rows[0]['holders']);
+        $this->assertEquals('Temp', $rows[1]['name']);
+        $this->assertEquals('Nothing yet. Tick what it is allowed to do.', $rows[1]['summary']);
+        $this->assertEquals('nobody', $rows[1]['holders']);
+    }
 
-        $this->assertCount(2, $list);
-        $this->assertEquals('Regional manager', $list[0]['name']);
-        $this->assertEquals('1 permission · 1 person', $list[0]['summary']);
-        $this->assertTrue($list[0]['selected']);
-        $this->assertEquals('0 permissions · nobody', $list[1]['summary']);
-        $this->assertFalse($list[1]['selected']);
-        $this->assertEquals('Roles · 2', $viewModel->rolesHeader());
+    #[Test]
+    public function it_says_a_role_granting_everything_grants_everything(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Administrator']);
+
+        foreach (PermissionEnum::cases() as $permission) {
+            RolePermission::factory()->create(['role_id' => $role->id, 'permission' => $permission]);
+        }
+
+        $rows = new RolesViewModel(user: $user, role: null)->rows();
+
+        $this->assertEquals('Everything, including handing out roles.', $rows[0]['summary']);
+        $this->assertEquals([['label' => 'Full access', 'tone' => 'accent']], $rows[0]['badges']);
+    }
+
+    #[Test]
+    public function it_marks_a_role_the_application_looks_after_itself(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $role = Role::factory()->locked()->create(['company_id' => $company->id]);
+
+        $rows = new RolesViewModel(user: $user, role: null)->rows();
+
+        $this->assertEquals([['label' => 'Not editable', 'tone' => 'neutral']], $rows[0]['badges']);
+        $this->assertFalse(new RolesViewModel(user: $user, role: $role)->role()['isEditable']);
+    }
+
+    #[Test]
+    public function it_names_the_two_halves_of_a_role_and_says_which_one_is_being_read(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+        RolePermission::factory()->create(['role_id' => $role->id, 'permission' => PermissionEnum::EmployeeView]);
+        $user->roles()->attach($role->id);
+
+        $tabs = new RolesViewModel(user: $user, role: $role, onPeopleTab: true)->tabs();
+
+        $this->assertEquals('Permissions · 1', $tabs[0]['label']);
+        $this->assertFalse($tabs[0]['current']);
+        $this->assertEquals('People · 1', $tabs[1]['label']);
+        $this->assertTrue($tabs[1]['current']);
+        $this->assertEquals(route('settings.roles.show', [$role->id, 'people']), $tabs[1]['url']);
     }
 
     #[Test]
@@ -158,20 +209,6 @@ class RolesViewModelTest extends TestCase
     }
 
     #[Test]
-    public function it_offers_every_role_as_a_starting_point_for_a_new_one(): void
-    {
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-        Role::factory()->create(['company_id' => $company->id, 'name' => 'Regional manager']);
-
-        $templates = new RolesViewModel(user: $user, role: null)->templates();
-
-        $this->assertCount(2, $templates);
-        $this->assertEquals(['id' => '', 'name' => 'Nothing'], $templates[0]);
-        $this->assertEquals('Regional manager', $templates[1]['name']);
-    }
-
-    #[Test]
     public function it_holds_nothing_when_the_company_has_no_roles_left(): void
     {
         $company = Company::factory()->create();
@@ -180,22 +217,27 @@ class RolesViewModelTest extends TestCase
         $viewModel = new RolesViewModel(user: $user, role: null);
 
         $this->assertNull($viewModel->role());
-        $this->assertEquals([], $viewModel->list());
+        $this->assertEquals([], $viewModel->rows());
+        $this->assertEquals([], $viewModel->tabs());
         $this->assertEquals([], $viewModel->people());
         $this->assertEquals([], $viewModel->assignable());
         $this->assertFalse($viewModel->canBeDeleted());
-        $this->assertEquals('Roles · 0', $viewModel->rolesHeader());
     }
 
     #[Test]
-    public function it_writes_out_what_each_scope_button_means(): void
+    public function it_writes_out_what_each_scope_of_a_permission_means(): void
     {
         $company = Company::factory()->create();
         $user = User::factory()->create(['company_id' => $company->id]);
+        $role = Role::factory()->create(['company_id' => $company->id]);
 
-        $legend = new RolesViewModel(user: $user, role: null)->scopeLegend();
+        $groups = new RolesViewModel(user: $user, role: $role)->groups();
 
-        $this->assertCount(count(ScopeEnum::cases()), $legend);
-        $this->assertEquals(['short' => 'Self', 'label' => 'Themselves only'], $legend[0]);
+        $permissions = collect($groups)->pluck('permissions')->flatten(1)->keyBy('value');
+
+        $this->assertEquals([
+            ScopeEnum::Self->value => 'Themselves only',
+            ScopeEnum::Company->value => 'Everybody in the company',
+        ], $permissions[PermissionEnum::EmployeeView->value]['scopes']);
     }
 }

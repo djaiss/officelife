@@ -28,7 +28,7 @@ class RolePeopleController extends Controller
             role: $request->user()->company->roles()->findOrFail($role),
         )->execute();
 
-        return redirect()->route('settings.roles.show', $role)
+        return redirect()->route('settings.roles.show', [$role, 'people'])
             ->with('status', __('The role is handed out.'))
             ->with('status_description', __(':email is covered by it from now on.', ['email' => $user->email]));
     }
@@ -41,7 +41,7 @@ class RolePeopleController extends Controller
             role: $request->user()->company->roles()->findOrFail($role),
         )->execute();
 
-        return redirect()->route('settings.roles.show', $role)
+        return redirect()->route('settings.roles.show', [$role, 'people'])
             ->with('status', __('The role is taken back.'))
             ->with('status_description', __(':email keeps whatever their other roles grant.', ['email' => $user->email]));
     }

@@ -33,7 +33,7 @@ class RolePeopleControllerTest extends TestCase
             'user' => $colleague->id,
         ]);
 
-        $response->assertRedirect(route('settings.roles.show', $role->id));
+        $response->assertRedirect(route('settings.roles.show', [$role->id, 'people']));
         $response->assertSessionHas('status', 'The role is handed out.');
         $this->assertDatabaseHas('user_roles', ['user_id' => $colleague->id, 'role_id' => $role->id]);
     }
@@ -53,7 +53,7 @@ class RolePeopleControllerTest extends TestCase
 
         $response = $this->actingAs($user)->delete(route('settings.rolePeople.destroy', [$role->id, $colleague->id]));
 
-        $response->assertRedirect(route('settings.roles.show', $role->id));
+        $response->assertRedirect(route('settings.roles.show', [$role->id, 'people']));
         $response->assertSessionHas('status', 'The role is taken back.');
         $this->assertDatabaseMissing('user_roles', ['user_id' => $colleague->id, 'role_id' => $role->id]);
     }
@@ -69,10 +69,11 @@ class RolePeopleControllerTest extends TestCase
         $role = Role::factory()->create(['company_id' => $company->id]);
         $colleague->roles()->attach($role->id);
 
-        $response = $this->actingAs($user)->get(route('settings.roles.show', $role->id));
+        $response = $this->actingAs($user)->get(route('settings.roles.show', [$role->id, 'people']));
 
         $response->assertOk();
         $response->assertSee('pam@dundermifflin.com');
+        $response->assertSee('They lose whatever only this role granted them. Sure?');
     }
 
     #[Test]

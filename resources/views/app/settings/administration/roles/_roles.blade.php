@@ -1,56 +1,58 @@
+{{-- Every role of the company, one to a row. --}}
 {{--
-  The column listing every role of the company, with the line under each name
-  saying how much it grants and how many people hold it.
+  A row is a link rather than a button, because what it opens is a screen of its
+  own rather than a panel over this one.
 
-  It sticks under the header of the layer on a wide screen, so moving between
-  roles never means scrolling back up. Below lg there is no second column to sit
-  beside, so it becomes the first band of the page instead.
+  Four columns need a screen wide enough for four. Below md the two figures fold
+  onto a line of their own under the name, and the cells are placed by hand
+  there, since the order they fold into is not the order they are written in.
 
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
 --}}
-<div class="border-hairline-soft px-4 pt-5 pb-6 max-lg:border-b lg:sticky lg:top-13.5 lg:border-r lg:pb-15">
-  <div class="flex items-center gap-2 px-1.5 pb-2.5">
-    <h2 class="text-xs tracking-wide text-muted-soft uppercase">{{ $viewModel->rolesHeader() }}</h2>
+@php
+  $columns = 'grid-cols-[38px_minmax(0,1fr)_10px] gap-x-4.5 gap-y-2 md:grid-cols-[38px_minmax(0,1fr)_auto_auto_10px] md:gap-y-0';
+@endphp
 
-    <button
-      type="button"
-      x-on:click="creating = true"
-      aria-label="{{ __('Create a role') }}"
-      class="ml-auto flex size-6 cursor-pointer items-center justify-center rounded-md border border-hairline bg-canvas text-body transition-colors hover:bg-hover hover:text-ink"
+<div class="overflow-hidden rounded-[18px] bg-canvas ring-[1.5px] ring-hairline">
+  @forelse ($viewModel->rows() as $row)
+    <a
+      href="{{ $row['url'] }}"
+      data-turbo="true"
+      class="grid w-full cursor-pointer items-center border-b border-hairline-soft px-5.5 py-4 text-left transition-colors last:border-b-0 hover:bg-hover {{ $columns }}"
     >
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
-        <line x1="8" y1="3.4" x2="8" y2="12.6"></line>
-        <line x1="3.4" y1="8" x2="12.6" y2="8"></line>
-      </svg>
-    </button>
-  </div>
+      <span class="accent-tile grid size-9.5 place-items-center rounded-xl" style="--tile-hue: {{ $row['hue'] }}">
+        <x-settings-icon name="roles" />
+      </span>
 
-  <div class="space-y-px">
-    @foreach ($viewModel->list() as $entry)
-      <a
-        href="{{ $entry['url'] }}"
-        data-turbo="true"
-        @if ($entry['selected']) aria-current="page" @endif
-        class="flex items-center gap-2.25 rounded-md border border-transparent px-2.5 py-2 transition-colors {{ $entry['selected'] ? 'border-nav-active-border bg-nav-active' : 'hover:border-nav-hover-border hover:bg-nav-hover' }}"
-      >
-        <span class="min-w-0">
-          <span class="block truncate text-sm text-ink {{ $entry['selected'] ? 'font-semibold' : 'font-medium' }}">{{ $entry['name'] }}</span>
+      <span class="min-w-0">
+        <span class="mb-0.75 flex flex-wrap items-center gap-x-2.25 gap-y-1">
+          <span class="text-[17px] font-bold tracking-tight text-ink">{{ $row['name'] }}</span>
 
-          <span class="mt-0.25 block truncate text-xs text-muted">{{ $entry['summary'] }}</span>
+          @foreach ($row['badges'] as $badge)
+            <span class="rounded-md px-2 py-0.5 text-xs font-bold tracking-wide uppercase {{ $badge['tone'] === 'accent' ? 'bg-accent-soft text-accent-ink' : 'bg-hover text-muted ring-1 ring-hairline' }}">
+              {{ $badge['label'] }}
+            </span>
+          @endforeach
         </span>
 
-        @unless ($entry['isEditable'])
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="ml-auto shrink-0 text-muted-soft" aria-hidden="true">
-            <title>{{ __('Not editable') }}</title>
-            <rect x="3.6" y="7" width="8.8" height="6.2" rx="1.4"></rect>
-            <path d="M5.8 7V5.4a2.2 2.2 0 0 1 4.4 0V7"></path>
-          </svg>
-        @endunless
-      </a>
-    @endforeach
-  </div>
+        <span class="block text-[15px] text-pretty text-body">{{ $row['summary'] }}</span>
+      </span>
 
-  <x-notice class="mt-4">
-    {{ __('Somebody may hold several roles at once. What they can do is everything their roles grant added together, so no role ever takes anything away.') }}
-  </x-notice>
+      <span class="text-[15px] whitespace-nowrap text-muted max-md:col-start-2 max-md:row-start-2">{{ $row['permissions'] }}</span>
+
+      <span class="text-[15px] font-semibold whitespace-nowrap text-body max-md:col-start-2 max-md:row-start-3 md:text-right">{{ $row['holders'] }}</span>
+
+      <span class="block size-2 -rotate-45 justify-self-end border-r-2 border-b-2 border-muted-soft max-md:col-start-3 max-md:row-start-1" aria-hidden="true"></span>
+    </a>
+  @empty
+    <x-empty-state :title="__('This company has no roles left')">
+      <x-slot:icon>
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M8 2.2 13.2 4v4c0 3-2.2 5-5.2 5.8C5 13 2.8 11 2.8 8V4L8 2.2Z"></path>
+        </svg>
+      </x-slot:icon>
+
+      {{ __('Nobody can be given anything until there is a role to give. Make one to start handing out permissions again.') }}
+    </x-empty-state>
+  @endforelse
 </div>

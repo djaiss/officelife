@@ -14,20 +14,22 @@ use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 
 /**
- * What the roles screen shows: every role of the company down the left, and the
- * one being looked at on the right, with what it is allowed to do and who holds
- * it.
+ * What the two roles screens show: every role of the company as a list, and one
+ * role on a screen of its own, with what it is allowed to do under one tab and
+ * who holds it under the other.
  *
- * A company that has deleted every one of its roles has none to look at, which
- * is why the selected role is nullable and the screen has a blank state.
+ * The list screen is built with no role, so the role is nullable and everything
+ * about one role answers with nothing when there is none.
  */
 class RolesViewModel
 {
     /**
-     * The roles of the company, asked for once and kept. Both columns of the
-     * screen read them, and the second ask would be another query.
+     * The roles of the company, asked for once and kept. The list reads them and
+     * the counts above it read them again, and the second ask would be another
+     * query.
      *
      * @var Collection<int, Role>|null
      */
@@ -43,25 +45,46 @@ class RolesViewModel
 
     public function __construct(
         private readonly User $user,
-        private readonly ?Role $role,
+        private readonly ?Employee $employee = null,
+        private readonly ?Role $role = null,
+        private readonly bool $onPeopleTab = false,
     ) {}
 
-    /**
-     * The line above the list, which says how many roles there are rather than
-     * making somebody count the rows.
-     */
-    public function rolesHeader(): string
+    public function companyName(): string
     {
-        return __('Roles · :count', ['count' => $this->roles()->count()]);
+        return $this->user->company->name;
     }
 
     /**
-     * Every role of the company, with the line under its name saying how much it
-     * grants and how many people hold it.
-     *
-     * @return array<int, array{id: int, name: string, url: string, summary: string, selected: bool, isEditable: bool}>
+     * The name to show and to draw initials from. Somebody whose account is not
+     * attached to an employee record has only an email address to go by.
      */
-    public function list(): array
+    public function name(): string
+    {
+        return $this->employee->name ?? $this->user->email;
+    }
+
+    /**
+     * The record the avatar draws from, so the top bar can show the photo when
+     * there is one. An account that belongs to nobody who works here has none.
+     */
+    public function employee(): ?Employee
+    {
+        return $this->employee;
+    }
+
+    public function createUrl(): string
+    {
+        return route('settings.roles.create');
+    }
+
+    /**
+     * Every role of the company, one to a row: what it covers, how much of
+     * everything on offer it grants, and how many people hold it.
+     *
+     * @return array<int, array{id: int, name: string, url: string, summary: string, permissions: string, holders: string, badges: array<int, array{label: string, tone: string}>, hue: int}>
+     */
+    public function rows(): array
     {
         return $this->roles()
             ->map(fn (Role $role): array => [
@@ -69,16 +92,23 @@ class RolesViewModel
                 'name' => $role->name,
                 'url' => route('settings.roles.show', $role->id),
                 'summary' => $this->summary($role),
-                'selected' => $role->id === $this->role?->id,
-                'isEditable' => $role->is_editable,
+                /* The noun agrees with the total rather than with the count, and
+                   there are ten permissions to grant, so the wording never
+                   changes with the number in front of it. */
+                'permissions' => trans_choice('[0,*]:count of :total permissions', $role->permissions_count, [
+                    'total' => count(PermissionEnum::cases()),
+                ]),
+                'holders' => $this->holderLabel($role->users_count),
+                'badges' => $this->badges($role),
+                'hue' => $this->hue($role),
             ])
             ->all();
     }
 
     /**
-     * The role being looked at, or null when the company has none left.
+     * The role being looked at, or null on the list screen.
      *
-     * @return array{id: int, name: string, slug: string, isEditable: bool, updateUrl: string, destroyUrl: string, duplicateUrl: string, assignUrl: string}|null
+     * @return array{id: int, name: string, slug: string, isEditable: bool, badges: array<int, array{label: string, tone: string}>, hue: int, updateUrl: string, destroyUrl: string, duplicateUrl: string, assignUrl: string}|null
      */
     public function role(): ?array
     {
@@ -91,6 +121,8 @@ class RolesViewModel
             'name' => old('name', $this->role->name),
             'slug' => $this->role->slug,
             'isEditable' => $this->role->is_editable,
+            'badges' => $this->badges($this->role),
+            'hue' => $this->hue($this->role),
             'updateUrl' => route('settings.roles.update', $this->role->id),
             'destroyUrl' => route('settings.roles.destroy', $this->role->id),
             'duplicateUrl' => route('settings.roleDuplicates.create', $this->role->id),
@@ -99,14 +131,45 @@ class RolesViewModel
     }
 
     /**
+     * The two halves of a role, each a path of its own so either can be linked
+     * to and gone back to.
+     *
+     * @return array<int, array{label: string, url: string, current: bool}>
+     */
+    public function tabs(): array
+    {
+        if ($this->role === null) {
+            return [];
+        }
+
+        return [
+            [
+                'label' => trans_choice('[0,*]Permissions · :count', count($this->grants())),
+                'url' => route('settings.roles.show', $this->role->id),
+                'current' => ! $this->onPeopleTab,
+            ],
+            [
+                'label' => trans_choice('[0,*]People · :count', $this->role->users()->count()),
+                'url' => route('settings.roles.show', [$this->role->id, 'people']),
+                'current' => $this->onPeopleTab,
+            ],
+        ];
+    }
+
+    public function onPeopleTab(): bool
+    {
+        return $this->onPeopleTab;
+    }
+
+    /**
      * The permission matrix, one section per group. A permission that covers the
      * whole company has nothing to narrow down, so it comes with no scopes at
-     * all and the row says so instead of showing a picker leading nowhere.
+     * all and the row says so instead of showing a toggle leading nowhere.
      *
      * What was submitted wins over what is stored, so a save turned away by the
      * validator gives the ticks back rather than throwing the edit away.
      *
-     * @return array<int, array{title: string, note: string, count: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<int, array{value: string, label: string}>}>}>
+     * @return array<int, array{title: string, note: string, count: string, width: string, tone: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}>}>
      */
     public function groups(): array
     {
@@ -121,12 +184,19 @@ class RolesViewModel
                 ),
             ));
 
-            $granted = array_filter($permissions, fn (array $permission): bool => $permission['granted']);
+            $granted = count(array_filter($permissions, fn (array $permission): bool => $permission['granted']));
+            $ratio = $granted / count($permissions);
 
             $groups[] = [
                 'title' => __($group->label()),
                 'note' => __($group->note()),
-                'count' => __(':granted of :total', ['granted' => count($granted), 'total' => count($permissions)]),
+                'count' => trans_choice('[0,*]:count of :total granted', $granted, ['total' => count($permissions)]),
+                'width' => $granted === 0 ? '9px' : round($ratio * 100).'%',
+                'tone' => match (true) {
+                    $granted === 0 => 'none',
+                    $ratio < 1 => 'partial',
+                    default => 'full',
+                },
                 'permissions' => $permissions,
             ];
         }
@@ -135,27 +205,12 @@ class RolesViewModel
     }
 
     /**
-     * The line under the matrix that says in full what the one word on each of
-     * the scope buttons means.
-     *
-     * @return array<int, array{short: string, label: string}>
-     */
-    public function scopeLegend(): array
-    {
-        return array_map(
-            fn (ScopeEnum $scope): array => ['short' => __($scope->shortLabel()), 'label' => __($scope->label())],
-            ScopeEnum::cases(),
-        );
-    }
-
-    /**
      * The line at the right of the matrix header, saying how much of everything
      * on offer the role actually grants.
      */
     public function grantCountLabel(): string
     {
-        return __(':granted of :total granted', [
-            'granted' => count($this->grants()),
+        return trans_choice('[0,*]:count of :total granted', count($this->grants()), [
             'total' => count(PermissionEnum::cases()),
         ]);
     }
@@ -171,8 +226,8 @@ class RolesViewModel
     }
 
     /**
-     * Who holds the role, with the day they were given it and the way to take it
-     * back.
+     * Who holds the role, with the month they were given it and the way to take
+     * it back.
      *
      * @return array<int, array{id: int, name: string, email: string, employee: Employee|null, since: string, removeUrl: string}>
      */
@@ -192,33 +247,17 @@ class RolesViewModel
                 'name' => $user->employee->name ?? $user->email,
                 'email' => $user->email,
                 'employee' => $user->employee,
-                'since' => __('since :date', ['date' => $heldSince[$user->id]->isoFormat('MMM YYYY')]),
+                'since' => __('Holds it since :date', ['date' => $heldSince[$user->id]->isoFormat('MMM YYYY')]),
                 'removeUrl' => route('settings.rolePeople.destroy', [$this->role->id, $user->id]),
             ])
             ->all();
     }
 
     /**
-     * The day each holder of the role was given it, keyed by who they are. It is
-     * read off the row that joins the two rather than through the relation,
-     * since the day a role was handed out belongs to neither of them.
-     *
-     * @return array<int, Carbon>
-     */
-    private function heldSince(Role $role): array
-    {
-        return UserRole::query()
-            ->where('role_id', $role->id)
-            ->get()
-            ->mapWithKeys(fn (UserRole $held): array => [$held->user_id => $held->created_at])
-            ->all();
-    }
-
-    /**
-     * The colleagues who do not hold the role yet, for the panel that hands it
+     * The colleagues who do not hold the role yet, for the dialog that hands it
      * out.
      *
-     * @return array<int, array{id: int, name: string, email: string}>
+     * @return array<int, array{id: int, name: string, email: string, employee: Employee|null}>
      */
     public function assignable(): array
     {
@@ -234,6 +273,7 @@ class RolesViewModel
                 'id' => $user->id,
                 'name' => $user->employee->name ?? $user->email,
                 'email' => $user->email,
+                'employee' => $user->employee,
             ])
             ->all();
     }
@@ -260,33 +300,32 @@ class RolesViewModel
         $holders = $this->role->users()->count();
 
         if ($holders > 0) {
-            return __('held by :count', ['count' => $holders]);
+            return trans_choice('[0,*]held by :count', $holders);
         }
 
         return null;
     }
 
     /**
-     * What a new role can start from: nothing at all, or the permissions of a
-     * role that already exists.
+     * The day each holder of the role was given it, keyed by who they are. It is
+     * read off the row that joins the two rather than through the relation,
+     * since the day a role was handed out belongs to neither of them.
      *
-     * @return array<int, array{id: string, name: string}>
+     * @return array<int, Carbon>
      */
-    public function templates(): array
+    private function heldSince(Role $role): array
     {
-        $templates = [['id' => '', 'name' => __('Nothing')]];
-
-        foreach ($this->roles() as $role) {
-            $templates[] = ['id' => (string) $role->id, 'name' => $role->name];
-        }
-
-        return $templates;
+        return UserRole::query()
+            ->where('role_id', $role->id)
+            ->get()
+            ->mapWithKeys(fn (UserRole $held): array => [$held->user_id => $held->created_at])
+            ->all();
     }
 
     /**
      * One row of the matrix.
      *
-     * @return array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<int, array{value: string, label: string}>}
+     * @return array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}
      */
     private function permission(PermissionEnum $permission): array
     {
@@ -301,18 +340,19 @@ class RolesViewModel
             ? ($grants[$permission->value] ?? ScopeEnum::Company)->value
             : ($submitted[$permission->value]['scope'] ?? ScopeEnum::Company->value);
 
+        $scopes = [];
+
+        foreach ($permission->scopes() as $candidate) {
+            $scopes[$candidate->value] = __($candidate->label());
+        }
+
         return [
             'value' => $permission->value,
             'label' => __($permission->label()),
             'granted' => $granted,
             'scope' => $scope,
             'targetsEmployee' => $permission->targetsEmployee(),
-            'scopes' => $permission->targetsEmployee()
-                ? array_map(
-                    fn (ScopeEnum $scope): array => ['value' => $scope->value, 'label' => __($scope->shortLabel())],
-                    $permission->scopes(),
-                )
-                : [],
+            'scopes' => $permission->targetsEmployee() ? $scopes : [],
         ];
     }
 
@@ -322,6 +362,7 @@ class RolesViewModel
     private function roles(): Collection
     {
         return $this->roles ??= $this->user->company->roles()
+            ->with('permissions')
             ->withCount(['permissions', 'users'])
             ->orderBy('name')
             ->get();
@@ -340,28 +381,88 @@ class RolesViewModel
             return $this->grants = [];
         }
 
-        return $this->grants = $this->role->permissions()
-            ->get()
+        return $this->grants = $this->role->permissions
             ->mapWithKeys(fn (RolePermission $grant): array => [$grant->permission->value => $grant->scope])
             ->all();
     }
 
     /**
-     * The line under a role in the list: how much it grants, and how many people
-     * hold it.
+     * The sentence under the name of a role in the list. Roles carry no
+     * description of their own, so it is read off what they grant: the sections
+     * of the matrix they reach into, which is the shortest true thing that can
+     * be said about a role without listing it out.
      */
     private function summary(Role $role): string
     {
-        $permissions = $role->permissions_count === 1
-            ? __('1 permission')
-            : __(':count permissions', ['count' => $role->permissions_count]);
+        if ($role->permissions_count === 0) {
+            return __('Nothing yet. Tick what it is allowed to do.');
+        }
 
-        $people = match ($role->users_count) {
-            0 => __('nobody'),
-            1 => __('1 person'),
-            default => __(':count people', ['count' => $role->users_count]),
-        };
+        if ($role->permissions_count === count(PermissionEnum::cases())) {
+            return __('Everything, including handing out roles.');
+        }
 
-        return $permissions.' · '.$people;
+        $granted = $role->permissions
+            ->map(fn (RolePermission $grant): PermissionGroupEnum => $grant->permission->group())
+            ->unique();
+
+        $groups = array_map(
+            fn (PermissionGroupEnum $group): string => __($group->label()),
+            array_filter(
+                PermissionGroupEnum::cases(),
+                fn (PermissionGroupEnum $group): bool => $granted->contains($group),
+            ),
+        );
+
+        return Arr::join(array_values($groups), ', ', ' '.__('and').' ');
+    }
+
+    /**
+     * How many people hold a role. Nobody holding it is its own sentence rather
+     * than a count of none, since that is the thing worth noticing about it.
+     */
+    private function holderLabel(int $holders): string
+    {
+        if ($holders === 0) {
+            return __('nobody');
+        }
+
+        return trans_choice(':count person|:count people', $holders);
+    }
+
+    /**
+     * What is worth saying about a role beside its name: that it amounts to full
+     * access, and that the application looks after it itself.
+     *
+     * @return array<int, array{label: string, tone: string}>
+     */
+    private function badges(Role $role): array
+    {
+        $badges = [];
+
+        if ($this->administers($role)) {
+            $badges[] = ['label' => __('Full access'), 'tone' => 'accent'];
+        }
+
+        if (! $role->is_editable) {
+            $badges[] = ['label' => __('Not editable'), 'tone' => 'neutral'];
+        }
+
+        return $badges;
+    }
+
+    /**
+     * The colour of the square beside a role, which sets a role granting the
+     * administration of the company apart from the rest at a glance.
+     */
+    private function hue(Role $role): int
+    {
+        return $this->administers($role) ? 30 : 80;
+    }
+
+    private function administers(Role $role): bool
+    {
+        return $role->permissions
+            ->contains(fn (RolePermission $grant): bool => $grant->permission === PermissionEnum::RoleManage);
     }
 }
