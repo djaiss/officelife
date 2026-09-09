@@ -1,8 +1,11 @@
+{{-- A panel that slides in from the right of the window, over the screen it was opened from. --}}
 {{--
-  A panel that slides in from the right of the window, over the screen it was
-  opened from. It is for looking after one row of a list without leaving the list
-  behind, which a dialog in the middle of the window would not do: the rows stay
-  visible down the left, so moving from one to the next is one click.
+  It is for looking after one row of a list without leaving the list behind,
+  which a dialog in the middle of the window would not do: the rows stay visible
+  down the left, so moving from one to the next is one click.
+
+  It sits inside the window rather than against its edges, so the list it came
+  from is still framed around it.
 
   What opens and closes it is the caller's, passed in as two alpine expressions.
   The component owns none of that state, so a list can drive the panel with the
@@ -23,7 +26,6 @@
   @var string $close
   @var string|null $labelledby
   @var \Illuminate\View\ComponentSlot|null $header
-  @var \Illuminate\View\ComponentSlot|null $footer
 --}}
 @props([
   'show',
@@ -49,14 +51,14 @@
     role="dialog"
     aria-modal="true"
     @if ($labelledby) aria-labelledby="{{ $labelledby }}" @endif
-    {{ $attributes->class('absolute inset-y-0 right-0 flex w-full max-w-130 flex-col border-l border-hairline-strong bg-page shadow-2xl') }}
+    {{ $attributes->class('absolute inset-y-3.5 right-3.5 flex w-[calc(100%-1.75rem)] max-w-110 flex-col overflow-hidden rounded-[20px] bg-canvas shadow-2xl ring-[1.5px] ring-hairline') }}
   >
     @isset($header)
       {{-- The close button is the last thing on the line whatever the header
            holds, so what the caller puts there wraps under itself on a narrow
            screen rather than pushing the way out of the panel off the edge. --}}
-      <div class="flex shrink-0 items-start gap-3 border-b border-hairline bg-sunken px-4 py-3 sm:px-4.5">
-        <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2">
+      <div class="flex shrink-0 items-start gap-4 px-5.5 pt-6 pb-5 sm:px-7">
+        <div class="min-w-0 flex-1">
           {{ $header }}
         </div>
 
@@ -64,9 +66,9 @@
           type="button"
           x-on:click="{{ $close }}"
           aria-label="{{ __('Close the panel') }}"
-          class="flex size-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted transition-colors hover:bg-hover hover:text-ink"
+          class="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted transition-colors hover:bg-hover hover:text-ink"
         >
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <line x1="3.6" y1="3.6" x2="12.4" y2="12.4"></line>
             <line x1="12.4" y1="3.6" x2="3.6" y2="12.4"></line>
           </svg>
@@ -74,14 +76,8 @@
       </div>
     @endisset
 
-    <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4.5 sm:px-4.5">
+    <div class="min-h-0 flex-1 overflow-y-auto px-5.5 pb-7 sm:px-7">
       {{ $slot }}
     </div>
-
-    @isset($footer)
-      <div class="shrink-0 border-t border-hairline bg-sunken px-4 py-3 sm:px-4.5">
-        {{ $footer }}
-      </div>
-    @endisset
   </div>
 </div>

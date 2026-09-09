@@ -33,10 +33,10 @@ class LocationController extends Controller
         return view('app.settings.administration.locations.index', [
             'viewModel' => new LocationsViewModel(
                 user: $request->user(),
+                employee: $request->user()->employee,
                 scope: LocationScopeEnum::fromSegment($scope),
                 search: trim((string) $request->query('q', '')),
                 sort: $request->query('sort') === 'place' ? 'place' : 'name',
-                direction: $request->query('dir') === 'desc' ? 'desc' : 'asc',
             ),
         ]);
     }

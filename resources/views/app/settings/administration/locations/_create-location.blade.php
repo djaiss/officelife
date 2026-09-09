@@ -1,7 +1,8 @@
+{{-- The dialog that adds an office. --}}
 {{--
-  The dialog that adds an office. It asks for the little that tells one office
-  from another, and leaves the address and the time zone to the panel, so a
-  company opening a branch is not made to look up a time zone first.
+  It asks for the little that tells one office from another, and leaves the
+  address and the time zone to the panel, so a company opening a branch is not
+  made to look up a time zone first.
 
   Its own errors go in a bag of their own, since the panel behind it has a field
   called `name` too and the two messages would otherwise be the same message. The
@@ -32,57 +33,51 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="create-location-title"
-    class="h-fit w-full max-w-114 rounded-xl border border-hairline bg-canvas shadow-xl"
+    class="h-fit w-full max-w-115 rounded-[20px] bg-canvas px-6 pt-6 pb-7 shadow-2xl ring-[1.5px] ring-hairline sm:px-7"
   >
-    <x-form method="post" :action="$viewModel->createUrl()">
-      <div class="space-y-1 border-b border-hairline-soft px-4.5 py-3.5">
-        <h2 id="create-location-title" class="text-sm font-semibold tracking-tight text-ink">{{ __('New location') }}</h2>
+    <h2 id="create-location-title" class="text-2xl font-bold tracking-tight text-ink">{{ __('Add an office') }}</h2>
 
-        <p class="text-xs text-muted">{{ __('People can be sent to it as soon as it exists.') }}</p>
-      </div>
+    <p class="mt-1.5 text-[15px] leading-relaxed text-pretty text-body">
+      {{ __('A name, a city and a country are enough. The address and the time zone can wait.') }}
+    </p>
 
-      <div class="space-y-4 px-4.5 py-4">
+    <x-form method="post" :action="$viewModel->createUrl()" class="mt-5.5 space-y-4.5">
+      <x-input
+        id="name"
+        :label="__('Name')"
+        :value="old('name')"
+        :placeholder="__('Berlin office')"
+        :error="$errors->createLocation->get('name')"
+        maxlength="255"
+        required
+      />
+
+      <div class="grid gap-4.5 sm:grid-cols-2">
         <x-input
-          id="name"
-          :label="__('Name')"
-          :value="old('name')"
-          :placeholder="__('Berlin office')"
-          :error="$errors->createLocation->get('name')"
+          id="city"
+          :label="__('City')"
+          :value="old('city')"
+          :placeholder="__('Berlin')"
+          :error="$errors->createLocation->get('city')"
           maxlength="255"
-          required
         />
 
-        <div class="grid gap-4 sm:grid-cols-2">
-          <x-input
-            id="city"
-            :label="__('City')"
-            :value="old('city')"
-            :placeholder="__('Berlin')"
-            :error="$errors->createLocation->get('city')"
-            maxlength="255"
-          />
-
-          <x-input
-            id="country"
-            :label="__('Country')"
-            :value="old('country')"
-            :placeholder="__('DE')"
-            :help="__('Two letters')"
-            :error="$errors->createLocation->get('country')"
-            maxlength="2"
-            class="uppercase"
-          />
-        </div>
+        <x-input
+          id="country"
+          :label="__('Country')"
+          :value="old('country')"
+          :placeholder="__('DE')"
+          :help="__('Two letters')"
+          :error="$errors->createLocation->get('country')"
+          maxlength="2"
+          class="uppercase"
+        />
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 border-t border-hairline-soft px-4.5 py-3">
-        <p class="text-xs text-muted-soft">{{ __('The address and the time zone come after.') }}</p>
+      <div class="flex flex-wrap items-center gap-2.5 pt-1">
+        <x-button>{{ __('Add the office') }}</x-button>
 
-        <div class="ml-auto flex gap-2">
-          <x-button.secondary type="button" x-on:click="creating = false">{{ __('Cancel') }}</x-button.secondary>
-
-          <x-button>{{ __('Create location') }}</x-button>
-        </div>
+        <x-button.secondary type="button" x-on:click="creating = false">{{ __('Cancel') }}</x-button.secondary>
       </div>
     </x-form>
   </div>

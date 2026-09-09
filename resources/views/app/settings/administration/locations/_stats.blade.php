@@ -1,17 +1,22 @@
+{{-- The three counts above the list. --}}
 {{--
-  The four counts above the table. They describe the company rather than the list
-  under them, so narrowing the search leaves them where they are.
+  They describe the company rather than the list under them, so narrowing the
+  search leaves them where they are.
 
   @var \App\ViewModels\Settings\Administration\LocationsViewModel $viewModel
 --}}
-<div id="locations-stats" class="grid grid-cols-2 gap-3 transition-opacity lg:grid-cols-4 [&[aria-busy]]:opacity-60">
+<div id="locations-stats" class="mb-6 grid gap-3 transition-opacity sm:grid-cols-3 [&[aria-busy]]:opacity-60">
   @foreach ($viewModel->stats() as $stat)
-    <div class="rounded-xl border border-hairline bg-canvas px-4 py-3.25">
-      <p class="text-xs tracking-wide text-muted-soft uppercase">{{ $stat['label'] }}</p>
+    <div class="flex items-center gap-3.5 rounded-[18px] bg-canvas px-4.5 py-4 ring-[1.5px] ring-hairline">
+      <span class="accent-tile grid size-9.5 shrink-0 place-items-center rounded-xl" style="--tile-hue: {{ $stat['hue'] }}">
+        <x-settings-icon :name="$stat['icon']" />
+      </span>
 
-      <p class="mt-1.5 text-xl font-semibold tracking-tight text-ink tabular-nums">{{ $stat['value'] }}</p>
+      <div>
+        <p class="text-[26px] leading-none font-bold tracking-tight text-ink tabular-nums">{{ $stat['value'] }}</p>
 
-      <p class="mt-0.5 text-xs text-muted">{{ $stat['note'] }}</p>
+        <p class="mt-1.5 text-sm text-muted">{{ $stat['label'] }}</p>
+      </div>
     </div>
   @endforeach
 </div>
