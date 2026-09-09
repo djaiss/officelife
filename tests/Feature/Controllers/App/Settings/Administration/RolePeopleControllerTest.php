@@ -73,7 +73,7 @@ class RolePeopleControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('pam@dundermifflin.com');
-        $response->assertSee('They lose whatever only this role granted them. Sure?');
+        $response->assertSee('They keep whatever their other roles grant. Anything only this role gave them, they lose.');
     }
 
     #[Test]
