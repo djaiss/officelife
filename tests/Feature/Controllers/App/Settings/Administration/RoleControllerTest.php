@@ -26,14 +26,19 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create(['company_id' => $company->id]);
         $this->grant($user, PermissionEnum::RoleManage);
 
-        Role::factory()->create(['company_id' => $company->id, 'name' => 'Regional manager']);
+        $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Regional manager']);
+        RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'permission' => PermissionEnum::EmployeeView,
+            'scope' => ScopeEnum::Company,
+        ]);
 
         $response = $this->actingAs($user)->get(route('settings.roles.index'));
 
         $response->assertOk();
-        $response->assertSee('Roles and permissions');
         $response->assertSee('Regional manager');
-        $response->assertSee('See the profile of a colleague');
+        $response->assertSee('People');
+        $response->assertSee('1 of 10 permissions');
     }
 
     #[Test]
@@ -49,6 +54,23 @@ class RoleControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Assistant to the regional manager');
+        $response->assertSee('See the profile of a colleague');
+    }
+
+    #[Test]
+    public function it_shows_who_holds_a_role_on_a_tab_of_its_own(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id, 'name' => 'Assistant to the regional manager']);
+
+        $response = $this->actingAs($user)->get(route('settings.roles.show', [$role->id, 'people']));
+
+        $response->assertOk();
+        $response->assertSee('Held by');
+        $response->assertDontSee('See the profile of a colleague');
     }
 
     #[Test]
@@ -238,55 +260,6 @@ class RoleControllerTest extends TestCase
 
         $this->assertEquals('regional-people-lead', $role->slug);
         $this->assertEquals(0, $role->permissions()->count());
-    }
-
-    #[Test]
-    public function it_creates_a_role_out_of_the_permissions_of_another(): void
-    {
-        Queue::fake();
-
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-        $this->grant($user, PermissionEnum::RoleManage);
-
-        $original = Role::factory()->create(['company_id' => $company->id]);
-        RolePermission::factory()->create([
-            'role_id' => $original->id,
-            'permission' => PermissionEnum::EmployeeViewPrivate,
-            'scope' => ScopeEnum::Self,
-        ]);
-
-        $this->actingAs($user)->post(route('settings.roles.create'), [
-            'name' => 'Party planning committee',
-            'copy_from' => $original->id,
-        ]);
-
-        $copy = $company->roles()->where('name', 'Party planning committee')->firstOrFail();
-
-        $this->assertDatabaseHas('role_permissions', [
-            'role_id' => $copy->id,
-            'permission' => PermissionEnum::EmployeeViewPrivate->value,
-            'scope' => ScopeEnum::Self->value,
-        ]);
-    }
-
-    #[Test]
-    public function it_refuses_to_copy_a_role_of_another_company(): void
-    {
-        Queue::fake();
-
-        $company = Company::factory()->create();
-        $user = User::factory()->create(['company_id' => $company->id]);
-        $this->grant($user, PermissionEnum::RoleManage);
-
-        $elsewhere = Role::factory()->create(['company_id' => Company::factory()->create()->id]);
-
-        $response = $this->actingAs($user)->post(route('settings.roles.create'), [
-            'name' => 'Party planning committee',
-            'copy_from' => $elsewhere->id,
-        ]);
-
-        $response->assertNotFound();
     }
 
     #[Test]

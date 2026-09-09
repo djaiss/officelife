@@ -12,7 +12,6 @@ use App\Enums\ScopeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Role;
-use App\Models\RolePermission;
 use App\ViewModels\Settings\Administration\RolesViewModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
@@ -22,22 +21,35 @@ use Illuminate\View\View;
 
 class RoleController extends Controller
 {
-    /**
-     * The screen opens on the first role, since a company always has at least
-     * one until somebody deletes them all.
-     */
     public function index(Request $request): View
     {
         $this->authorize($request);
 
-        return $this->screen($request, $this->roles($request)->first());
+        return view('app.settings.administration.roles.index', [
+            'viewModel' => new RolesViewModel(
+                user: $request->user(),
+                employee: $request->user()->employee,
+            ),
+        ]);
     }
 
-    public function show(Request $request, int $role): View
+    /**
+     * What a role is allowed to do and who holds it are two screens rather than
+     * one screen with a switch on it, so either of them can be linked to and
+     * gone back to. Which one is being read is the last segment of the path.
+     */
+    public function show(Request $request, int $role, ?string $tab = null): View
     {
         $this->authorize($request);
 
-        return $this->screen($request, $this->roles($request)->findOrFail($role));
+        return view('app.settings.administration.roles.show', [
+            'viewModel' => new RolesViewModel(
+                user: $request->user(),
+                employee: $request->user()->employee,
+                role: $this->roles($request)->findOrFail($role),
+                onPeopleTab: $tab === 'people',
+            ),
+        ]);
     }
 
     /**
@@ -49,16 +61,13 @@ class RoleController extends Controller
     {
         $validated = $request->validateWithBag('createRole', [
             'name' => ['required', 'string', 'min:2', 'max:255'],
-            'copy_from' => ['nullable', 'integer'],
         ]);
-
-        $copyFrom = $validated['copy_from'] ?? null;
 
         $role = new CreateRole(
             author: $request->user(),
             company: $request->user()->company,
             name: $validated['name'],
-            grants: $copyFrom === null ? [] : $this->grantsOf($this->roles($request)->findOrFail($copyFrom)),
+            grants: [],
         )->execute();
 
         return redirect()->route('settings.roles.show', $role->id)
@@ -143,29 +152,5 @@ class RoleController extends Controller
     private function roles(Request $request): HasMany
     {
         return $request->user()->company->roles();
-    }
-
-    private function screen(Request $request, ?Role $role): View
-    {
-        return view('app.settings.administration.roles.index', [
-            'viewModel' => new RolesViewModel(
-                user: $request->user(),
-                role: $role,
-            ),
-        ]);
-    }
-
-    /**
-     * What a role grants, in the shape the actions take it in, so a new role can
-     * start life as a copy of one that already exists.
-     *
-     * @return list<array{permission: PermissionEnum, scope: ScopeEnum}>
-     */
-    private function grantsOf(Role $role): array
-    {
-        return $role->permissions()
-            ->get()
-            ->map(fn (RolePermission $grant): array => ['permission' => $grant->permission, 'scope' => $grant->scope])
-            ->all();
     }
 }

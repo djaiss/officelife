@@ -64,7 +64,7 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings/administration/roles', [RoleController::class, 'index'])->name('settings.roles.index');
     Route::post('settings/administration/roles', [RoleController::class, 'create'])->name('settings.roles.create');
-    Route::get('settings/administration/roles/{role}', [RoleController::class, 'show'])->whereNumber('role')->name('settings.roles.show');
+    Route::get('settings/administration/roles/{role}/{tab?}', [RoleController::class, 'show'])->whereNumber('role')->where('tab', 'people')->name('settings.roles.show');
     Route::put('settings/administration/roles/{role}', [RoleController::class, 'update'])->whereNumber('role')->name('settings.roles.update');
     Route::delete('settings/administration/roles/{role}', [RoleController::class, 'destroy'])->whereNumber('role')->name('settings.roles.destroy');
 
