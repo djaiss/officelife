@@ -6,6 +6,7 @@ namespace Tests\Unit\ViewModels\Settings\Administration;
 
 use App\Enums\LocationScopeEnum;
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\Location;
 use App\Models\User;
 use App\ViewModels\Settings\Administration\LocationsViewModel;
@@ -18,21 +19,55 @@ class LocationsViewModelTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
+    public function it_gives_the_name_and_the_company_of_the_signed_in_person(): void
+    {
+        $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
+        $employee = Employee::factory()->create([
+            'company_id' => $company->id,
+            'first_name' => 'Michael',
+            'last_name' => 'Scott',
+        ]);
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'employee_id' => $employee->id,
+        ]);
+
+        $viewModel = new LocationsViewModel(user: $user, employee: $employee, scope: LocationScopeEnum::Active);
+
+        $this->assertEquals('Michael Scott', $viewModel->name());
+        $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
+        $this->assertTrue($viewModel->employee()->is($employee));
+    }
+
+    #[Test]
+    public function it_falls_back_to_the_email_when_there_is_no_employee_record(): void
+    {
+        $user = User::factory()->create([
+            'employee_id' => null,
+            'email' => 'accountant@vancerefrigeration.com',
+        ]);
+
+        $viewModel = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active);
+
+        $this->assertEquals('accountant@vancerefrigeration.com', $viewModel->name());
+        $this->assertNull($viewModel->employee());
+    }
+
+    #[Test]
     public function it_counts_what_the_company_keeps(): void
     {
         $user = $this->company();
 
         Location::factory()->primary()->create(['company_id' => $user->company_id, 'country' => 'US', 'timezone' => 'America/New_York']);
         Location::factory()->create(['company_id' => $user->company_id, 'country' => 'US', 'timezone' => 'America/Chicago']);
-        Location::factory()->archived()->create(['company_id' => $user->company_id, 'country' => 'FR']);
+        Location::factory()->archived()->create(['company_id' => $user->company_id, 'country' => 'FR', 'timezone' => 'Europe/Paris']);
 
-        $stats = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->stats();
+        $stats = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->stats();
 
+        $this->assertCount(3, $stats);
         $this->assertEquals(2, $stats[0]['value']);
-        $this->assertEquals('1 archived', $stats[0]['note']);
         $this->assertEquals(1, $stats[1]['value']);
         $this->assertEquals(2, $stats[2]['value']);
-        $this->assertEquals(1, $stats[3]['value']);
     }
 
     #[Test]
@@ -43,7 +78,7 @@ class LocationsViewModelTest extends TestCase
         Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Location::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch']);
 
-        $rows = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->rows();
+        $rows = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Scranton branch', $rows[0]['name']);
@@ -57,7 +92,7 @@ class LocationsViewModelTest extends TestCase
         Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Location::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch']);
 
-        $rows = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Archived)->rows();
+        $rows = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Archived)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Nashua branch', $rows[0]['name']);
@@ -72,7 +107,23 @@ class LocationsViewModelTest extends TestCase
         Location::factory()->create(['company_id' => $user->company_id]);
         Location::factory()->archived()->create(['company_id' => $user->company_id]);
 
-        $this->assertCount(2, new LocationsViewModel(user: $user, scope: LocationScopeEnum::All)->rows());
+        $this->assertCount(2, new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::All)->rows());
+    }
+
+    #[Test]
+    public function it_badges_the_head_office_and_the_archived_ones(): void
+    {
+        $user = $this->company();
+
+        Location::factory()->primary()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
+        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Utica branch']);
+        Location::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Stamford branch']);
+
+        $rows = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::All)->rows();
+
+        $this->assertEquals('Head office', $rows[0]['badge']);
+        $this->assertEquals('Archived', $rows[1]['badge']);
+        $this->assertEquals('', $rows[2]['badge']);
     }
 
     #[Test]
@@ -83,7 +134,7 @@ class LocationsViewModelTest extends TestCase
         Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Location::factory()->create(['name' => 'Stamford branch']);
 
-        $rows = new LocationsViewModel(user: $user, scope: LocationScopeEnum::All)->rows();
+        $rows = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::All)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Scranton branch', $rows[0]['name']);
@@ -97,9 +148,9 @@ class LocationsViewModelTest extends TestCase
         Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch', 'city' => 'Scranton', 'country' => 'US']);
         Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Paris office', 'city' => 'Paris', 'country' => 'FR']);
 
-        $byName = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active, search: 'scran')->rows();
-        $byCity = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active, search: 'paris')->rows();
-        $byCountry = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active, search: 'FR')->rows();
+        $byName = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active, search: 'scran')->rows();
+        $byCity = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active, search: 'paris')->rows();
+        $byCountry = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active, search: 'FR')->rows();
 
         $this->assertCount(1, $byName);
         $this->assertEquals('Scranton branch', $byName[0]['name']);
@@ -109,22 +160,36 @@ class LocationsViewModelTest extends TestCase
     }
 
     #[Test]
-    public function it_orders_the_offices_by_name_and_turns_the_order_around(): void
+    public function it_orders_the_offices_by_office_or_by_city(): void
     {
         $user = $this->company();
 
-        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
-        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch']);
+        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch', 'city' => 'Akron', 'country' => 'US']);
+        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch', 'city' => 'Utica', 'country' => 'US']);
 
-        $ascending = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->rows();
-        $descending = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active, direction: 'desc')->rows();
+        $byName = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->rows();
+        $byPlace = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active, sort: 'place')->rows();
 
-        $this->assertEquals('Nashua branch', $ascending[0]['name']);
-        $this->assertEquals('Scranton branch', $descending[0]['name']);
+        $this->assertEquals('Nashua branch', $byName[0]['name']);
+        $this->assertEquals('Scranton branch', $byPlace[0]['name']);
     }
 
     #[Test]
-    public function it_falls_back_when_an_office_has_no_address_no_country_and_no_time_zone(): void
+    public function it_says_which_order_the_list_is_in_and_leads_to_the_other_one(): void
+    {
+        $user = $this->company();
+
+        $byName = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->sortToggle();
+        $byPlace = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active, sort: 'place')->sortToggle();
+
+        $this->assertEquals('Sorted by office', $byName['label']);
+        $this->assertEquals(route('settings.locations.index', ['sort' => 'place']), $byName['url']);
+        $this->assertEquals('Sorted by city', $byPlace['label']);
+        $this->assertEquals(route('settings.locations.index'), $byPlace['url']);
+    }
+
+    #[Test]
+    public function it_falls_back_when_an_office_has_no_country_and_no_time_zone(): void
     {
         $user = $this->company();
 
@@ -137,12 +202,10 @@ class LocationsViewModelTest extends TestCase
             'timezone' => null,
         ]);
 
-        $rows = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->rows();
+        $rows = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->rows();
 
-        $this->assertEquals('no address on file', $rows[0]['address']);
         $this->assertEquals('somewhere unrecorded', $rows[0]['place']);
         $this->assertEquals('same as the company', $rows[0]['timezone']);
-        $this->assertEquals('··', $rows[0]['code']);
     }
 
     #[Test]
@@ -151,7 +214,7 @@ class LocationsViewModelTest extends TestCase
         $user = $this->company();
         $location = Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
 
-        $drawer = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->drawer();
+        $drawer = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->drawer();
 
         $this->assertArrayHasKey($location->id, $drawer);
         $this->assertEquals('Scranton branch', $drawer[$location->id]['name']);
@@ -165,7 +228,7 @@ class LocationsViewModelTest extends TestCase
     {
         $user = $this->company();
 
-        $scopes = new LocationsViewModel(user: $user, scope: LocationScopeEnum::Archived)->scopes();
+        $scopes = new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Archived)->scopes();
 
         $this->assertCount(3, $scopes);
         $this->assertFalse($scopes[0]['current']);
@@ -178,11 +241,11 @@ class LocationsViewModelTest extends TestCase
     {
         $user = $this->company();
 
-        $this->assertTrue(new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->companyHasNoOffice());
+        $this->assertTrue(new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->companyHasNoOffice());
 
         Location::factory()->create(['company_id' => $user->company_id]);
 
-        $this->assertFalse(new LocationsViewModel(user: $user, scope: LocationScopeEnum::Active)->companyHasNoOffice());
+        $this->assertFalse(new LocationsViewModel(user: $user, employee: null, scope: LocationScopeEnum::Active)->companyHasNoOffice());
     }
 
     private function company(): User

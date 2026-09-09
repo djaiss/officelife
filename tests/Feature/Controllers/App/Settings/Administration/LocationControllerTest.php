@@ -28,7 +28,25 @@ class LocationControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Locations');
+        $response->assertSee('Add an office');
+        $response->assertSee('open offices');
+        $response->assertSee('Sorted by office');
         $response->assertSee('Scranton branch');
+    }
+
+    #[Test]
+    public function it_orders_the_offices_by_city_when_the_path_asks_for_it(): void
+    {
+        $user = $this->administrator();
+
+        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch', 'city' => 'Akron']);
+        Location::factory()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch', 'city' => 'Utica']);
+
+        $response = $this->actingAs($user)->get(route('settings.locations.index', ['sort' => 'place']));
+
+        $response->assertOk();
+        $response->assertSee('Sorted by city');
+        $response->assertSeeInOrder(['Scranton branch', 'Nashua branch']);
     }
 
     #[Test]
