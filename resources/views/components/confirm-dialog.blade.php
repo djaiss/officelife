@@ -21,10 +21,15 @@
   way up the document when the dialog appears, and an outside handler would catch
   that one and close it again straight away.
 
+  The way out is the component's own, so every dialog offers one and it is always the
+  expression that closes this one. The caller writes only what goes through with the
+  thing being asked about.
+
   @var string $show
   @var string $close
   @var string $labelledby
   @var string $title
+  @var string $cancel
   @var \Illuminate\View\ComponentSlot $actions
 --}}
 @props([
@@ -32,6 +37,7 @@
   'close',
   'labelledby',
   'title',
+  'cancel',
 ])
 
 <div
@@ -54,6 +60,8 @@
 
     <div class="mt-5.5 flex flex-wrap items-center gap-2.5">
       {{ $actions }}
+
+      <x-button.secondary type="button" x-on:click="{{ $close }}">{{ $cancel }}</x-button.secondary>
     </div>
   </div>
 </div>

@@ -52,7 +52,7 @@
           --}}
           <div
             class="space-y-3 max-sm:w-full"
-            x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')) }"
+            x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')), removingPhoto: false }"
           >
             <x-form
               method="post"
@@ -76,20 +76,27 @@
             </x-form>
 
             @if ($viewModel->hasPhoto())
-              {{-- Two steps rather than one, so a photo is never removed by a slip. --}}
-              <x-form
-                method="delete"
-                :action="route('settings.photo.destroy')"
-                id="photo-delete-form"
-                x-data="{ confirming: false }"
+              <button
+                type="button"
+                x-on:click="removingPhoto = true"
+                class="cursor-pointer text-sm text-muted hover:text-ink"
+              >{{ __('Remove the photo') }}</button>
+
+              <x-confirm-dialog
+                show="removingPhoto"
+                close="removingPhoto = false"
+                labelledby="remove-photo-title"
+                :title="__('Remove your photo?')"
+                :cancel="__('Keep it')"
               >
-                <button
-                  type="submit"
-                  x-on:click="if (! confirming) { $event.preventDefault(); confirming = true }"
-                  class="cursor-pointer text-sm text-muted hover:text-ink"
-                  x-text="confirming ? @js(__('Remove it for good?')) : @js(__('Remove the photo'))"
-                ></button>
-              </x-form>
+                {{ __('Your initials go back everywhere your picture is shown. Uploading another one puts a picture back.') }}
+
+                <x-slot:actions>
+                  <x-form method="delete" :action="route('settings.photo.destroy')" id="photo-delete-form">
+                    <x-button.danger>{{ __('Remove it') }}</x-button.danger>
+                  </x-form>
+                </x-slot:actions>
+              </x-confirm-dialog>
             @endif
           </div>
         </div>

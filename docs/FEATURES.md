@@ -79,3 +79,4 @@ A chronological list of every feature and improvement shipped during development
 * Assets: Showed equipment somebody is holding as deployed, worked out from who has it rather than stored.
 * Assets: Read the history of equipment from both ends, from the item and from whoever held it.
 * Assets: Swept the fleet once a day and flagged equipment that is late coming back, once rather than every day.
+* App-wide: Asked before every destructive action in one way, a dialog in the middle of the window, replacing the two other ways the question used to be put.

@@ -3,12 +3,13 @@
   was turned on, the way back out, and the codes that get them in if they ever
   lose the phone.
 
-  Each destructive button swaps itself for what is about to be lost and the
-  button that goes through with it, so nothing here acts on the first click.
+  Neither destructive button acts on the first click. Each opens a dialog that
+  says what is about to be lost, and the dialogs are the last thing in the file
+  rather than children of the buttons, so the state is declared once above both.
 
   @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
 --}}
-<div class="space-y-7">
+<div x-data="{ disabling: false, replacingCodes: false }" class="space-y-7">
   <div class="grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
     <div class="space-y-2.5">
       <p class="flex items-center gap-2 text-[15px] font-semibold text-ink">
@@ -19,19 +20,7 @@
       <p class="text-[15px] leading-relaxed text-body">{{ __('Turned on :time. We ask for a code every time you sign in.', ['time' => $viewModel->twoFactorConfirmedAt()]) }}</p>
     </div>
 
-    <div x-data="{ confirming: false }">
-      <x-button.secondary type="button" x-show="! confirming" @click="confirming = true" class="max-md:w-full">{{ __('Turn it off') }}</x-button.secondary>
-
-      <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3 max-md:flex-col max-md:items-stretch">
-        <p class="text-sm text-error max-md:text-center">{{ __('Your password alone will get you in again. Sure?') }}</p>
-
-        <x-button.secondary type="button" @click="confirming = false">{{ __('Keep it on') }}</x-button.secondary>
-
-        <x-form method="delete" :action="route('settings.twoFactor.destroy')">
-          <x-button class="bg-error hover:bg-error/88 max-md:w-full">{{ __('Turn it off') }}</x-button>
-        </x-form>
-      </div>
-    </div>
+    <x-button.secondary type="button" @click="disabling = true" class="max-md:w-full">{{ __('Turn it off') }}</x-button.secondary>
   </div>
 
   <div class="space-y-4 border-t border-hairline-soft pt-6">
@@ -42,19 +31,7 @@
         <p class="text-[15px] leading-relaxed text-body">{{ __('Keep these somewhere safe. Each one signs you in once, if you ever lose the phone.') }}</p>
       </div>
 
-      <div x-data="{ confirming: false }">
-        <x-button.secondary type="button" x-show="! confirming" @click="confirming = true" class="max-md:w-full">{{ __('Get new codes') }}</x-button.secondary>
-
-        <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3 max-md:flex-col max-md:items-stretch">
-          <p class="text-sm text-error max-md:text-center">{{ __('The codes below stop working. Sure?') }}</p>
-
-          <x-button.secondary type="button" @click="confirming = false">{{ __('Keep them') }}</x-button.secondary>
-
-          <x-form method="post" :action="route('settings.recoveryCodes.create')">
-            <x-button class="bg-error hover:bg-error/88 max-md:w-full">{{ __('Get new codes') }}</x-button>
-          </x-form>
-        </div>
-      </div>
+      <x-button.secondary type="button" @click="replacingCodes = true" class="max-md:w-full">{{ __('Get new codes') }}</x-button.secondary>
     </div>
 
     @if ($viewModel->recoveryCodes() === [])
@@ -67,4 +44,36 @@
       </ul>
     @endif
   </div>
+
+  <x-confirm-dialog
+    show="disabling"
+    close="disabling = false"
+    labelledby="two-factor-off-title"
+    :title="__('Turn two factor off?')"
+    :cancel="__('Keep it on')"
+  >
+    {{ __('Your password alone will get you back in, and so will anybody else who has it. The recovery codes below stop working too.') }}
+
+    <x-slot:actions>
+      <x-form method="delete" :action="route('settings.twoFactor.destroy')">
+        <x-button.danger>{{ __('Turn it off') }}</x-button.danger>
+      </x-form>
+    </x-slot:actions>
+  </x-confirm-dialog>
+
+  <x-confirm-dialog
+    show="replacingCodes"
+    close="replacingCodes = false"
+    labelledby="recovery-codes-title"
+    :title="__('Get new recovery codes?')"
+    :cancel="__('Keep them')"
+  >
+    {{ __('The codes you have now stop working the moment new ones are made. Anywhere you wrote them down is out of date.') }}
+
+    <x-slot:actions>
+      <x-form method="post" :action="route('settings.recoveryCodes.create')">
+        <x-button.danger>{{ __('Get new codes') }}</x-button.danger>
+      </x-form>
+    </x-slot:actions>
+  </x-confirm-dialog>
 </div>

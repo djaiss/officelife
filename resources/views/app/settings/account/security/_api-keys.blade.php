@@ -11,9 +11,9 @@
   back rejected reopens it, which is what the `creating` flag reads from the
   errors rather than starting closed and hiding the message.
 
-  Revoking asks before it acts, the way the two factor buttons above do: the
-  button swaps itself for what is about to be lost and the button that goes
-  through with it.
+  Revoking asks before it acts, in a dialog of its own. `revoking` holds whichever
+  key is being asked about rather than a yes or no, so one dialog per key can sit
+  below the list instead of inside a row.
 
   Both forms ask for the screen again and swap this block for what comes back,
   so making a key and revoking one leave the rest of the page where it was. The
@@ -26,7 +26,7 @@
 <div
   id="api-keys"
   x-merge="replace"
-  x-data="{ creating: {{ $errors->has('name') ? 'true' : 'false' }} }"
+  x-data="{ creating: {{ $errors->has('name') ? 'true' : 'false' }}, revoking: null }"
   class="space-y-6 transition-opacity [&[aria-busy]]:opacity-60"
 >
   <div class="space-y-2.5 text-[15px] leading-relaxed text-body">
@@ -102,19 +102,7 @@
           </div>
         </div>
 
-        <div x-data="{ confirming: false }">
-          <x-button.secondary type="button" x-show="! confirming" @click="confirming = true" class="max-sm:w-full">{{ __('Revoke') }}</x-button.secondary>
-
-          <div x-cloak x-show="confirming" class="flex flex-wrap items-center gap-3 max-sm:flex-col max-sm:items-stretch">
-            <p class="text-sm text-error max-sm:text-center">{{ __('Anything still using it stops working. Sure?') }}</p>
-
-            <x-button.secondary type="button" @click="confirming = false">{{ __('Keep it') }}</x-button.secondary>
-
-            <x-form method="delete" :action="route('settings.apiKeys.destroy', $apiKey['id'])" x-target="api-keys">
-              <x-button class="bg-error hover:bg-error/88 max-sm:w-full">{{ __('Revoke') }}</x-button>
-            </x-form>
-          </div>
-        </div>
+        <x-button.secondary type="button" @click="revoking = {{ $apiKey['id'] }}" class="max-sm:w-full">{{ __('Revoke') }}</x-button.secondary>
       </x-box.row>
     @empty
       <x-empty-state :title="__('No API keys yet')">
@@ -130,4 +118,22 @@
       </x-empty-state>
     @endforelse
   </div>
+
+  @foreach ($viewModel->apiKeys() as $apiKey)
+    <x-confirm-dialog
+      show="revoking === {{ $apiKey['id'] }}"
+      close="revoking = null"
+      labelledby="revoke-api-key-{{ $apiKey['id'] }}-title"
+      :title="__('Revoke :name?', ['name' => $apiKey['name']])"
+      :cancel="__('Keep it')"
+    >
+      {{ __('Anything still signing in with this key stops working straight away. A revoked key cannot be brought back, only replaced.') }}
+
+      <x-slot:actions>
+        <x-form method="delete" :action="route('settings.apiKeys.destroy', $apiKey['id'])" x-target="api-keys">
+          <x-button.danger>{{ __('Revoke it') }}</x-button.danger>
+        </x-form>
+      </x-slot:actions>
+    </x-confirm-dialog>
+  @endforeach
 </div>

@@ -69,15 +69,14 @@
       close="removing = null"
       labelledby="remove-holder-{{ $person['id'] }}-title"
       :title="__('Take the role back from :name?', ['name' => $person['name']])"
+      :cancel="__('Keep it')"
     >
       {{ __('They keep whatever their other roles grant. Anything only this role gave them, they lose.') }}
 
       <x-slot:actions>
         <x-form method="delete" :action="$person['removeUrl']">
-          <x-button class="bg-error hover:bg-error/88">{{ __('Take it back') }}</x-button>
+          <x-button.danger>{{ __('Take it back') }}</x-button.danger>
         </x-form>
-
-        <x-button.secondary type="button" x-on:click="removing = null">{{ __('Keep it') }}</x-button.secondary>
       </x-slot:actions>
     </x-confirm-dialog>
   @endforeach

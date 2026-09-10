@@ -29,7 +29,7 @@
       open: {$open},
       form: {$form},
       creating: {$creating},
-      confirming: false,
+      archiving: false,
       refresh() {
         this.offices = JSON.parse(document.getElementById('locations-data').textContent)
       },
@@ -40,7 +40,7 @@
         const office = this.offices[id]
 
         this.open = id
-        this.confirming = false
+        this.archiving = false
         this.form = {
           name: office.name,
           country: office.country,
@@ -52,7 +52,7 @@
       },
       close() {
         this.open = null
-        this.confirming = false
+        this.archiving = false
       },
     }
     JS;
@@ -98,6 +98,8 @@
     </p>
 
     @include('app.settings.administration.locations._drawer', ['viewModel' => $viewModel])
+
+    @include('app.settings.administration.locations._archive-location')
 
     @include('app.settings.administration.locations._create-location', ['viewModel' => $viewModel])
   </div>
