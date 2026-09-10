@@ -9,12 +9,14 @@
 
   Archiving is a form of its own, which is why the save button sits outside the
   form it saves and reaches it through the html `form` attribute: a form cannot
-  hold another. It asks first, since an office leaving the list is not what
-  somebody meant to do by mistake.
+  hold another. The button here only asks the question. The dialog that carries
+  it, and the form that goes through with it, are on the screen rather than in
+  the panel, because a dialog fixed to the window cannot live inside a panel that
+  clips what it holds and slides in on a transform.
 
-  All three forms go over ajax and swap the counts, the list and the block of
-  offices back in, so a save never takes the screen away from underneath the
-  panel. `refresh()` runs on `ajax:after` rather than on `ajax:success`, because
+  Both forms go over ajax and swap the counts, the list and the block of offices
+  back in, so a save never takes the screen away from underneath the panel.
+  `refresh()` runs on `ajax:after` rather than on `ajax:success`, because
   the latter is over before the answer has been merged and would read what was
   on the page a moment ago.
 
@@ -149,28 +151,9 @@
     </template>
 
     <template x-if="office && ! office.isArchived">
-      <div class="contents">
-        <x-button.secondary type="button" x-show="! confirming" x-on:click="confirming = true">
-          {{ __('Archive this office') }}
-        </x-button.secondary>
-
-        <div x-cloak x-show="confirming" class="w-full space-y-2.5">
-          <p class="text-sm text-error">{{ __('The office leaves the list and nobody can be sent to it. Sure?') }}</p>
-
-          <div class="flex flex-wrap items-center gap-2.5">
-            <x-form
-              method="post"
-              x-bind:action="office?.archiveUrl"
-              x-target="locations-table locations-stats locations-data"
-              x-on:ajax:after="refresh(); close()"
-            >
-              <x-button class="bg-error hover:bg-error/88">{{ __('Archive it') }}</x-button>
-            </x-form>
-
-            <x-button.secondary type="button" x-on:click="confirming = false">{{ __('Keep it open') }}</x-button.secondary>
-          </div>
-        </div>
-      </div>
+      <x-button.secondary type="button" x-on:click="archiving = true">
+        {{ __('Archive this office') }}
+      </x-button.secondary>
     </template>
   </div>
 </x-side-modal>

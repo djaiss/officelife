@@ -10,14 +10,13 @@
   close="deleting = false"
   labelledby="delete-role-title"
   :title="__('Delete :role?', ['role' => $role['name']])"
+  :cancel="__('Keep it')"
 >
   {{ __('Whatever this role granted, it grants no longer, and everybody who holds it loses it. This cannot be undone.') }}
 
   <x-slot:actions>
     <x-form method="delete" :action="$role['destroyUrl']">
-      <x-button class="bg-error hover:bg-error/88">{{ __('Delete this role') }}</x-button>
+      <x-button.danger>{{ __('Delete this role') }}</x-button.danger>
     </x-form>
-
-    <x-button.secondary type="button" x-on:click="deleting = false">{{ __('Keep it') }}</x-button.secondary>
   </x-slot:actions>
 </x-confirm-dialog>
