@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Actions\CreateEmailSent;
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Interfaces\HasEnvelope;
 use App\Models\Company;
 use App\Models\User;
@@ -39,7 +39,7 @@ class SendEmail implements ShouldQueue
     public function __construct(
         public Mailable&HasEnvelope $mailable,
         public Company $company,
-        public EmailType $emailType,
+        public EmailTypeEnum $emailType,
         public ?User $user = null,
         public ?string $emailAddress = null,
     ) {}

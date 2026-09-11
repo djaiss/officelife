@@ -67,7 +67,7 @@ class RemoveRole
         LogUserAction::dispatch(
             company: $this->role->company,
             user: $this->author,
-            action: UserActionEnum::RoleRemoval,
+            action: UserActionEnum::RoleRemoved,
             parameters: [
                 'name' => $this->role->name,
                 'email' => $this->user->email,

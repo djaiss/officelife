@@ -70,7 +70,7 @@ class UpdateCompany
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::CompanyUpdate,
+            action: UserActionEnum::CompanyUpdated,
             parameters: ['name' => $this->name],
         )->onQueue('low');
     }

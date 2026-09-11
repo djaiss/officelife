@@ -18,7 +18,7 @@ class LocalSignInControllerTest extends TestCase
     #[Test]
     public function it_hides_the_shortcut_outside_the_local_environment(): void
     {
-        $response = $this->get(route('auth.login.new'));
+        $response = $this->get(route('auth.signIn.new'));
 
         $response->assertStatus(200);
         $response->assertDontSee('Sign in as michael.scott@dundermifflin.com');
@@ -29,7 +29,7 @@ class LocalSignInControllerTest extends TestCase
     {
         $this->app->detectEnvironment(fn (): string => 'local');
 
-        $response = $this->get(route('auth.login.new'));
+        $response = $this->get(route('auth.signIn.new'));
 
         $response->assertStatus(200);
         $response->assertSee('Sign in as michael.scott@dundermifflin.com');

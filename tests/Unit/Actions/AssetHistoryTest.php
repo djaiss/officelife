@@ -12,7 +12,7 @@ use App\Enums\PermissionEnum;
 use App\Models\Asset;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -89,7 +89,7 @@ class AssetHistoryTest extends TestCase
     #[Test]
     public function it_reads_everything_that_has_been_assigned_to_an_office(): void
     {
-        $room = Location::factory()->create(['company_id' => $this->company->id]);
+        $room = Office::factory()->create(['company_id' => $this->company->id]);
         $display = Asset::factory()->create(['company_id' => $this->company->id]);
 
         new CheckoutAsset(author: $this->author, asset: $display, assignee: $room)->execute();

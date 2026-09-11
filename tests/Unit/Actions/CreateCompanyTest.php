@@ -52,7 +52,7 @@ class CreateCompanyTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::CompanyCreation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::CompanyCreated
                 && $job->company->id === $company->id
                 && $job->user->id === $company->owner_user_id,
         );

@@ -13,7 +13,7 @@ use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\AssetStatus;
 use App\Models\Company;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,7 +52,7 @@ class CreateAssetTest extends TestCase
     {
         Queue::fake();
 
-        $scranton = Location::factory()->create(['company_id' => $this->company->id]);
+        $scranton = Office::factory()->create(['company_id' => $this->company->id]);
 
         $asset = new CreateAsset(
             author: $this->author,
@@ -62,7 +62,7 @@ class CreateAssetTest extends TestCase
             assetTag: 'OL-LAPTOP-0042',
             serialNumber: 'C02XY1234567',
             name: 'The one Michael drops',
-            defaultLocation: $scranton,
+            defaultOffice: $scranton,
             purchaseCost: 249900,
         )->execute();
 
@@ -72,15 +72,15 @@ class CreateAssetTest extends TestCase
             'company_id' => $this->company->id,
             'asset_tag' => 'OL-LAPTOP-0042',
             'serial_number' => 'C02XY1234567',
-            'default_location_id' => $scranton->id,
-            'current_location_id' => $scranton->id,
+            'default_office_id' => $scranton->id,
+            'current_office_id' => $scranton->id,
             'purchase_cost' => 249900,
         ]);
 
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCreation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCreated
                 && $job->parameters === ['tag' => 'OL-LAPTOP-0042'],
         );
     }

@@ -47,7 +47,7 @@ class AssignRoleTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleAssignment
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleAssigned
                 && $job->company->id === $company->id
                 && $job->user->id === $author->id
                 && $job->parameters === [

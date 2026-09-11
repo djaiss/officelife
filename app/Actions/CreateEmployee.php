@@ -108,7 +108,7 @@ class CreateEmployee
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::EmployeeCreation,
+            action: UserActionEnum::EmployeeCreated,
             parameters: ['name' => $this->employee->name],
         )->onQueue('low');
     }

@@ -101,7 +101,7 @@ class CreateAssetStatus
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::AssetStatusCreation,
+            action: UserActionEnum::AssetStatusCreated,
             parameters: ['name' => $this->status->name],
         )->onQueue('low');
     }

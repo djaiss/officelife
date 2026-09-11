@@ -63,7 +63,7 @@ class CreateEmployeeTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmployeeCreation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmployeeCreated
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id
                 && $job->parameters === ['name' => 'The World Best Boss'],

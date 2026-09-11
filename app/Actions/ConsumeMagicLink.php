@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Enums\UserActionEnum;
-use App\Jobs\CheckLastLogin;
+use App\Jobs\DetectSignInAddressChange;
 use App\Jobs\LogUserAction;
 use App\Jobs\SendEmail;
-use App\Mail\NewLoginDetected;
+use App\Mail\MagicLinkSignInMail;
 use App\Models\MagicLink;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -66,10 +66,10 @@ class ConsumeMagicLink
 
     private function stamp(): void
     {
-        $this->user->last_login_at = now();
+        $this->user->last_signed_in_at = now();
         $this->user->save();
 
-        CheckLastLogin::dispatch(
+        DetectSignInAddressChange::dispatch(
             user: $this->user,
             ip: $this->ip ?? '',
         )->onQueue('low');
@@ -82,9 +82,9 @@ class ConsumeMagicLink
     private function notify(): void
     {
         SendEmail::dispatch(
-            mailable: new NewLoginDetected(ip: $this->ip ?? ''),
+            mailable: new MagicLinkSignInMail(ip: $this->ip ?? ''),
             company: $this->user->company,
-            emailType: EmailType::NewLogin,
+            emailType: EmailTypeEnum::MagicLinkSignIn,
             user: $this->user,
         )->onQueue('high');
     }
@@ -94,7 +94,7 @@ class ConsumeMagicLink
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::UserLogin,
+            action: UserActionEnum::UserSignedIn,
         )->onQueue('low');
     }
 }

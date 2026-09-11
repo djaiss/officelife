@@ -12,7 +12,7 @@ use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\AssetStatus;
 use App\Models\Company;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Carbon\Carbon;
 use InvalidArgumentException;
@@ -37,7 +37,7 @@ class CreateAsset
         private string $assetTag,
         private ?string $serialNumber = null,
         private ?string $name = null,
-        private readonly ?Location $defaultLocation = null,
+        private readonly ?Office $defaultOffice = null,
         private readonly ?Carbon $purchaseDate = null,
         private readonly ?int $purchaseCost = null,
         private ?string $orderNumber = null,
@@ -86,7 +86,7 @@ class CreateAsset
             throw new InvalidArgumentException('The model belongs to another company');
         }
 
-        if ($this->defaultLocation !== null && $this->defaultLocation->company_id !== $this->company->id) {
+        if ($this->defaultOffice !== null && $this->defaultOffice->company_id !== $this->company->id) {
             throw new InvalidArgumentException('The office belongs to another company');
         }
 
@@ -123,8 +123,8 @@ class CreateAsset
             'asset_tag' => $this->assetTag,
             'serial_number' => $this->serialNumber,
             'name' => $this->name,
-            'default_location_id' => $this->defaultLocation?->id,
-            'current_location_id' => $this->defaultLocation?->id,
+            'default_office_id' => $this->defaultOffice?->id,
+            'current_office_id' => $this->defaultOffice?->id,
             'purchase_date' => $this->purchaseDate,
             'purchase_cost' => $this->purchaseCost,
             'order_number' => $this->orderNumber,
@@ -141,7 +141,7 @@ class CreateAsset
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::AssetCreation,
+            action: UserActionEnum::AssetCreated,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

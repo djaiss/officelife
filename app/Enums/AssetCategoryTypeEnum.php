@@ -30,7 +30,7 @@ enum AssetCategoryTypeEnum: string
             self::Asset => 'Equipment tracked one item at a time',
             self::Accessory => 'Accessories counted by quantity',
             self::Consumable => 'Supplies that are handed out and not returned',
-            self::Component => 'Parts installed inside a piece of equipment',
+            self::Component => 'Parts installed inside an asset',
             self::Licence => 'Software licences with seats',
         };
     }

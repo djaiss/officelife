@@ -33,8 +33,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $is_active
  * @property string|null $locale
  * @property TimeFormatEnum $time_format
- * @property Carbon|null $last_login_at
- * @property string|null $last_login_ip
+ * @property Carbon|null $last_signed_in_at
+ * @property string|null $last_sign_in_ip
  * @property string|null $two_factor_secret
  * @property Carbon|null $two_factor_confirmed_at
  * @property array<int, string>|null $two_factor_recovery_codes
@@ -78,8 +78,8 @@ class User extends Authenticatable
         'is_active',
         'locale',
         'time_format',
-        'last_login_at',
-        'last_login_ip',
+        'last_signed_in_at',
+        'last_sign_in_ip',
         'two_factor_secret',
         'two_factor_confirmed_at',
         'two_factor_recovery_codes',
@@ -107,7 +107,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'time_format' => TimeFormatEnum::class,
-            'last_login_at' => 'datetime',
+            'last_signed_in_at' => 'datetime',
             'is_active' => 'boolean',
             'password_hash' => 'hashed',
             'password_changed_at' => 'datetime',

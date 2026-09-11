@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Jobs\SendEmail;
-use App\Mail\MagicLinkCreated;
+use App\Mail\MagicLinkCreatedMail;
 use App\Models\MagicLink;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -73,12 +73,12 @@ class CreateMagicLink
     private function send(): void
     {
         SendEmail::dispatch(
-            mailable: new MagicLinkCreated(
+            mailable: new MagicLinkCreatedMail(
                 url: route('auth.magicLink.show', ['token' => $this->token]),
                 minutes: $this->minutes(),
             ),
             company: $this->user->company,
-            emailType: EmailType::MagicLinkCreated,
+            emailType: EmailTypeEnum::MagicLinkCreated,
             user: $this->user,
         )->onQueue('high');
     }
@@ -88,7 +88,7 @@ class CreateMagicLink
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::MagicLinkCreation,
+            action: UserActionEnum::MagicLinkCreated,
         )->onQueue('low');
     }
 

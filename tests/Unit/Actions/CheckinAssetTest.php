@@ -16,7 +16,7 @@ use App\Models\AssetAssignment;
 use App\Models\AssetStatus;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,27 +52,27 @@ class CheckinAssetTest extends TestCase
         $asset = Asset::factory()->create(['company_id' => $this->company->id]);
         $employee = Employee::factory()->create(['company_id' => $this->company->id]);
         $assignment = AssetAssignment::factory()->to($employee)->create(['asset_id' => $asset->id]);
-        $scranton = Location::factory()->create(['company_id' => $this->company->id]);
+        $scranton = Office::factory()->create(['company_id' => $this->company->id]);
 
         $closed = new CheckinAsset(
             author: $this->author,
             asset: $asset,
             condition: AssetConditionEnum::Fair,
             notes: 'Scratched lid',
-            location: $scranton,
+            office: $scranton,
         )->execute();
 
         $this->assertEquals($assignment->id, $closed->id);
         $this->assertNotNull($closed->returned_at);
         $this->assertEquals(AssetConditionEnum::Fair, $closed->condition_at_checkin);
         $this->assertEquals('Scratched lid', $closed->checkin_notes);
-        $this->assertEquals($scranton->id, $closed->returned_to_location_id);
-        $this->assertEquals($scranton->id, $asset->fresh()->current_location_id);
+        $this->assertEquals($scranton->id, $closed->returned_to_office_id);
+        $this->assertEquals($scranton->id, $asset->fresh()->current_office_id);
 
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCheckin,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCheckedIn,
         );
     }
 
@@ -151,7 +151,7 @@ class CheckinAssetTest extends TestCase
         new CheckinAsset(
             author: $this->author,
             asset: $asset,
-            location: Location::factory()->create(),
+            office: Office::factory()->create(),
         )->execute();
     }
 

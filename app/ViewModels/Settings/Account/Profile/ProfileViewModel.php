@@ -84,7 +84,7 @@ class ProfileViewModel
     }
 
     /**
-     * The record the avatar draws from, so the screen can show the photo when
+     * The record the avatar draws from, so the screen can show it when
      * there is one. An account that belongs to nobody who works here has none.
      */
     public function employee(): ?Employee
@@ -92,9 +92,9 @@ class ProfileViewModel
         return $this->employee;
     }
 
-    public function hasPhoto(): bool
+    public function hasAvatar(): bool
     {
-        return $this->employee?->hasPhoto() ?? false;
+        return $this->employee?->hasAvatar() ?? false;
     }
 
     public function email(): string

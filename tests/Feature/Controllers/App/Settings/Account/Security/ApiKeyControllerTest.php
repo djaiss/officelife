@@ -125,9 +125,9 @@ class ApiKeyControllerTest extends TestCase
     public function it_refuses_a_visitor_who_is_not_signed_in(): void
     {
         $this->post(route('settings.apiKeys.create'), ['name' => 'Dundie awards bot'])
-            ->assertRedirect(route('auth.login.new'));
+            ->assertRedirect(route('auth.signIn.new'));
 
         $this->delete(route('settings.apiKeys.destroy', 1))
-            ->assertRedirect(route('auth.login.new'));
+            ->assertRedirect(route('auth.signIn.new'));
     }
 }

@@ -39,7 +39,7 @@ enum PermissionGroupEnum: string
             self::People => 'The employee record itself',
             self::SensitiveData => 'Fields kept off the screen for anybody not allowed to see them',
             self::Administration => 'The company and the way access to it is handed out',
-            self::Assets => 'The equipment the company owns and who is holding it',
+            self::Assets => 'The assets the company owns and who is holding them',
         };
     }
 }

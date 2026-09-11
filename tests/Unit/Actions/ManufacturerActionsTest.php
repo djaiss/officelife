@@ -65,7 +65,7 @@ class ManufacturerActionsTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ManufacturerCreation,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ManufacturerCreated,
         );
     }
 

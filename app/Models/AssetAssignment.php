@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Carbon $assigned_at
  * @property Carbon|null $expected_return_at
  * @property Carbon|null $returned_at
- * @property int|null $returned_to_location_id
+ * @property int|null $returned_to_office_id
  * @property string|null $checkout_notes
  * @property string|null $checkin_notes
  * @property AssetConditionEnum|null $condition_at_checkout
@@ -61,7 +61,7 @@ class AssetAssignment extends Model
         'assigned_at',
         'expected_return_at',
         'returned_at',
-        'returned_to_location_id',
+        'returned_to_office_id',
         'checkout_notes',
         'checkin_notes',
         'condition_at_checkout',
@@ -121,11 +121,11 @@ class AssetAssignment extends Model
     /**
      * Get the office the equipment came back to.
      *
-     * @return BelongsTo<Location, $this>
+     * @return BelongsTo<Office, $this>
      */
-    public function returnedToLocation(): BelongsTo
+    public function returnedToOffice(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'returned_to_location_id');
+        return $this->belongsTo(Office::class, 'returned_to_office_id');
     }
 
     /**

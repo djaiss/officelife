@@ -7,7 +7,7 @@ namespace Tests\Unit\ViewModels\Settings;
 use App\Enums\PermissionEnum;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use App\ViewModels\Settings\SettingsViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -58,7 +58,7 @@ class SettingsViewModelTest extends TestCase
             User::factory()->create(['company_id' => $company->id]),
             PermissionEnum::CompanyManage,
         );
-        Location::factory()->count(2)->create(['company_id' => $company->id]);
+        Office::factory()->count(2)->create(['company_id' => $company->id]);
 
         $viewModel = new SettingsViewModel(user: $user, employee: null);
 

@@ -87,7 +87,7 @@ class CreateApiKeyTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ApiKeyCreation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ApiKeyCreated
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id
                 && $job->parameters === ['name' => 'Dundie awards bot'],

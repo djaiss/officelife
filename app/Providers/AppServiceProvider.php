@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Relation::morphMap([
             AssetAssigneeTypeEnum::Employee->value => AssetAssigneeTypeEnum::Employee->model(),
-            AssetAssigneeTypeEnum::Location->value => AssetAssigneeTypeEnum::Location->model(),
+            AssetAssigneeTypeEnum::Office->value => AssetAssigneeTypeEnum::Office->model(),
             AssetAssigneeTypeEnum::Asset->value => AssetAssigneeTypeEnum::Asset->model(),
         ]);
     }

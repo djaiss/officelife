@@ -40,7 +40,7 @@ class DestroyApiKey
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::ApiKeyDeletion,
+            action: UserActionEnum::ApiKeyDeleted,
             parameters: ['name' => $this->name],
         )->onQueue('low');
     }

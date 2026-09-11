@@ -113,7 +113,7 @@ class CreateAssetModel
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::AssetModelCreation,
+            action: UserActionEnum::AssetModelCreated,
             parameters: ['name' => $this->assetModel->name],
         )->onQueue('low');
     }

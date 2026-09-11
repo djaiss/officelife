@@ -63,7 +63,7 @@ class UpdatePreferencesTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPreferencesUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPreferencesUpdated
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id,
         );

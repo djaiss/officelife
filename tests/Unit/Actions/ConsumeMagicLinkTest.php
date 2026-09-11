@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\ConsumeMagicLink;
-use App\Enums\EmailType;
-use App\Jobs\CheckLastLogin;
+use App\Enums\EmailTypeEnum;
+use App\Jobs\DetectSignInAddressChange;
 use App\Jobs\SendEmail;
 use App\Models\MagicLink;
 use App\Models\User;
@@ -42,12 +42,12 @@ class ConsumeMagicLinkTest extends TestCase
 
         $this->assertInstanceOf(User::class, $result);
         $this->assertEquals($user->id, $result->id);
-        $this->assertNotNull($user->refresh()->last_login_at);
+        $this->assertNotNull($user->refresh()->last_signed_in_at);
 
         Queue::assertPushedOn(
             queue: 'low',
-            job: CheckLastLogin::class,
-            callback: fn (CheckLastLogin $job): bool => $job->ip === '10.0.0.1',
+            job: DetectSignInAddressChange::class,
+            callback: fn (DetectSignInAddressChange $job): bool => $job->ip === '10.0.0.1',
         );
     }
 
@@ -64,7 +64,7 @@ class ConsumeMagicLinkTest extends TestCase
         Queue::assertPushedOn(
             queue: 'high',
             job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => $job->emailType === EmailType::NewLogin
+            callback: fn (SendEmail $job): bool => $job->emailType === EmailTypeEnum::MagicLinkSignIn
                 && $job->user->id === $user->id,
         );
     }

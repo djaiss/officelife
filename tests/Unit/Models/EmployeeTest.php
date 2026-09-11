@@ -117,33 +117,33 @@ class EmployeeTest extends TestCase
     }
 
     #[Test]
-    public function it_has_a_photo_when_a_path_was_stored(): void
+    public function it_has_an_avatar_when_a_path_was_stored(): void
     {
-        $employee = Employee::factory()->create(['photo_path' => 'photos/1/stanley']);
+        $employee = Employee::factory()->create(['avatar_path' => 'avatars/1/stanley']);
 
-        $this->assertTrue($employee->hasPhoto());
+        $this->assertTrue($employee->hasAvatar());
     }
 
     #[Test]
-    public function it_has_no_photo_by_default(): void
+    public function it_has_no_avatar_by_default(): void
     {
         $employee = Employee::factory()->create();
 
-        $this->assertFalse($employee->hasPhoto());
+        $this->assertFalse($employee->hasAvatar());
     }
 
     #[Test]
-    public function it_names_each_version_of_the_photo_after_its_size(): void
+    public function it_names_each_version_of_the_avatar_after_its_size(): void
     {
-        $employee = Employee::factory()->create(['photo_path' => 'photos/1/stanley']);
+        $employee = Employee::factory()->create(['avatar_path' => 'avatars/1/stanley']);
 
-        $this->assertEquals('photos/1/stanley_96.webp', $employee->photoVariantPath(96));
-        $this->assertEquals('photos/1/stanley_192.webp', $employee->photoVariantPath(192));
+        $this->assertEquals('avatars/1/stanley_96.webp', $employee->avatarVariantPath(96));
+        $this->assertEquals('avatars/1/stanley_192.webp', $employee->avatarVariantPath(192));
     }
 
     #[Test]
     public function it_writes_the_displayed_size_and_twice_it(): void
     {
-        $this->assertEquals([96, 192], Employee::photoPixelSizes());
+        $this->assertEquals([96, 192], Employee::avatarPixelSizes());
     }
 }

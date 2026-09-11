@@ -7,7 +7,7 @@ namespace Tests\Feature\Controllers\App\Settings;
 use App\Enums\PermissionEnum;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -71,7 +71,7 @@ class SettingsControllerTest extends TestCase
             User::factory()->create(['company_id' => $company->id]),
             PermissionEnum::CompanyManage,
         );
-        Location::factory()->count(3)->create(['company_id' => $company->id]);
+        Office::factory()->count(3)->create(['company_id' => $company->id]);
 
         $response = $this->actingAs($user)->get(route('settings.index'));
 
@@ -97,7 +97,7 @@ class SettingsControllerTest extends TestCase
     #[Test]
     public function it_refuses_somebody_who_is_not_signed_in(): void
     {
-        $this->get(route('settings.index'))->assertRedirect(route('auth.login.new'));
+        $this->get(route('settings.index'))->assertRedirect(route('auth.signIn.new'));
     }
 
     private function member(): User

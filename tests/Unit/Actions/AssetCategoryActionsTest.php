@@ -66,7 +66,7 @@ class AssetCategoryActionsTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCategoryCreation,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCategoryCreated,
         );
     }
 

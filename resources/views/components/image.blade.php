@@ -1,5 +1,5 @@
 {{--
-  A picture, with the size it will take reserved before it arrives so nothing
+  An image, with the size it will take reserved before it arrives so nothing
   on the page jumps once it does.
 
   @var string $src

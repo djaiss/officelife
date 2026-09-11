@@ -319,6 +319,6 @@ class RoleControllerTest extends TestCase
     {
         $response = $this->get(route('settings.roles.index'));
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
@@ -81,7 +81,7 @@ class RegistrationControllerTest extends TestCase
         $this->assertDatabaseHas('emails_sent', [
             'company_id' => $user->company_id,
             'user_id' => $user->id,
-            'email_type' => EmailType::EmailVerification->value,
+            'email_type' => EmailTypeEnum::EmailVerification->value,
             'email_address' => 'michael.scott@dundermifflin.com',
             'subject' => 'Confirm your email address',
         ]);

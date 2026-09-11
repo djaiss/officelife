@@ -34,7 +34,7 @@ enum ModuleEnum: string
     public function note(): string
     {
         return match ($this) {
-            self::Assets => 'The equipment the company owns, who holds it, and getting it back',
+            self::Assets => 'The assets the company owns, who holds them, and getting them back',
         };
     }
 }

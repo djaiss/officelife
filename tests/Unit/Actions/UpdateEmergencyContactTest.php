@@ -54,7 +54,7 @@ class UpdateEmergencyContactTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmergencyContactUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmergencyContactUpdated
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id,
         );

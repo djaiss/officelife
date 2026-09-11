@@ -44,7 +44,7 @@ class UpdatePreferences
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::UserPreferencesUpdate,
+            action: UserActionEnum::UserPreferencesUpdated,
         )->onQueue('low');
     }
 }

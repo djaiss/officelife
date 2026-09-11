@@ -67,7 +67,7 @@ class DestroyApiKeyTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ApiKeyDeletion
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::ApiKeyDeleted
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id
                 && $job->parameters === ['name' => 'Dundie awards bot'],

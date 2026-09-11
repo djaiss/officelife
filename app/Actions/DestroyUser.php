@@ -32,7 +32,7 @@ class DestroyUser
         LogUserAction::dispatch(
             company: $this->author->company,
             user: $this->author,
-            action: UserActionEnum::UserDeletion,
+            action: UserActionEnum::UserDeleted,
             parameters: ['email' => $this->user->email],
         )->onQueue('low');
     }

@@ -42,7 +42,7 @@
 
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Remembered it after all?') }}
-          <x-link :href="route('auth.login.new')" class="font-semibold text-ink">{{ __('Back to sign in') }}</x-link>
+          <x-link :href="route('auth.signIn.new')" class="font-semibold text-ink">{{ __('Back to sign in') }}</x-link>
         </x-box>
       </div>
 

@@ -46,7 +46,7 @@ class NewPasswordControllerTest extends TestCase
             'password_confirmation' => 'bearsbeatsbattlestar',
         ]);
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
         $response->assertSessionHas('status');
 
         $this->assertTrue(Hash::check('bearsbeatsbattlestar', $user->refresh()->password_hash));

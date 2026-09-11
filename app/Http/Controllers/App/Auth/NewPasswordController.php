@@ -38,7 +38,7 @@ class NewPasswordController extends Controller
             password: $validated['password'],
         )->execute();
 
-        return redirect()->route('auth.login.new')
+        return redirect()->route('auth.signIn.new')
             ->with('status', __('Your password is changed. You can sign in with it now.'));
     }
 }

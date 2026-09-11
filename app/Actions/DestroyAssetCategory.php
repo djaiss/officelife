@@ -52,7 +52,7 @@ class DestroyAssetCategory
         LogUserAction::dispatch(
             company: $this->category->company,
             user: $this->author,
-            action: UserActionEnum::AssetCategoryDeletion,
+            action: UserActionEnum::AssetCategoryDeleted,
             parameters: ['name' => $this->category->name],
         )->onQueue('low');
     }

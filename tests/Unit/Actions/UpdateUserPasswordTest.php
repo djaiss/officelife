@@ -46,7 +46,7 @@ class UpdateUserPasswordTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPasswordUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPasswordUpdated
                 && $job->company->id === $user->company_id
                 && $job->user->id === $user->id,
         );

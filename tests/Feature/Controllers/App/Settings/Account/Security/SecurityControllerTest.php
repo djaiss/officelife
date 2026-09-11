@@ -155,6 +155,6 @@ class SecurityControllerTest extends TestCase
     {
         $response = $this->get(route('settings.security.index'));
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 }

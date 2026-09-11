@@ -103,7 +103,7 @@ class CreateAssetCategory
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::AssetCategoryCreation,
+            action: UserActionEnum::AssetCategoryCreated,
             parameters: ['name' => $this->category->name],
         )->onQueue('low');
     }

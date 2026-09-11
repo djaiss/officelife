@@ -30,8 +30,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $asset_tag
  * @property string|null $serial_number
  * @property string|null $name
- * @property int|null $default_location_id
- * @property int|null $current_location_id
+ * @property int|null $default_office_id
+ * @property int|null $current_office_id
  * @property Carbon|null $purchase_date
  * @property int|null $purchase_cost
  * @property string|null $order_number
@@ -70,8 +70,8 @@ class Asset extends Model
         'asset_tag',
         'serial_number',
         'name',
-        'default_location_id',
-        'current_location_id',
+        'default_office_id',
+        'current_office_id',
         'purchase_date',
         'purchase_cost',
         'order_number',
@@ -134,21 +134,21 @@ class Asset extends Model
     /**
      * Get the office the equipment belongs to when nobody has it.
      *
-     * @return BelongsTo<Location, $this>
+     * @return BelongsTo<Office, $this>
      */
-    public function defaultLocation(): BelongsTo
+    public function defaultOffice(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'default_location_id');
+        return $this->belongsTo(Office::class, 'default_office_id');
     }
 
     /**
      * Get the office the equipment is in now.
      *
-     * @return BelongsTo<Location, $this>
+     * @return BelongsTo<Office, $this>
      */
-    public function currentLocation(): BelongsTo
+    public function currentOffice(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'current_location_id');
+        return $this->belongsTo(Office::class, 'current_office_id');
     }
 
     /**

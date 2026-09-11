@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App\Auth;
 
-use App\Actions\AttemptLogin;
+use App\Actions\AttemptSignIn;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class LocalSignInController extends Controller
     {
         abort_unless(app()->environment('local'), 404);
 
-        new AttemptLogin(
+        new AttemptSignIn(
             email: (string) config('officelife.seed_email'),
             password: (string) config('officelife.seed_password'),
             ip: $request->ip(),

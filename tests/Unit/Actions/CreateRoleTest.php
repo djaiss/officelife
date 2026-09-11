@@ -64,7 +64,7 @@ class CreateRoleTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleCreation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleCreated
                 && $job->company->id === $company->id
                 && $job->user->id === $author->id
                 && $job->parameters === [

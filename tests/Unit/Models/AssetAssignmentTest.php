@@ -8,7 +8,7 @@ use App\Enums\AssetAssigneeTypeEnum;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -30,23 +30,23 @@ class AssetAssignmentTest extends TestCase
     public function it_can_be_held_by_a_colleague_an_office_or_other_equipment(): void
     {
         $employee = Employee::factory()->create();
-        $location = Location::factory()->create();
+        $office = Office::factory()->create();
         $dock = Asset::factory()->create();
 
         $this->assertInstanceOf(Employee::class, AssetAssignment::factory()->to($employee)->create()->assignee);
-        $this->assertInstanceOf(Location::class, AssetAssignment::factory()->to($location)->create()->assignee);
+        $this->assertInstanceOf(Office::class, AssetAssignment::factory()->to($office)->create()->assignee);
         $this->assertInstanceOf(Asset::class, AssetAssignment::factory()->to($dock)->create()->assignee);
     }
 
     #[Test]
     public function it_stores_what_is_holding_it_as_a_short_name(): void
     {
-        $assignment = AssetAssignment::factory()->to(Location::factory()->create())->create();
+        $assignment = AssetAssignment::factory()->to(Office::factory()->create())->create();
 
-        $this->assertEquals(AssetAssigneeTypeEnum::Location, $assignment->assignee_type);
+        $this->assertEquals(AssetAssigneeTypeEnum::Office, $assignment->assignee_type);
         $this->assertDatabaseHas('asset_assignments', [
             'id' => $assignment->id,
-            'assignee_type' => 'location',
+            'assignee_type' => 'office',
         ]);
     }
 

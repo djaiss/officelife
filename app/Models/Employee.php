@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $first_name
  * @property string $last_name
  * @property string|null $display_name
- * @property string|null $photo_path
+ * @property string|null $avatar_path
  * @property string|null $work_email
  * @property string|null $custom_title
  * @property string|null $country
@@ -50,12 +50,12 @@ class Employee extends Model
     use HasFactory;
 
     /**
-     * The size, in CSS pixels, the photo is displayed at. It is written to disk
+     * The size, in CSS pixels, the avatar is displayed at. It is written to disk
      * twice, at this size and at twice it, so a dense screen has a sharp
      * version to pick from. 96 covers the 74 pixel avatar on the profile
      * screen, and downsizes cleanly to the 26 pixel one in the sidebar.
      */
-    public const int PHOTO_SIZE = 96;
+    public const int AVATAR_SIZE = 96;
 
     protected $table = 'employees';
 
@@ -70,7 +70,7 @@ class Employee extends Model
         'first_name',
         'last_name',
         'display_name',
-        'photo_path',
+        'avatar_path',
         'work_email',
         'custom_title',
         'country',
@@ -170,27 +170,27 @@ class Employee extends Model
 
     /**
      * Every pixel size actually written to disk, which is what the route that
-     * serves the photo accepts.
+     * serves the avatar accepts.
      *
      * @return list<int>
      */
-    public static function photoPixelSizes(): array
+    public static function avatarPixelSizes(): array
     {
-        return [self::PHOTO_SIZE, self::PHOTO_SIZE * 2];
+        return [self::AVATAR_SIZE, self::AVATAR_SIZE * 2];
     }
 
-    public function hasPhoto(): bool
+    public function hasAvatar(): bool
     {
-        return $this->photo_path !== null;
+        return $this->avatar_path !== null;
     }
 
     /**
-     * The path of one version of the photo. photo_path holds the base the two
+     * The path of one version of the avatar. avatar_path holds the base the two
      * versions are named after, without an extension, so the files beside it
-     * are photos/{employee}/{uuid}_96.webp and photos/{employee}/{uuid}_192.webp.
+     * are avatars/{employee}/{uuid}_96.webp and avatars/{employee}/{uuid}_192.webp.
      */
-    public function photoVariantPath(int $pixels): string
+    public function avatarVariantPath(int $pixels): string
     {
-        return $this->photo_path.'_'.$pixels.'.webp';
+        return $this->avatar_path.'_'.$pixels.'.webp';
     }
 }

@@ -60,7 +60,7 @@ class UpdateEmployeeInformationTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmployeeInformationUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmployeeInformationUpdated
                 && $job->company->id === $company->id
                 && $job->user->id === $user->id,
         );

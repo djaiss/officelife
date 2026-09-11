@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Jobs\SendEmail;
 use App\Models\MagicLink;
 use App\Models\User;
@@ -45,7 +45,7 @@ class MagicLinkControllerTest extends TestCase
         Queue::assertPushedOn(
             queue: 'high',
             job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => $job->emailType === EmailType::MagicLinkCreated
+            callback: fn (SendEmail $job): bool => $job->emailType === EmailTypeEnum::MagicLinkCreated
                 && $job->user->id === $user->id,
         );
     }
@@ -62,7 +62,7 @@ class MagicLinkControllerTest extends TestCase
         $this->assertDatabaseHas('emails_sent', [
             'company_id' => $user->company_id,
             'user_id' => $user->id,
-            'email_type' => EmailType::MagicLinkCreated->value,
+            'email_type' => EmailTypeEnum::MagicLinkCreated->value,
             'email_address' => 'michael.scott@dundermifflin.com',
         ]);
     }
@@ -132,7 +132,7 @@ class MagicLinkControllerTest extends TestCase
 
         $this->get(route('auth.magicLink.show', ['token' => self::TOKEN]));
 
-        $this->post(route('auth.login.destroy'));
+        $this->post(route('auth.signIn.destroy'));
 
         $response = $this->get(route('auth.magicLink.show', ['token' => self::TOKEN]));
 

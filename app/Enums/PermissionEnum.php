@@ -123,9 +123,9 @@ enum PermissionEnum: string
             self::EmployeeUpdatePrivate => 'Change the private details of a colleague',
             self::RoleManage => 'Administer the company, its roles and who holds them',
             self::CompanyManage => 'Change the settings of the company',
-            self::AssetView => 'See the equipment the company owns',
-            self::AssetManage => 'Add, change and archive equipment and its catalogue',
-            self::AssetCheckout => 'Hand equipment out and take it back',
+            self::AssetView => 'See the assets the company owns',
+            self::AssetManage => 'Add, change and archive assets and their catalogue',
+            self::AssetCheckout => 'Hand assets out and take them back',
         };
     }
 }

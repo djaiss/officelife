@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Jobs;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Jobs\SendEmail;
 use App\Models\Company;
 use App\Models\EmailSent;
@@ -17,7 +17,7 @@ use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Resend\Email;
 use Resend\Service\Email as EmailService;
-use Tests\Fixtures\Mail\NewLoginDetected;
+use Tests\Fixtures\Mail\MagicLinkSignInMail;
 use Tests\TestCase;
 
 class SendEmailTest extends TestCase
@@ -38,9 +38,9 @@ class SendEmailTest extends TestCase
         ]);
 
         new SendEmail(
-            mailable: new NewLoginDetected,
+            mailable: new MagicLinkSignInMail,
             company: $company,
-            emailType: EmailType::NewLogin,
+            emailType: EmailTypeEnum::MagicLinkSignIn,
             user: $user,
         )->handle();
 
@@ -48,17 +48,17 @@ class SendEmailTest extends TestCase
         // go out inside this job: if it queued itself instead, the row recorded below
         // would be written before the email had actually left.
         Mail::assertSent(
-            NewLoginDetected::class,
-            fn (NewLoginDetected $mail): bool => $mail->hasTo('michael.scott@dundermifflin.com'),
+            MagicLinkSignInMail::class,
+            fn (MagicLinkSignInMail $mail): bool => $mail->hasTo('michael.scott@dundermifflin.com'),
         );
 
         $emailSent = EmailSent::query()->latest()->first();
 
         $this->assertEquals($company->id, $emailSent->company_id);
         $this->assertEquals($user->id, $emailSent->user_id);
-        $this->assertEquals(EmailType::NewLogin->value, $emailSent->email_type);
+        $this->assertEquals(EmailTypeEnum::MagicLinkSignIn->value, $emailSent->email_type);
         $this->assertEquals('michael.scott@dundermifflin.com', $emailSent->email_address);
-        $this->assertEquals('A new login on your OfficeLife account', $emailSent->subject);
+        $this->assertEquals('A sign-in without a password on your OfficeLife account', $emailSent->subject);
         $this->assertNull($emailSent->uuid);
         $this->assertNotNull($emailSent->sent_at);
     }
@@ -77,7 +77,7 @@ class SendEmailTest extends TestCase
                 fn ($arguments): bool => (
                     $arguments['from'] === 'noreply@officelife.test'
                     && $arguments['to'] === ['michael.scott@dundermifflin.com']
-                    && $arguments['subject'] === 'A new login on your OfficeLife account'
+                    && $arguments['subject'] === 'A sign-in without a password on your OfficeLife account'
                     && is_string($arguments['html'])
                     && mb_strlen($arguments['html']) > 0
                 ),
@@ -99,9 +99,9 @@ class SendEmailTest extends TestCase
         ]);
 
         new SendEmail(
-            mailable: new NewLoginDetected,
+            mailable: new MagicLinkSignInMail,
             company: $company,
-            emailType: EmailType::NewLogin,
+            emailType: EmailTypeEnum::MagicLinkSignIn,
             user: $user,
         )->handle();
 
@@ -120,15 +120,15 @@ class SendEmailTest extends TestCase
         $company = Company::factory()->create();
 
         new SendEmail(
-            mailable: new NewLoginDetected,
+            mailable: new MagicLinkSignInMail,
             company: $company,
-            emailType: EmailType::MagicLinkCreated,
+            emailType: EmailTypeEnum::MagicLinkCreated,
             emailAddress: 'jan.levinson@dundermifflin.com',
         )->handle();
 
         Mail::assertSent(
-            NewLoginDetected::class,
-            fn (NewLoginDetected $mail): bool => $mail->hasTo('jan.levinson@dundermifflin.com'),
+            MagicLinkSignInMail::class,
+            fn (MagicLinkSignInMail $mail): bool => $mail->hasTo('jan.levinson@dundermifflin.com'),
         );
 
         $emailSent = EmailSent::query()->latest()->first();
@@ -151,9 +151,9 @@ class SendEmailTest extends TestCase
         ]);
 
         new SendEmail(
-            mailable: new NewLoginDetected,
+            mailable: new MagicLinkSignInMail,
             company: $company,
-            emailType: EmailType::NewLogin,
+            emailType: EmailTypeEnum::MagicLinkSignIn,
             user: $user,
             emailAddress: 'michael.scarn@dundermifflin.com',
         )->handle();
@@ -175,9 +175,9 @@ class SendEmailTest extends TestCase
         $company = Company::factory()->create();
 
         new SendEmail(
-            mailable: new NewLoginDetected,
+            mailable: new MagicLinkSignInMail,
             company: $company,
-            emailType: EmailType::NewLogin,
+            emailType: EmailTypeEnum::MagicLinkSignIn,
         )->handle();
     }
 }

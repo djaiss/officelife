@@ -28,7 +28,7 @@ ajax.configure({ mergeStrategy: 'morph' });
 
 /*
  * The files in `fileList` bigger than maxKilobytes. An upload form uses it to
- * turn an oversized picture away in the browser, with something readable to
+ * turn an oversized image away in the browser, with something readable to
  * say, rather than letting the request go and bounce off the web server.
  */
 window.oversizedFiles = (fileList, maxKilobytes) =>

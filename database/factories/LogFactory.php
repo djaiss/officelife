@@ -26,7 +26,7 @@ class LogFactory extends Factory
             'company_id' => Company::factory(),
             'user_id' => User::factory(),
             'user_email' => fake()->safeEmail(),
-            'action' => UserActionEnum::CompanyUpdate->value,
+            'action' => UserActionEnum::CompanyUpdated->value,
             'parameters' => null,
         ];
     }

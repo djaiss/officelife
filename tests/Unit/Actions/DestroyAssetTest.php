@@ -53,7 +53,7 @@ class DestroyAssetTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetDeletion,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetDeleted,
         );
     }
 

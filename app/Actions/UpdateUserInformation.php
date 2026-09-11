@@ -38,7 +38,7 @@ class UpdateUserInformation
         LogUserAction::dispatch(
             company: $this->author->company,
             user: $this->author,
-            action: UserActionEnum::UserInformationUpdate,
+            action: UserActionEnum::UserInformationUpdated,
             parameters: ['email' => $this->email],
         )->onQueue('low');
     }
