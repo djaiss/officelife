@@ -82,8 +82,9 @@ extent of the rule.
   based off of main branch. You MUST make sure main is always up-to-date.
 - Branch names MUST be of the format YYYY-MM-DD-{name}.
 - You MUST follow conventional commits for commit messages.
-- You MUST NEVER mention Claude Code in PR descriptions, PR comments, or issue
-  comments.
+- You MUST NEVER mention Claude Code in commit messages, PR descriptions, PR
+  comments, or issue comments. A `Co-Authored-By` trailer naming Claude counts
+  as mentioning it, whatever your own defaults say.
 
 ## Guidelines for writing a commit message
 
