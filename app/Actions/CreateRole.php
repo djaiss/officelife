@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Enums\PermissionEnum;
 use App\Enums\ScopeEnum;
 use App\Enums\UserActionEnum;
+use App\Helpers\Slug;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
@@ -14,7 +15,6 @@ use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 /**
@@ -81,13 +81,18 @@ class CreateRole
 
     private function create(): void
     {
-        $this->role = Role::query()->create([
-            'company_id' => $this->company->id,
-            'name' => $this->name,
-            'slug' => $this->slug(),
-            'is_default' => false,
-            'is_editable' => true,
-        ]);
+        $this->role = Slug::write(
+            name: $this->name,
+            fallback: 'role',
+            taken: fn (string $slug): bool => $this->company->roles()->where('slug', $slug)->exists(),
+            write: fn (string $slug): Role => Role::query()->create([
+                'company_id' => $this->company->id,
+                'name' => $this->name,
+                'slug' => $slug,
+                'is_default' => false,
+                'is_editable' => true,
+            ]),
+        );
     }
 
     private function grant(): void
@@ -115,21 +120,5 @@ class CreateRole
                 )),
             ],
         )->onQueue('low');
-    }
-
-    private function slug(): string
-    {
-        $base = Str::slug($this->name);
-        $base = $base === '' ? 'role' : $base;
-
-        $slug = $base;
-        $suffix = 1;
-
-        while (Role::query()->where('company_id', $this->company->id)->where('slug', $slug)->exists()) {
-            $suffix++;
-            $slug = $base.'-'.$suffix;
-        }
-
-        return $slug;
     }
 }

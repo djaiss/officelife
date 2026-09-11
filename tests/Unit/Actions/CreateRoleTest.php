@@ -86,7 +86,7 @@ class CreateRoleTest extends TestCase
         $second = new CreateRole(author: $author, company: $company, name: 'Regional manager')->execute();
 
         $this->assertEquals('regional-manager', $first->slug);
-        $this->assertEquals('regional-manager-2', $second->slug);
+        $this->assertEquals('regional-manager-1', $second->slug);
     }
 
     #[Test]
