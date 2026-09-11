@@ -89,8 +89,10 @@ class RolesViewModelTest extends TestCase
 
         $tabs = new RolesViewModel(user: $user, role: $role, onPeopleTab: true)->tabs();
 
+        $this->assertEquals('permissions', $tabs[0]['key']);
         $this->assertEquals('Permissions · 1', $tabs[0]['label']);
         $this->assertFalse($tabs[0]['current']);
+        $this->assertEquals('people', $tabs[1]['key']);
         $this->assertEquals('People · 1', $tabs[1]['label']);
         $this->assertTrue($tabs[1]['current']);
         $this->assertEquals(route('settings.roles.show', [$role->id, 'people']), $tabs[1]['url']);
@@ -148,6 +150,59 @@ class RolesViewModelTest extends TestCase
         $viewModel = new RolesViewModel(user: $user, role: $role);
 
         $this->assertEquals('1 of '.count(PermissionEnum::cases()).' granted', $viewModel->grantCountLabel());
+    }
+
+    #[Test]
+    public function it_maps_every_permission_to_whether_the_role_grants_it(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+        RolePermission::factory()->create(['role_id' => $role->id, 'permission' => PermissionEnum::EmployeeView]);
+
+        $granted = new RolesViewModel(user: $user, role: $role)->grantedPermissions();
+
+        $this->assertCount(count(PermissionEnum::cases()), $granted);
+        $this->assertTrue($granted[PermissionEnum::EmployeeView->value]);
+        $this->assertFalse($granted[PermissionEnum::EmployeeUpdate->value]);
+    }
+
+    #[Test]
+    public function it_words_the_count_of_permissions_granted_for_every_number_it_can_reach(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $viewModel = new RolesViewModel(user: $user, role: $role);
+        $total = count(PermissionEnum::cases());
+
+        $this->assertCount($total + 1, $viewModel->grantCountLabels());
+        $this->assertEquals('0 of '.$total.' granted', $viewModel->grantCountLabels()[0]);
+        $this->assertEquals($total.' of '.$total.' granted', $viewModel->grantCountLabels()[$total]);
+
+        $this->assertCount($total + 1, $viewModel->permissionTabLabels());
+        $this->assertEquals('Permissions · 0', $viewModel->permissionTabLabels()[0]);
+        $this->assertEquals('Permissions · '.$total, $viewModel->permissionTabLabels()[$total]);
+    }
+
+    #[Test]
+    public function it_words_the_count_of_permissions_granted_in_a_group_for_every_number_it_can_reach(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $groups = new RolesViewModel(user: $user, role: $role)->groups();
+
+        foreach ($groups as $group) {
+            $size = count($group['permissions']);
+
+            $this->assertCount($size + 1, $group['counts']);
+            $this->assertEquals('0 of '.$size.' granted', $group['counts'][0]);
+            $this->assertEquals($size.' of '.$size.' granted', $group['counts'][$size]);
+        }
     }
 
     #[Test]

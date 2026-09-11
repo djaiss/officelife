@@ -21,7 +21,15 @@
     <span class="font-medium text-ink" aria-current="page">{{ $role['name'] }}</span>
   </nav>
 
-  <div x-data="{ deleting: false }">
+  <div
+    x-data="{
+      deleting: false,
+      granted: @js($viewModel->grantedPermissions()),
+      grantCounts: @js($viewModel->grantCountLabels()),
+      tabCounts: @js($viewModel->permissionTabLabels()),
+      grantedCount() { return Object.values(this.granted).filter(Boolean).length },
+    }"
+  >
     <!-- role name and its buttons -->
     <div class="mb-6 grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
       <div class="flex min-w-0 items-center gap-4">
@@ -97,6 +105,7 @@
             href="{{ $tab['url'] }}"
             data-turbo="true"
             @if ($tab['current']) aria-current="page" @endif
+            @if ($tab['key'] === 'permissions') x-text="tabCounts[grantedCount()]" @endif
             class="rounded-[9px] px-3.5 py-2 text-[15px] font-semibold transition-colors {{ $tab['current'] ? 'bg-nav-hover text-ink' : 'text-muted hover:text-ink' }}"
           >
             {{ $tab['label'] }}
