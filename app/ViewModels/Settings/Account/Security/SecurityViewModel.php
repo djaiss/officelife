@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ViewModels\Settings\Account\Security;
 
-use App\Models\Employee;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -12,7 +11,6 @@ class SecurityViewModel
 {
     public function __construct(
         private readonly User $user,
-        private readonly ?Employee $employee,
     ) {}
 
     public function usesSingleSignOn(): bool
@@ -69,20 +67,5 @@ class SecurityViewModel
         }
 
         return __('Active · :count API keys', ['count' => $count]);
-    }
-
-    public function name(): string
-    {
-        return $this->employee->name ?? $this->user->email;
-    }
-
-    public function employee(): ?Employee
-    {
-        return $this->employee;
-    }
-
-    public function companyName(): string
-    {
-        return $this->user->company->name;
     }
 }

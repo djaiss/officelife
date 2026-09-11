@@ -6,7 +6,6 @@ namespace Tests\Unit\ViewModels\Settings\Administration;
 
 use App\Enums\OfficeScopeEnum;
 use App\Models\Company;
-use App\Models\Employee;
 use App\Models\Office;
 use App\Models\User;
 use App\ViewModels\Settings\Administration\OfficesViewModel;
@@ -19,41 +18,6 @@ class OfficesViewModelTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_gives_the_name_and_the_company_of_the_signed_in_person(): void
-    {
-        $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
-        $employee = Employee::factory()->create([
-            'company_id' => $company->id,
-            'first_name' => 'Michael',
-            'last_name' => 'Scott',
-        ]);
-        $user = User::factory()->create([
-            'company_id' => $company->id,
-            'employee_id' => $employee->id,
-        ]);
-
-        $viewModel = new OfficesViewModel(user: $user, employee: $employee, scope: OfficeScopeEnum::Active);
-
-        $this->assertEquals('Michael Scott', $viewModel->name());
-        $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
-        $this->assertTrue($viewModel->employee()->is($employee));
-    }
-
-    #[Test]
-    public function it_falls_back_to_the_email_when_there_is_no_employee_record(): void
-    {
-        $user = User::factory()->create([
-            'employee_id' => null,
-            'email' => 'accountant@vancerefrigeration.com',
-        ]);
-
-        $viewModel = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active);
-
-        $this->assertEquals('accountant@vancerefrigeration.com', $viewModel->name());
-        $this->assertNull($viewModel->employee());
-    }
-
-    #[Test]
     public function it_counts_what_the_company_keeps(): void
     {
         $user = $this->company();
@@ -62,7 +26,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'country' => 'US', 'timezone' => 'America/Chicago']);
         Office::factory()->archived()->create(['company_id' => $user->company_id, 'country' => 'FR', 'timezone' => 'Europe/Paris']);
 
-        $stats = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->stats();
+        $stats = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->stats();
 
         $this->assertCount(3, $stats);
         $this->assertEquals(2, $stats[0]['value']);
@@ -78,7 +42,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Office::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch']);
 
-        $rows = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->rows();
+        $rows = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Scranton branch', $rows[0]['name']);
@@ -92,7 +56,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Office::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch']);
 
-        $rows = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Archived)->rows();
+        $rows = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Archived)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Nashua branch', $rows[0]['name']);
@@ -107,7 +71,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id]);
         Office::factory()->archived()->create(['company_id' => $user->company_id]);
 
-        $this->assertCount(2, new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::All)->rows());
+        $this->assertCount(2, new OfficesViewModel(user: $user, scope: OfficeScopeEnum::All)->rows());
     }
 
     #[Test]
@@ -119,7 +83,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Utica branch']);
         Office::factory()->archived()->create(['company_id' => $user->company_id, 'name' => 'Stamford branch']);
 
-        $rows = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::All)->rows();
+        $rows = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::All)->rows();
 
         $this->assertEquals('Head office', $rows[0]['badge']);
         $this->assertEquals('Archived', $rows[1]['badge']);
@@ -134,7 +98,7 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
         Office::factory()->create(['name' => 'Stamford branch']);
 
-        $rows = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::All)->rows();
+        $rows = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::All)->rows();
 
         $this->assertCount(1, $rows);
         $this->assertEquals('Scranton branch', $rows[0]['name']);
@@ -148,9 +112,9 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch', 'city' => 'Scranton', 'country' => 'US']);
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Paris office', 'city' => 'Paris', 'country' => 'FR']);
 
-        $byName = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active, search: 'scran')->rows();
-        $byCity = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active, search: 'paris')->rows();
-        $byCountry = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active, search: 'FR')->rows();
+        $byName = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active, search: 'scran')->rows();
+        $byCity = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active, search: 'paris')->rows();
+        $byCountry = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active, search: 'FR')->rows();
 
         $this->assertCount(1, $byName);
         $this->assertEquals('Scranton branch', $byName[0]['name']);
@@ -167,8 +131,8 @@ class OfficesViewModelTest extends TestCase
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch', 'city' => 'Akron', 'country' => 'US']);
         Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Nashua branch', 'city' => 'Utica', 'country' => 'US']);
 
-        $byName = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->rows();
-        $byPlace = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active, sort: 'place')->rows();
+        $byName = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->rows();
+        $byPlace = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active, sort: 'place')->rows();
 
         $this->assertEquals('Nashua branch', $byName[0]['name']);
         $this->assertEquals('Scranton branch', $byPlace[0]['name']);
@@ -179,8 +143,8 @@ class OfficesViewModelTest extends TestCase
     {
         $user = $this->company();
 
-        $byName = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->sortToggle();
-        $byPlace = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active, sort: 'place')->sortToggle();
+        $byName = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->sortToggle();
+        $byPlace = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active, sort: 'place')->sortToggle();
 
         $this->assertEquals('Sorted by office', $byName['label']);
         $this->assertEquals(route('settings.offices.index', ['sort' => 'place']), $byName['url']);
@@ -202,7 +166,7 @@ class OfficesViewModelTest extends TestCase
             'timezone' => null,
         ]);
 
-        $rows = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->rows();
+        $rows = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->rows();
 
         $this->assertEquals('somewhere unrecorded', $rows[0]['place']);
         $this->assertEquals('same as the company', $rows[0]['timezone']);
@@ -214,7 +178,7 @@ class OfficesViewModelTest extends TestCase
         $user = $this->company();
         $office = Office::factory()->create(['company_id' => $user->company_id, 'name' => 'Scranton branch']);
 
-        $drawer = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->drawer();
+        $drawer = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->drawer();
 
         $this->assertArrayHasKey($office->id, $drawer);
         $this->assertEquals('Scranton branch', $drawer[$office->id]['name']);
@@ -228,7 +192,7 @@ class OfficesViewModelTest extends TestCase
     {
         $user = $this->company();
 
-        $scopes = new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Archived)->scopes();
+        $scopes = new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Archived)->scopes();
 
         $this->assertCount(3, $scopes);
         $this->assertFalse($scopes[0]['current']);
@@ -241,11 +205,11 @@ class OfficesViewModelTest extends TestCase
     {
         $user = $this->company();
 
-        $this->assertTrue(new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->companyHasNoOffice());
+        $this->assertTrue(new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->companyHasNoOffice());
 
         Office::factory()->create(['company_id' => $user->company_id]);
 
-        $this->assertFalse(new OfficesViewModel(user: $user, employee: null, scope: OfficeScopeEnum::Active)->companyHasNoOffice());
+        $this->assertFalse(new OfficesViewModel(user: $user, scope: OfficeScopeEnum::Active)->companyHasNoOffice());
     }
 
     private function company(): User

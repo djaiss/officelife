@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\ViewModels\Settings\Account\Logs;
 
 use App\Models\EmailSent;
-use App\Models\Employee;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,7 +21,6 @@ class LogsViewModel
 
     public function __construct(
         private readonly User $user,
-        private readonly ?Employee $employee,
     ) {}
 
     /** @return CursorPaginator<int, Log> */
@@ -46,20 +44,5 @@ class LogsViewModel
     public function hasMoreEmailsSent(): bool
     {
         return $this->user->emailsSent()->count() > self::EMAILS_SHOWN;
-    }
-
-    public function name(): string
-    {
-        return $this->employee->name ?? $this->user->email;
-    }
-
-    public function employee(): ?Employee
-    {
-        return $this->employee;
-    }
-
-    public function companyName(): string
-    {
-        return $this->user->company->name;
     }
 }

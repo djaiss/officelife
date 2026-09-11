@@ -1,16 +1,12 @@
 {{-- Where somebody goes to change something: their own account first, then the company they work at. --}}
 {{-- @var \App\ViewModels\Settings\SettingsViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Settings')">
-  <x-slot:top-bar>
-    <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
-  </x-slot:top-bar>
-
-  <!-- breadcrumb -->
-  <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
-    <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <span class="font-medium text-ink" aria-current="page">{{ __('Settings') }}</span>
-  </nav>
+  <x-breadcrumb
+    :trail="[
+      __('Dashboard') => route('home.index'),
+      __('Settings') => null,
+    ]"
+  />
 
   <div class="mb-10 grid items-end gap-8 sm:grid-cols-[minmax(0,1fr)_auto]">
     <!-- page title -->

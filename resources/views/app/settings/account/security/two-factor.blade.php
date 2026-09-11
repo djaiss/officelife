@@ -1,20 +1,14 @@
 {{-- Setting up two factor authentication, one step at a time. --}}
 {{-- @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Two factor authentication')">
-  <x-slot:top-bar>
-    <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
-  </x-slot:top-bar>
-
-  <!-- breadcrumb -->
-  <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
-    <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <a href="{{ route('settings.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Settings') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <a href="{{ route('settings.security.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Security and access') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <span class="font-medium text-ink" aria-current="page">{{ __('Two factor authentication') }}</span>
-  </nav>
+  <x-breadcrumb
+    :trail="[
+      __('Dashboard') => route('home.index'),
+      __('Settings') => route('settings.index'),
+      __('Security and access') => route('settings.security.index'),
+      __('Two factor authentication') => null,
+    ]"
+  />
 
   <!-- page title -->
   <div class="mb-11">

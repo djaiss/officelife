@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\View\Components;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -15,6 +16,12 @@ class TopBarLayout extends Component
 
     public function render(): View
     {
-        return view('layouts.top-bar');
+        $user = Auth::user();
+
+        return view('layouts.top-bar', [
+            'companyName' => $user->company->name,
+            'name' => $user->employee->name ?? $user->email,
+            'employee' => $user->employee,
+        ]);
     }
 }
