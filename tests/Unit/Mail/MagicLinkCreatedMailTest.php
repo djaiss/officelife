@@ -8,7 +8,7 @@ use App\Mail\MagicLinkCreatedMail;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class MagicLinkCreatedTest extends TestCase
+class MagicLinkCreatedMailTest extends TestCase
 {
     #[Test]
     public function it_has_a_subject(): void

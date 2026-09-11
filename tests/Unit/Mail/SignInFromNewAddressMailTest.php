@@ -8,7 +8,7 @@ use App\Mail\SignInFromNewAddressMail;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class UserIpChangedTest extends TestCase
+class SignInFromNewAddressMailTest extends TestCase
 {
     #[Test]
     public function it_has_a_subject(): void

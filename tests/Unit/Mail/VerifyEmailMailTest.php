@@ -8,7 +8,7 @@ use App\Mail\VerifyEmailMail;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class VerifyEmailTest extends TestCase
+class VerifyEmailMailTest extends TestCase
 {
     #[Test]
     public function it_has_a_subject(): void
