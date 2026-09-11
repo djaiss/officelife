@@ -19,7 +19,7 @@ return new class extends Migration
             $table->datetime('assigned_at')->comment('when it was handed over');
             $table->date('expected_return_at')->nullable()->comment('when it is due back, null when it is not a loan');
             $table->datetime('returned_at')->nullable()->comment('when it came back, null while somebody still has it');
-            $table->unsignedBigInteger('returned_to_location_id')->nullable()->comment('office it came back to');
+            $table->unsignedBigInteger('returned_to_office_id')->nullable()->comment('office it came back to');
             $table->text('checkout_notes')->nullable()->comment('anything said when it was handed over');
             $table->text('checkin_notes')->nullable()->comment('anything said when it came back');
             $table->string('condition_at_checkout', 20)->nullable()->comment('what state it was in when handed over, one of the cases of AssetConditionEnum');
@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->foreign('asset_id')->references('id')->on('assets')->cascadeOnDelete();
             $table->foreign('assigned_by_user_id')->references('id')->on('users')->nullOnDelete();
-            $table->foreign('returned_to_location_id')->references('id')->on('locations')->nullOnDelete();
+            $table->foreign('returned_to_office_id')->references('id')->on('offices')->nullOnDelete();
             $table->index(['assignee_type', 'assignee_id']);
             $table->index(['asset_id', 'returned_at']);
         });

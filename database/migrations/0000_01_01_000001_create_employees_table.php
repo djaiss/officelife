@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('first_name')->comment('first name of the employee');
             $table->string('last_name')->comment('last name of the employee');
             $table->string('display_name')->nullable()->comment('name the employee goes by, when it differs from their legal name');
-            $table->string('photo_path')->nullable()->comment('path of the photo file');
+            $table->string('avatar_path')->nullable()->comment('path of the avatar file');
             $table->string('work_email')->nullable()->comment('email address the employee uses at work');
             $table->string('custom_title')->nullable()->comment('free text job title, when the employee needs one that no official job title covers');
             $table->string('country', 2)->nullable()->comment('country the employee works from, as an iso 3166-1 alpha-2 code, independent from the office they belong to');

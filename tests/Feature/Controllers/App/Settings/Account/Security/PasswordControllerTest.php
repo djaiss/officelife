@@ -48,7 +48,7 @@ class PasswordControllerTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPasswordUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserPasswordUpdated
                 && $job->user->id === $user->id,
         );
     }
@@ -110,6 +110,6 @@ class PasswordControllerTest extends TestCase
     {
         $response = $this->put(route('settings.password.update'), []);
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 }

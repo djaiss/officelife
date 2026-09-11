@@ -93,7 +93,7 @@ class UpdateAssetCategory
         LogUserAction::dispatch(
             company: $this->category->company,
             user: $this->author,
-            action: UserActionEnum::AssetCategoryUpdate,
+            action: UserActionEnum::AssetCategoryUpdated,
             parameters: ['name' => $this->category->name],
         )->onQueue('low');
     }

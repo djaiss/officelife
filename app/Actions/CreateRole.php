@@ -116,7 +116,7 @@ class CreateRole
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::RoleCreation,
+            action: UserActionEnum::RoleCreated,
             parameters: [
                 'name' => $this->role->name,
                 'permissions' => implode(', ', array_map(

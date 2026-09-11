@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\CreateMagicLink;
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Jobs\SendEmail;
@@ -36,14 +36,14 @@ class CreateMagicLinkTest extends TestCase
         Queue::assertPushedOn(
             queue: 'high',
             job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => $job->emailType === EmailType::MagicLinkCreated
+            callback: fn (SendEmail $job): bool => $job->emailType === EmailTypeEnum::MagicLinkCreated
                 && $job->user->id === $user->id,
         );
 
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::MagicLinkCreation,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::MagicLinkCreated,
         );
     }
 

@@ -8,7 +8,7 @@ use App\Enums\AssetAssigneeTypeEnum;
 use App\Models\Asset;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -21,7 +21,7 @@ class AssetAssigneeTypeEnumTest extends TestCase
     public function it_knows_which_model_each_type_stands_for(): void
     {
         $this->assertEquals(Employee::class, AssetAssigneeTypeEnum::Employee->model());
-        $this->assertEquals(Location::class, AssetAssigneeTypeEnum::Location->model());
+        $this->assertEquals(Office::class, AssetAssigneeTypeEnum::Office->model());
         $this->assertEquals(Asset::class, AssetAssigneeTypeEnum::Asset->model());
     }
 
@@ -29,7 +29,7 @@ class AssetAssigneeTypeEnumTest extends TestCase
     public function it_finds_the_type_standing_for_a_model(): void
     {
         $this->assertEquals(AssetAssigneeTypeEnum::Employee, AssetAssigneeTypeEnum::forModel(Employee::factory()->make()));
-        $this->assertEquals(AssetAssigneeTypeEnum::Location, AssetAssigneeTypeEnum::forModel(Location::factory()->make()));
+        $this->assertEquals(AssetAssigneeTypeEnum::Office, AssetAssigneeTypeEnum::forModel(Office::factory()->make()));
         $this->assertEquals(AssetAssigneeTypeEnum::Asset, AssetAssigneeTypeEnum::forModel(Asset::factory()->make()));
     }
 

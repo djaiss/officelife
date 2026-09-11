@@ -5,8 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Settings\Account\Logs\EmailSentController;
 use App\Http\Controllers\App\Settings\Account\Logs\LogController;
 use App\Http\Controllers\App\Settings\Account\Preferences\PreferenceController;
+use App\Http\Controllers\App\Settings\Account\Profile\AvatarController;
 use App\Http\Controllers\App\Settings\Account\Profile\EmergencyContactController;
-use App\Http\Controllers\App\Settings\Account\Profile\PhotoController;
 use App\Http\Controllers\App\Settings\Account\Profile\ProfileController;
 use App\Http\Controllers\App\Settings\Account\Security\ApiKeyController;
 use App\Http\Controllers\App\Settings\Account\Security\PasswordController;
@@ -14,8 +14,8 @@ use App\Http\Controllers\App\Settings\Account\Security\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\Account\Security\SecurityController;
 use App\Http\Controllers\App\Settings\Account\Security\TwoFactorController;
 use App\Http\Controllers\App\Settings\Administration\DuplicateRoleController;
-use App\Http\Controllers\App\Settings\Administration\LocationArchiveController;
-use App\Http\Controllers\App\Settings\Administration\LocationController;
+use App\Http\Controllers\App\Settings\Administration\OfficeArchiveController;
+use App\Http\Controllers\App\Settings\Administration\OfficeController;
 use App\Http\Controllers\App\Settings\Administration\RoleController;
 use App\Http\Controllers\App\Settings\Administration\RolePeopleController;
 use App\Http\Controllers\App\Settings\SettingsController;
@@ -55,9 +55,9 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
 
     Route::put('settings/account/profile/emergency-contact', [EmergencyContactController::class, 'update'])->name('settings.emergencyContact.update');
 
-    Route::post('settings/account/profile/photo', [PhotoController::class, 'update'])->name('settings.photo.update');
-    Route::delete('settings/account/profile/photo', [PhotoController::class, 'destroy'])->name('settings.photo.destroy');
-    Route::get('settings/account/profile/photo/{employee}/{size}', [PhotoController::class, 'show'])->whereNumber(['employee', 'size'])->name('settings.photo.show');
+    Route::post('settings/account/profile/avatar', [AvatarController::class, 'update'])->name('settings.avatar.update');
+    Route::delete('settings/account/profile/avatar', [AvatarController::class, 'destroy'])->name('settings.avatar.destroy');
+    Route::get('settings/account/profile/avatar/{employee}/{size}', [AvatarController::class, 'show'])->whereNumber(['employee', 'size'])->name('settings.avatar.show');
 });
 
 // The screens where somebody looks after the company itself.
@@ -73,10 +73,10 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::post('settings/administration/roles/{role}/people', [RolePeopleController::class, 'create'])->whereNumber('role')->name('settings.rolePeople.create');
     Route::delete('settings/administration/roles/{role}/people/{user}', [RolePeopleController::class, 'destroy'])->whereNumber(['role', 'user'])->name('settings.rolePeople.destroy');
 
-    Route::get('settings/administration/locations/{scope?}', [LocationController::class, 'index'])->where('scope', 'archived|all')->name('settings.locations.index');
-    Route::post('settings/administration/locations', [LocationController::class, 'create'])->name('settings.locations.create');
-    Route::put('settings/administration/locations/{location}', [LocationController::class, 'update'])->whereNumber('location')->name('settings.locations.update');
+    Route::get('settings/administration/offices/{scope?}', [OfficeController::class, 'index'])->where('scope', 'archived|all')->name('settings.offices.index');
+    Route::post('settings/administration/offices', [OfficeController::class, 'create'])->name('settings.offices.create');
+    Route::put('settings/administration/offices/{office}', [OfficeController::class, 'update'])->whereNumber('office')->name('settings.offices.update');
 
-    Route::post('settings/administration/locations/{location}/archive', [LocationArchiveController::class, 'create'])->whereNumber('location')->name('settings.locationArchives.create');
-    Route::delete('settings/administration/locations/{location}/archive', [LocationArchiveController::class, 'destroy'])->whereNumber('location')->name('settings.locationArchives.destroy');
+    Route::post('settings/administration/offices/{office}/archive', [OfficeArchiveController::class, 'create'])->whereNumber('office')->name('settings.officeArchives.create');
+    Route::delete('settings/administration/offices/{office}/archive', [OfficeArchiveController::class, 'destroy'])->whereNumber('office')->name('settings.officeArchives.destroy');
 });

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Jobs\SendEmail;
-use App\Mail\VerifyEmail;
+use App\Mail\VerifyEmailMail;
 use App\Models\User;
 use Illuminate\Support\Facades\URL;
 
@@ -32,9 +32,9 @@ class SendEmailVerification
     private function send(): void
     {
         SendEmail::dispatch(
-            mailable: new VerifyEmail(url: $this->url()),
+            mailable: new VerifyEmailMail(url: $this->url()),
             company: $this->user->company,
-            emailType: EmailType::EmailVerification,
+            emailType: EmailTypeEnum::EmailVerification,
             user: $this->user,
         )->onQueue('high');
     }

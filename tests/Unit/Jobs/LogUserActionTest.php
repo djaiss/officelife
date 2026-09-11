@@ -29,7 +29,7 @@ class LogUserActionTest extends TestCase
         new LogUserAction(
             company: $company,
             user: $user,
-            action: UserActionEnum::CompanyUpdate,
+            action: UserActionEnum::CompanyUpdated,
             parameters: ['name' => 'Dunder Mifflin'],
         )->handle();
 
@@ -37,7 +37,7 @@ class LogUserActionTest extends TestCase
             'company_id' => $company->id,
             'user_id' => $user->id,
             'user_email' => 'michael.scott@dundermifflin.com',
-            'action' => UserActionEnum::CompanyUpdate->value,
+            'action' => UserActionEnum::CompanyUpdated->value,
         ]);
 
         $this->assertEquals(['name' => 'Dunder Mifflin'], Log::query()->latest()->first()->parameters);
@@ -55,7 +55,7 @@ class LogUserActionTest extends TestCase
         new LogUserAction(
             company: $company,
             user: $user,
-            action: UserActionEnum::UserPasswordUpdate,
+            action: UserActionEnum::UserPasswordUpdated,
         )->handle();
 
         $user->forceDelete();

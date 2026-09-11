@@ -9,7 +9,7 @@ use App\Models\AssetAssignment;
 use App\Models\AssetModel;
 use App\Models\AssetStatus;
 use App\Models\Company;
-use App\Models\Location;
+use App\Models\Office;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -35,17 +35,17 @@ class AssetTest extends TestCase
     public function it_knows_the_office_it_belongs_to_and_the_one_it_is_in(): void
     {
         $company = Company::factory()->create();
-        $scranton = Location::factory()->create(['company_id' => $company->id]);
-        $utica = Location::factory()->create(['company_id' => $company->id]);
+        $scranton = Office::factory()->create(['company_id' => $company->id]);
+        $utica = Office::factory()->create(['company_id' => $company->id]);
 
         $asset = Asset::factory()->create([
             'company_id' => $company->id,
-            'default_location_id' => $scranton->id,
-            'current_location_id' => $utica->id,
+            'default_office_id' => $scranton->id,
+            'current_office_id' => $utica->id,
         ]);
 
-        $this->assertEquals($scranton->id, $asset->defaultLocation->id);
-        $this->assertEquals($utica->id, $asset->currentLocation->id);
+        $this->assertEquals($scranton->id, $asset->defaultOffice->id);
+        $this->assertEquals($utica->id, $asset->currentOffice->id);
     }
 
     #[Test]

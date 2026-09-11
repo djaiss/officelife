@@ -90,7 +90,7 @@ class UpdateManufacturer
         LogUserAction::dispatch(
             company: $this->manufacturer->company,
             user: $this->author,
-            action: UserActionEnum::ManufacturerUpdate,
+            action: UserActionEnum::ManufacturerUpdated,
             parameters: ['name' => $this->manufacturer->name],
         )->onQueue('low');
     }

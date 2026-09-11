@@ -93,7 +93,7 @@ class UpdateAssetStatus
         LogUserAction::dispatch(
             company: $this->status->company,
             user: $this->author,
-            action: UserActionEnum::AssetStatusUpdate,
+            action: UserActionEnum::AssetStatusUpdated,
             parameters: ['name' => $this->status->name],
         )->onQueue('low');
     }

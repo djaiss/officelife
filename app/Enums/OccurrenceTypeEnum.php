@@ -18,9 +18,9 @@ enum OccurrenceTypeEnum: string
     case CompanyUpdated = 'company.updated';
     case UserCreated = 'user.created';
     case EmployeeCreated = 'employee.created';
-    case LocationCreated = 'location.created';
-    case LocationArchived = 'location.archived';
-    case LocationReopened = 'location.reopened';
+    case OfficeCreated = 'office.created';
+    case OfficeArchived = 'office.archived';
+    case OfficeReopened = 'office.reopened';
     case AssetCheckedOut = 'asset.checked_out';
     case AssetCheckedIn = 'asset.checked_in';
     case AssetReturnOverdue = 'asset.return_overdue';
@@ -42,9 +42,9 @@ enum OccurrenceTypeEnum: string
             self::CompanyUpdated,
             self::UserCreated,
             self::EmployeeCreated,
-            self::LocationCreated,
-            self::LocationArchived,
-            self::LocationReopened => null,
+            self::OfficeCreated,
+            self::OfficeArchived,
+            self::OfficeReopened => null,
         };
     }
 }

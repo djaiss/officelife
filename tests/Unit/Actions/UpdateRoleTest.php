@@ -60,7 +60,7 @@ class UpdateRoleTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleUpdate
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleUpdated
                 && $job->company->id === $company->id
                 && $job->user->id === $author->id
                 && $job->parameters === [

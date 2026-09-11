@@ -35,7 +35,7 @@ class UpdateUserPassword
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::UserPasswordUpdate,
+            action: UserActionEnum::UserPasswordUpdated,
         )->onQueue('low');
     }
 

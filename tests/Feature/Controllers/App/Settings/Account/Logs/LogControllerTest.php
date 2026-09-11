@@ -36,7 +36,7 @@ class LogControllerTest extends TestCase
         Log::factory()->create([
             'company_id' => $company->id,
             'user_id' => $user->id,
-            'action' => UserActionEnum::CompanyUpdate->value,
+            'action' => UserActionEnum::CompanyUpdated->value,
             'parameters' => ['name' => 'Dunder Mifflin'],
         ]);
 
@@ -74,7 +74,7 @@ class LogControllerTest extends TestCase
         Log::factory()->create([
             'company_id' => $company->id,
             'user_id' => $colleague->id,
-            'action' => UserActionEnum::CompanyUpdate->value,
+            'action' => UserActionEnum::CompanyUpdated->value,
             'parameters' => ['name' => 'Vance Refrigeration'],
         ]);
 
@@ -180,6 +180,6 @@ class LogControllerTest extends TestCase
     {
         $response = $this->get(route('settings.logs.index'));
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 }

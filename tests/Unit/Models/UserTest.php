@@ -95,14 +95,14 @@ class UserTest extends TestCase
     public function it_casts_the_dates_and_the_active_flag(): void
     {
         $user = User::factory()->inactive()->create([
-            'last_login_at' => now(),
+            'last_signed_in_at' => now(),
             'password_changed_at' => '2026-07-31 09:30:00',
         ]);
 
         $user->refresh();
 
         $this->assertFalse($user->is_active);
-        $this->assertNotNull($user->last_login_at);
+        $this->assertNotNull($user->last_signed_in_at);
         $this->assertNotNull($user->email_verified_at);
         $this->assertInstanceOf(Carbon::class, $user->password_changed_at);
     }

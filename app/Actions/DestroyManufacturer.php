@@ -56,7 +56,7 @@ class DestroyManufacturer
         LogUserAction::dispatch(
             company: $this->manufacturer->company,
             user: $this->author,
-            action: UserActionEnum::ManufacturerDeletion,
+            action: UserActionEnum::ManufacturerDeleted,
             parameters: ['name' => $this->manufacturer->name],
         )->onQueue('low');
     }

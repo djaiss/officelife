@@ -39,7 +39,7 @@ class CreateApiKey
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::ApiKeyCreation,
+            action: UserActionEnum::ApiKeyCreated,
             parameters: ['name' => $this->name],
         )->onQueue('low');
     }

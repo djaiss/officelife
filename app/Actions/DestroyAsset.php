@@ -56,7 +56,7 @@ class DestroyAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetDeletion,
+            action: UserActionEnum::AssetDeleted,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

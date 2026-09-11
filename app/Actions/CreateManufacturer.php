@@ -95,7 +95,7 @@ class CreateManufacturer
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->author,
-            action: UserActionEnum::ManufacturerCreation,
+            action: UserActionEnum::ManufacturerCreated,
             parameters: ['name' => $this->manufacturer->name],
         )->onQueue('low');
     }

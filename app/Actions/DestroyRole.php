@@ -69,7 +69,7 @@ class DestroyRole
         LogUserAction::dispatch(
             company: $this->role->company,
             user: $this->author,
-            action: UserActionEnum::RoleDeletion,
+            action: UserActionEnum::RoleDeleted,
             parameters: ['name' => $this->name],
         )->onQueue('low');
     }

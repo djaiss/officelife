@@ -32,7 +32,7 @@ class ConfirmEmailAddressTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmailConfirmation
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::EmailConfirmed
                 && $job->user->id === $user->id
                 && $job->company->id === $user->company_id,
         );

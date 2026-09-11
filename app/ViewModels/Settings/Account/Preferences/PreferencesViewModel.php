@@ -91,7 +91,7 @@ class PreferencesViewModel
     }
 
     /**
-     * The record the avatar draws from, so the sidebar can show the photo when
+     * The record the avatar draws from, so the sidebar can show it when
      * there is one. An account that belongs to nobody who works here has none.
      */
     public function employee(): ?Employee

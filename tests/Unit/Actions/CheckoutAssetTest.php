@@ -16,7 +16,7 @@ use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -76,7 +76,7 @@ class CheckoutAssetTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCheckout,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetCheckedOut,
         );
     }
 
@@ -86,16 +86,16 @@ class CheckoutAssetTest extends TestCase
         Queue::fake();
 
         $asset = Asset::factory()->create(['company_id' => $this->company->id]);
-        $scranton = Location::factory()->create(['company_id' => $this->company->id]);
+        $scranton = Office::factory()->create(['company_id' => $this->company->id]);
 
         new CheckoutAsset(
             author: $this->author,
             asset: $asset,
             assignee: Employee::factory()->create(['company_id' => $this->company->id]),
-            location: $scranton,
+            office: $scranton,
         )->execute();
 
-        $this->assertEquals($scranton->id, $asset->fresh()->current_location_id);
+        $this->assertEquals($scranton->id, $asset->fresh()->current_office_id);
     }
 
     #[Test]
@@ -103,10 +103,10 @@ class CheckoutAssetTest extends TestCase
     {
         Queue::fake();
 
-        $utica = Location::factory()->create(['company_id' => $this->company->id]);
+        $utica = Office::factory()->create(['company_id' => $this->company->id]);
         $asset = Asset::factory()->create([
             'company_id' => $this->company->id,
-            'current_location_id' => $utica->id,
+            'current_office_id' => $utica->id,
         ]);
 
         new CheckoutAsset(
@@ -115,7 +115,7 @@ class CheckoutAssetTest extends TestCase
             assignee: Employee::factory()->create(['company_id' => $this->company->id]),
         )->execute();
 
-        $this->assertEquals($utica->id, $asset->fresh()->current_location_id);
+        $this->assertEquals($utica->id, $asset->fresh()->current_office_id);
     }
 
     #[Test]
@@ -191,11 +191,11 @@ class CheckoutAssetTest extends TestCase
         Queue::fake();
 
         $asset = Asset::factory()->create(['company_id' => $this->company->id]);
-        $room = Location::factory()->create(['company_id' => $this->company->id]);
+        $room = Office::factory()->create(['company_id' => $this->company->id]);
 
         $assignment = new CheckoutAsset(author: $this->author, asset: $asset, assignee: $room)->execute();
 
-        $this->assertEquals(AssetAssigneeTypeEnum::Location, $assignment->assignee_type);
+        $this->assertEquals(AssetAssigneeTypeEnum::Office, $assignment->assignee_type);
         $this->assertEquals($room->id, $assignment->assignee_id);
     }
 

@@ -14,7 +14,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +45,7 @@ class CheckoutAsset
         private readonly ?Carbon $expectedReturnAt = null,
         private readonly ?AssetConditionEnum $condition = null,
         private ?string $notes = null,
-        private readonly ?Location $location = null,
+        private readonly ?Office $office = null,
     ) {}
 
     public function execute(): AssetAssignment
@@ -89,7 +89,7 @@ class CheckoutAsset
 
         $this->validateAssignee();
 
-        if ($this->location !== null && $this->location->company_id !== $this->asset->company_id) {
+        if ($this->office !== null && $this->office->company_id !== $this->asset->company_id) {
             throw new InvalidArgumentException('The office belongs to another company');
         }
     }
@@ -108,7 +108,7 @@ class CheckoutAsset
 
         $companyId = match (true) {
             $this->assignee instanceof Employee => $this->assignee->company_id,
-            $this->assignee instanceof Location => $this->assignee->company_id,
+            $this->assignee instanceof Office => $this->assignee->company_id,
             $this->assignee instanceof Asset => $this->assignee->company_id,
             default => null,
         };
@@ -164,8 +164,8 @@ class CheckoutAsset
             // Whoever hands the equipment over says where it is going. There is
             // nowhere yet to read the office of a colleague from, so a checkout
             // that says nothing leaves the equipment where it was.
-            if ($this->location !== null) {
-                $this->asset->current_location_id = $this->location->id;
+            if ($this->office !== null) {
+                $this->asset->current_office_id = $this->office->id;
                 $this->asset->save();
             }
         });
@@ -191,7 +191,7 @@ class CheckoutAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetCheckout,
+            action: UserActionEnum::AssetCheckedOut,
             parameters: [
                 'tag' => $this->asset->asset_tag,
                 'assignee' => $this->assigneeName(),
@@ -203,7 +203,7 @@ class CheckoutAsset
     {
         return match (true) {
             $this->assignee instanceof Employee => $this->assignee->name,
-            $this->assignee instanceof Location => $this->assignee->name,
+            $this->assignee instanceof Office => $this->assignee->name,
             $this->assignee instanceof Asset => $this->assignee->asset_tag,
             default => '',
         };

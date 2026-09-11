@@ -36,7 +36,7 @@ class ConfirmEmailAddress
         LogUserAction::dispatch(
             company: $this->user->company,
             user: $this->user,
-            action: UserActionEnum::EmailConfirmation,
+            action: UserActionEnum::EmailConfirmed,
         )->onQueue('low');
     }
 }

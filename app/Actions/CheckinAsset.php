@@ -13,7 +13,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\AssetStatus;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -37,7 +37,7 @@ class CheckinAsset
         private readonly Asset $asset,
         private readonly ?AssetConditionEnum $condition = null,
         private ?string $notes = null,
-        private readonly ?Location $location = null,
+        private readonly ?Office $office = null,
         private readonly ?AssetStatus $status = null,
     ) {}
 
@@ -76,7 +76,7 @@ class CheckinAsset
 
         $this->assignment = $assignment;
 
-        if ($this->location !== null && $this->location->company_id !== $this->asset->company_id) {
+        if ($this->office !== null && $this->office->company_id !== $this->asset->company_id) {
             throw new InvalidArgumentException('The office belongs to another company');
         }
 
@@ -91,11 +91,11 @@ class CheckinAsset
             $this->assignment->returned_at = now();
             $this->assignment->condition_at_checkin = $this->condition;
             $this->assignment->checkin_notes = $this->notes;
-            $this->assignment->returned_to_location_id = $this->location?->id;
+            $this->assignment->returned_to_office_id = $this->office?->id;
             $this->assignment->save();
 
-            if ($this->location !== null) {
-                $this->asset->current_location_id = $this->location->id;
+            if ($this->office !== null) {
+                $this->asset->current_office_id = $this->office->id;
             }
 
             if ($this->status !== null) {
@@ -125,7 +125,7 @@ class CheckinAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetCheckin,
+            action: UserActionEnum::AssetCheckedIn,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

@@ -61,7 +61,7 @@ class DestroyAssetStatus
         LogUserAction::dispatch(
             company: $this->status->company,
             user: $this->author,
-            action: UserActionEnum::AssetStatusDeletion,
+            action: UserActionEnum::AssetStatusDeleted,
             parameters: ['name' => $this->status->name],
         )->onQueue('low');
     }

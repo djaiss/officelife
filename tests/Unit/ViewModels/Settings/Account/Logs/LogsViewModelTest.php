@@ -27,13 +27,13 @@ class LogsViewModelTest extends TestCase
         Log::factory()->create([
             'company_id' => $user->company_id,
             'user_id' => $user->id,
-            'action' => UserActionEnum::UserLogin->value,
+            'action' => UserActionEnum::UserSignedIn->value,
             'created_at' => now()->subDays(3),
         ]);
         Log::factory()->create([
             'company_id' => $user->company_id,
             'user_id' => $user->id,
-            'action' => UserActionEnum::UserPasswordUpdate->value,
+            'action' => UserActionEnum::UserPasswordUpdated->value,
             'created_at' => now()->subDay(),
         ]);
 
@@ -41,8 +41,8 @@ class LogsViewModelTest extends TestCase
         $logs = $viewModel->logs();
 
         $this->assertCount(2, $logs);
-        $this->assertEquals(UserActionEnum::UserPasswordUpdate->value, $logs[0]->action);
-        $this->assertEquals(UserActionEnum::UserLogin->value, $logs[1]->action);
+        $this->assertEquals(UserActionEnum::UserPasswordUpdated->value, $logs[0]->action);
+        $this->assertEquals(UserActionEnum::UserSignedIn->value, $logs[1]->action);
     }
 
     #[Test]

@@ -41,7 +41,7 @@ class DestroyUserTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserDeletion
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::UserDeleted
                 && $job->company->id === $company->id
                 && $job->user->id === $owner->id
                 && $job->parameters === ['email' => $member->email],

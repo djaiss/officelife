@@ -68,7 +68,7 @@ class UpdateEmergencyContact
         LogUserAction::dispatch(
             company: $this->author->company,
             user: $this->author,
-            action: UserActionEnum::EmergencyContactUpdate,
+            action: UserActionEnum::EmergencyContactUpdated,
         )->onQueue('low');
     }
 }

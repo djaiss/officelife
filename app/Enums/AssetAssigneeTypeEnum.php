@@ -6,7 +6,7 @@ namespace App\Enums;
 
 use App\Models\Asset;
 use App\Models\Employee;
-use App\Models\Location;
+use App\Models\Office;
 
 /**
  * What kind of thing can be holding a piece of equipment. A display assigned to
@@ -16,7 +16,7 @@ use App\Models\Location;
 enum AssetAssigneeTypeEnum: string
 {
     case Employee = 'employee';
-    case Location = 'location';
+    case Office = 'office';
     case Asset = 'asset';
 
     /**
@@ -28,7 +28,7 @@ enum AssetAssigneeTypeEnum: string
     {
         return match ($this) {
             self::Employee => Employee::class,
-            self::Location => Location::class,
+            self::Office => Office::class,
             self::Asset => Asset::class,
         };
     }
@@ -40,7 +40,7 @@ enum AssetAssigneeTypeEnum: string
     {
         return match ($assignee::class) {
             Employee::class => self::Employee,
-            Location::class => self::Location,
+            Office::class => self::Office,
             Asset::class => self::Asset,
             default => null,
         };

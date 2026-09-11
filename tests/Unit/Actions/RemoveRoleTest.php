@@ -48,7 +48,7 @@ class RemoveRoleTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleRemoval
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::RoleRemoved
                 && $job->company->id === $company->id
                 && $job->user->id === $author->id
                 && $job->parameters === [

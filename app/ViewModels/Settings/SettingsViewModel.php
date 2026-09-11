@@ -38,7 +38,7 @@ class SettingsViewModel
     }
 
     /**
-     * The record the avatar draws from, so the card can show the photo when
+     * The record the avatar draws from, so the card can show it when
      * there is one. An account that belongs to nobody who works here has none.
      */
     public function employee(): ?Employee
@@ -113,12 +113,12 @@ class SettingsViewModel
 
         if ($this->canManageCompany()) {
             $rows[] = [
-                'title' => __('Locations'),
+                'title' => __('Offices'),
                 'description' => __('The offices your company works from, and who sits where.'),
-                'value' => trans_choice(':count office|:count offices', $this->user->company->locations()->count()),
-                'url' => route('settings.locations.index'),
+                'value' => trans_choice(':count office|:count offices', $this->user->company->offices()->count()),
+                'url' => route('settings.offices.index'),
                 'hue' => 80,
-                'icon' => 'locations',
+                'icon' => 'offices',
             ];
         }
 

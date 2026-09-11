@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('asset_category_id')->comment('which family it belongs to');
             $table->string('name')->comment('what the model is called, such as Apple MacBook Pro 14-inch M4 Pro');
             $table->string('model_number')->nullable()->comment('reference the manufacturer gives the model');
-            $table->string('image_path')->nullable()->comment('path of a picture of the model');
+            $table->string('image_path')->nullable()->comment('path of an image of the model');
             $table->unsignedInteger('useful_life_months')->nullable()->comment('how long one of these is expected to last');
             $table->boolean('is_requestable')->default(false)->comment('whether an employee may ask for one');
             $table->text('notes')->nullable()->comment('anything worth writing down about the model');

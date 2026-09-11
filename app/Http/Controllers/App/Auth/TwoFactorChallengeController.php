@@ -18,7 +18,7 @@ class TwoFactorChallengeController extends Controller
     public function new(Request $request): View|RedirectResponse
     {
         if (! $request->session()->has('twoFactor.user.id')) {
-            return redirect()->route('auth.login.new');
+            return redirect()->route('auth.signIn.new');
         }
 
         return view('app.auth.two-factor-challenge', [
@@ -35,7 +35,7 @@ class TwoFactorChallengeController extends Controller
         $user = User::query()->find($request->session()->get('twoFactor.user.id'));
 
         if ($user === null) {
-            return redirect()->route('auth.login.new')
+            return redirect()->route('auth.signIn.new')
                 ->withErrors(['code' => __('That took too long. Please sign in again.')]);
         }
 

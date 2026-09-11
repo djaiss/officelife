@@ -24,7 +24,7 @@
     <x-section :title="__('Avatar')" icon="profile" :hue="30">
       <x-slot:help>
         <x-help :title="__('Avatar')">
-          {{ __('The picture is stored on our own servers, never on somebody else\'s, and is only ever served to people allowed to see you. Removing it puts your initials back everywhere.') }}
+          {{ __('The avatar is stored on our own servers, never on somebody else\'s, and is only ever served to people allowed to see you. Removing it puts your initials back everywhere.') }}
         </x-help>
       </x-slot:help>
 
@@ -40,7 +40,7 @@
 
           {{--
             These two forms reload the page rather than updating it in place, the
-            way the forms below do. A picture is not a field: it is read, turned
+            way the forms below do. An avatar is not a field: it is read, turned
             upright, cropped and written twice before there is anything to show,
             and the screen is better off asking the server for the whole thing
             once that is done.
@@ -52,20 +52,20 @@
           --}}
           <div
             class="space-y-3 max-sm:w-full"
-            x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')), removingPhoto: false }"
+            x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')), removingAvatar: false }"
           >
             <x-form
               method="post"
-              :action="route('settings.photo.update')"
+              :action="route('settings.avatar.update')"
               :upload="true"
-              id="photo-form"
+              id="avatar-form"
               class="space-y-3"
               x-on:submit="if (tooBig) $event.preventDefault()"
             >
               <x-file-input
-                id="photo"
+                id="avatar"
                 accept="image/jpeg,image/png,image/webp"
-                :error="$errors->get('photo')"
+                :error="$errors->get('avatar')"
                 required
                 x-on:change="tooBig = window.oversizedFiles($event.target.files, 5120).length > 0"
               />
@@ -75,24 +75,24 @@
               <x-button>{{ __('Upload') }}</x-button>
             </x-form>
 
-            @if ($viewModel->hasPhoto())
+            @if ($viewModel->hasAvatar())
               <button
                 type="button"
-                x-on:click="removingPhoto = true"
+                x-on:click="removingAvatar = true"
                 class="cursor-pointer text-sm text-muted hover:text-ink"
-              >{{ __('Remove the photo') }}</button>
+              >{{ __('Remove the avatar') }}</button>
 
               <x-confirm-dialog
-                show="removingPhoto"
-                close="removingPhoto = false"
-                labelledby="remove-photo-title"
-                :title="__('Remove your photo?')"
+                show="removingAvatar"
+                close="removingAvatar = false"
+                labelledby="remove-avatar-title"
+                :title="__('Remove your avatar?')"
                 :cancel="__('Keep it')"
               >
-                {{ __('Your initials go back everywhere your picture is shown. Uploading another one puts a picture back.') }}
+                {{ __('Your initials go back everywhere your avatar is shown. Uploading another one puts an avatar back.') }}
 
                 <x-slot:actions>
-                  <x-form method="delete" :action="route('settings.photo.destroy')" id="photo-delete-form">
+                  <x-form method="delete" :action="route('settings.avatar.destroy')" id="avatar-delete-form">
                     <x-button.danger>{{ __('Remove it') }}</x-button.danger>
                   </x-form>
                 </x-slot:actions>

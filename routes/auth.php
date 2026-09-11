@@ -5,11 +5,11 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Auth\EmailVerificationController;
 use App\Http\Controllers\App\Auth\LocaleController;
 use App\Http\Controllers\App\Auth\LocalSignInController;
-use App\Http\Controllers\App\Auth\LoginController;
 use App\Http\Controllers\App\Auth\MagicLinkController;
 use App\Http\Controllers\App\Auth\NewPasswordController;
 use App\Http\Controllers\App\Auth\PasswordResetLinkController;
 use App\Http\Controllers\App\Auth\RegistrationController;
+use App\Http\Controllers\App\Auth\SignInController;
 use App\Http\Controllers\App\Auth\TwoFactorChallengeController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,8 +21,8 @@ Route::middleware(['guest', 'set.locale'])->group(function (): void {
 
 // Signing in with an email address and a password.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
-    Route::get('login', [LoginController::class, 'new'])->name('auth.login.new');
-    Route::post('login', [LoginController::class, 'create'])->name('auth.login.create');
+    Route::get('sign-in', [SignInController::class, 'new'])->name('auth.signIn.new');
+    Route::post('sign-in', [SignInController::class, 'create'])->name('auth.signIn.create');
 });
 
 // Signing in as the seeded account, on a machine somebody develops on.
@@ -84,9 +84,9 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
 });
 
 // Signing out.
-Route::post('logout', [LoginController::class, 'destroy'])
+Route::post('sign-out', [SignInController::class, 'destroy'])
     ->middleware('auth')
-    ->name('auth.login.destroy');
+    ->name('auth.signIn.destroy');
 
 // Choosing the language of the interface, signed in or not.
 Route::put('locale', [LocaleController::class, 'update'])

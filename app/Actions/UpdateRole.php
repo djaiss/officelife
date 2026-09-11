@@ -109,7 +109,7 @@ class UpdateRole
         LogUserAction::dispatch(
             company: $this->role->company,
             user: $this->author,
-            action: UserActionEnum::RoleUpdate,
+            action: UserActionEnum::RoleUpdated,
             parameters: [
                 'name' => $this->role->name,
                 'permissions' => implode(', ', array_map(

@@ -62,7 +62,7 @@ class ArchiveAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetArchive,
+            action: UserActionEnum::AssetArchived,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

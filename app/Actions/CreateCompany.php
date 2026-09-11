@@ -153,7 +153,7 @@ class CreateCompany
         LogUserAction::dispatch(
             company: $this->company,
             user: $this->owner,
-            action: UserActionEnum::CompanyCreation,
+            action: UserActionEnum::CompanyCreated,
             parameters: ['name' => $this->company->name],
         )->onQueue('low');
     }

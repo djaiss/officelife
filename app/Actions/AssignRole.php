@@ -67,7 +67,7 @@ class AssignRole
         LogUserAction::dispatch(
             company: $this->role->company,
             user: $this->author,
-            action: UserActionEnum::RoleAssignment,
+            action: UserActionEnum::RoleAssigned,
             parameters: [
                 'name' => $this->role->name,
                 'email' => $this->user->email,

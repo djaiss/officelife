@@ -55,7 +55,7 @@ class TwoFactorControllerTest extends TestCase
     {
         $response = $this->get(route('settings.twoFactor.new'));
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 
     #[Test]

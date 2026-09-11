@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('asset_tag')->comment('identifier the company writes on the label and controls, such as OL-LAPTOP-0042');
             $table->string('serial_number')->nullable()->comment('identifier the manufacturer stamped on it, which nobody here controls and which is not unique');
             $table->string('name')->nullable()->comment('what people call this particular one');
-            $table->unsignedBigInteger('default_location_id')->nullable()->comment('office it belongs to when nobody has it');
-            $table->unsignedBigInteger('current_location_id')->nullable()->comment('office it is in now');
+            $table->unsignedBigInteger('default_office_id')->nullable()->comment('office it belongs to when nobody has it');
+            $table->unsignedBigInteger('current_office_id')->nullable()->comment('office it is in now');
             $table->date('purchase_date')->nullable()->comment('day it was bought');
             $table->unsignedBigInteger('purchase_cost')->nullable()->comment('what it cost, in the minor units of the currency of the company');
             $table->string('order_number')->nullable()->comment('reference of the order it came in on');
@@ -34,8 +34,8 @@ return new class extends Migration
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
             $table->foreign('asset_model_id')->references('id')->on('asset_models')->restrictOnDelete();
             $table->foreign('status_id')->references('id')->on('asset_statuses')->restrictOnDelete();
-            $table->foreign('default_location_id')->references('id')->on('locations')->nullOnDelete();
-            $table->foreign('current_location_id')->references('id')->on('locations')->nullOnDelete();
+            $table->foreign('default_office_id')->references('id')->on('offices')->nullOnDelete();
+            $table->foreign('current_office_id')->references('id')->on('offices')->nullOnDelete();
             $table->unique(['company_id', 'asset_tag']);
             $table->index(['company_id', 'status_id']);
         });

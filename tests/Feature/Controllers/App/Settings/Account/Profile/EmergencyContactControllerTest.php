@@ -101,7 +101,7 @@ class EmergencyContactControllerTest extends TestCase
             'name' => 'Mose Schrute',
         ]);
 
-        $response->assertRedirect(route('auth.login.new'));
+        $response->assertRedirect(route('auth.signIn.new'));
     }
 
     #[Test]

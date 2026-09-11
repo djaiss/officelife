@@ -83,7 +83,7 @@ class LogTest extends TestCase
     public function it_describes_the_action_with_its_parameters(): void
     {
         $log = Log::factory()->create([
-            'action' => UserActionEnum::CompanyUpdate->value,
+            'action' => UserActionEnum::CompanyUpdated->value,
             'parameters' => ['name' => 'Dunder Mifflin'],
         ]);
 
@@ -94,7 +94,7 @@ class LogTest extends TestCase
     public function it_describes_an_action_that_carries_no_parameter(): void
     {
         $log = Log::factory()->create([
-            'action' => UserActionEnum::UserLogin->value,
+            'action' => UserActionEnum::UserSignedIn->value,
             'parameters' => null,
         ]);
 

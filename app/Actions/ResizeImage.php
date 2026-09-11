@@ -15,7 +15,7 @@ use RuntimeException;
  * when the image is shown in a circle, and the parts that fall outside are
  * cropped away.
  *
- * Anything that needs a picture at a given size goes through here, which is why
+ * Anything that needs an image at a given size goes through here, which is why
  * the action knows nothing about employees or avatars.
  */
 class ResizeImage
@@ -50,7 +50,7 @@ class ResizeImage
     }
 
     /**
-     * orient() first, because a photo taken on a phone carries its rotation in
+     * orient() first, because an image taken on a phone carries its rotation in
      * its EXIF data rather than in its pixels, and cropping it before turning
      * it upright would cut the wrong part away.
      */

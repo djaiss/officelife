@@ -79,7 +79,7 @@ class UpdateAssetTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetUpdate,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetUpdated,
         );
     }
 

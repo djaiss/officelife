@@ -69,7 +69,7 @@ class AssetStatusActionsTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetStatusCreation,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetStatusCreated,
         );
     }
 

@@ -50,7 +50,7 @@ class RestoreAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetRestoration,
+            action: UserActionEnum::AssetRestored,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

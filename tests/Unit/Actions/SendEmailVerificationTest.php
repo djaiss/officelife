@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions;
 
 use App\Actions\SendEmailVerification;
-use App\Enums\EmailType;
+use App\Enums\EmailTypeEnum;
 use App\Jobs\SendEmail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,7 +31,7 @@ class SendEmailVerificationTest extends TestCase
         Queue::assertPushedOn(
             queue: 'high',
             job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => $job->emailType === EmailType::EmailVerification
+            callback: fn (SendEmail $job): bool => $job->emailType === EmailTypeEnum::EmailVerification
                 && $job->user->id === $user->id
                 && $job->company->id === $user->company_id,
         );

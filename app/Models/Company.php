@@ -124,11 +124,11 @@ class Company extends Model
     /**
      * Get the offices of the company.
      *
-     * @return HasMany<Location, $this>
+     * @return HasMany<Office, $this>
      */
-    public function locations(): HasMany
+    public function offices(): HasMany
     {
-        return $this->hasMany(Location::class);
+        return $this->hasMany(Office::class);
     }
 
     /**

@@ -12,7 +12,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\AssetStatus;
-use App\Models\Location;
+use App\Models\Office;
 use App\Models\User;
 use Carbon\Carbon;
 use InvalidArgumentException;
@@ -36,7 +36,7 @@ class UpdateAsset
         private string $assetTag,
         private ?string $serialNumber = null,
         private ?string $name = null,
-        private readonly ?Location $defaultLocation = null,
+        private readonly ?Office $defaultOffice = null,
         private readonly ?Carbon $purchaseDate = null,
         private readonly ?int $purchaseCost = null,
         private ?string $orderNumber = null,
@@ -86,7 +86,7 @@ class UpdateAsset
             throw new InvalidArgumentException('The model belongs to another company');
         }
 
-        if ($this->defaultLocation !== null && $this->defaultLocation->company_id !== $this->asset->company_id) {
+        if ($this->defaultOffice !== null && $this->defaultOffice->company_id !== $this->asset->company_id) {
             throw new InvalidArgumentException('The office belongs to another company');
         }
 
@@ -114,7 +114,7 @@ class UpdateAsset
         $this->asset->asset_tag = $this->assetTag;
         $this->asset->serial_number = $this->serialNumber;
         $this->asset->name = $this->name;
-        $this->asset->default_location_id = $this->defaultLocation?->id;
+        $this->asset->default_office_id = $this->defaultOffice?->id;
         $this->asset->purchase_date = $this->purchaseDate;
         $this->asset->purchase_cost = $this->purchaseCost;
         $this->asset->order_number = $this->orderNumber;
@@ -146,7 +146,7 @@ class UpdateAsset
         LogUserAction::dispatch(
             company: $this->asset->company,
             user: $this->author,
-            action: UserActionEnum::AssetUpdate,
+            action: UserActionEnum::AssetUpdated,
             parameters: ['tag' => $this->asset->asset_tag],
         )->onQueue('low');
     }

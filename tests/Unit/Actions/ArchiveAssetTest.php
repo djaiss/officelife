@@ -55,7 +55,7 @@ class ArchiveAssetTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetArchive,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetArchived,
         );
     }
 
@@ -101,7 +101,7 @@ class ArchiveAssetTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetRestoration,
+            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AssetRestored,
         );
     }
 

@@ -22,12 +22,12 @@ class ResizeImageTest extends TestCase
             file: UploadedFile::fake()->image('dwight.jpg', 400, 400),
             width: 96,
             height: 96,
-            path: 'photos/1',
+            path: 'avatars/1',
             name: 'beets.webp',
             disk: 'local',
         )->execute();
 
-        $this->assertEquals('photos/1/beets.webp', $path);
+        $this->assertEquals('avatars/1/beets.webp', $path);
 
         Storage::disk('local')->assertExists($path);
 
@@ -47,7 +47,7 @@ class ResizeImageTest extends TestCase
             file: UploadedFile::fake()->image('michael.jpg', 800, 200),
             width: 96,
             height: 96,
-            path: 'photos/1',
+            path: 'avatars/1',
             name: 'boss.webp',
             disk: 'local',
         )->execute();
@@ -67,7 +67,7 @@ class ResizeImageTest extends TestCase
             file: UploadedFile::fake()->image('pam.jpg'),
             width: 0,
             height: 96,
-            path: 'photos/1',
+            path: 'avatars/1',
             name: 'art.webp',
             disk: 'local',
         )->execute();
@@ -82,7 +82,7 @@ class ResizeImageTest extends TestCase
             file: UploadedFile::fake()->image('jim.jpg'),
             width: 96,
             height: -10,
-            path: 'photos/1',
+            path: 'avatars/1',
             name: 'prank.webp',
             disk: 'local',
         )->execute();
