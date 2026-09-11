@@ -80,3 +80,4 @@ A chronological list of every feature and improvement shipped during development
 * Assets: Read the history of equipment from both ends, from the item and from whoever held it.
 * Assets: Swept the fleet once a day and flagged equipment that is late coming back, once rather than every day.
 * App-wide: Asked before every destructive action in one way, a dialog in the middle of the window, replacing the two other ways the question used to be put.
+* Settings/administration/roles: Made the permission counters follow the boxes as they are ticked, before anything is saved: the bar on each section, the count granted, and the count on the tab.

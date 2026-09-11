@@ -217,6 +217,29 @@ class RoleControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_counts_the_permissions_just_submitted_rather_than_the_ones_saved(): void
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id]);
+        $this->grant($user, PermissionEnum::RoleManage);
+
+        $role = Role::factory()->create(['company_id' => $company->id]);
+
+        $response = $this->actingAs($user)->withSession([
+            '_old_input' => [
+                'permissions' => [
+                    PermissionEnum::EmployeeView->value => ['granted' => '1'],
+                    PermissionEnum::EmployeeUpdate->value => ['granted' => '1'],
+                ],
+            ],
+        ])->get(route('settings.roles.show', $role->id));
+
+        $response->assertOk();
+        $response->assertSee('2 of '.count(PermissionEnum::cases()).' granted');
+        $response->assertSee('Permissions · 2');
+    }
+
+    #[Test]
     public function it_refuses_a_scope_that_is_not_one_of_ours(): void
     {
         $company = Company::factory()->create();

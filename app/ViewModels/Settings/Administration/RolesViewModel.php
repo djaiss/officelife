@@ -94,7 +94,7 @@ class RolesViewModel
         ];
     }
 
-    /** @return array<int, array{label: string, url: string, current: bool}> */
+    /** @return array<int, array{key: string, label: string, url: string, current: bool}> */
     public function tabs(): array
     {
         if ($this->role === null) {
@@ -103,11 +103,13 @@ class RolesViewModel
 
         return [
             [
-                'label' => trans_choice('[0,*]Permissions · :count', count($this->grants())),
+                'key' => 'permissions',
+                'label' => $this->permissionTabLabels()[$this->grantedCount()],
                 'url' => route('settings.roles.show', $this->role->id),
                 'current' => ! $this->onPeopleTab,
             ],
             [
+                'key' => 'people',
                 'label' => trans_choice('[0,*]People · :count', $this->role->users()->count()),
                 'url' => route('settings.roles.show', [$this->role->id, 'people']),
                 'current' => $this->onPeopleTab,
@@ -120,7 +122,7 @@ class RolesViewModel
         return $this->onPeopleTab;
     }
 
-    /** @return array<int, array{title: string, note: string, count: string, width: string, tone: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}>}> */
+    /** @return array<int, array{title: string, note: string, count: string, counts: array<int, string>, width: string, tone: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}>}> */
     public function groups(): array
     {
         $groups = [];
@@ -136,11 +138,13 @@ class RolesViewModel
 
             $granted = count(array_filter($permissions, fn (array $permission): bool => $permission['granted']));
             $ratio = $granted / count($permissions);
+            $counts = $this->countLabels(count($permissions));
 
             $groups[] = [
                 'title' => __($group->label()),
                 'note' => __($group->note()),
-                'count' => trans_choice('[0,*]:count of :total granted', $granted, ['total' => count($permissions)]),
+                'count' => $counts[$granted],
+                'counts' => $counts,
                 'width' => $granted === 0 ? '9px' : round($ratio * 100).'%',
                 'tone' => match (true) {
                     $granted === 0 => 'none',
@@ -154,11 +158,39 @@ class RolesViewModel
         return $groups;
     }
 
+    /** @return array<string, bool> */
+    public function grantedPermissions(): array
+    {
+        $granted = [];
+
+        foreach (PermissionEnum::cases() as $permission) {
+            $granted[$permission->value] = $this->permission($permission)['granted'];
+        }
+
+        return $granted;
+    }
+
     public function grantCountLabel(): string
     {
-        return trans_choice('[0,*]:count of :total granted', count($this->grants()), [
-            'total' => count(PermissionEnum::cases()),
-        ]);
+        return $this->grantCountLabels()[$this->grantedCount()];
+    }
+
+    /** @return array<int, string> */
+    public function grantCountLabels(): array
+    {
+        return $this->countLabels(count(PermissionEnum::cases()));
+    }
+
+    /** @return array<int, string> */
+    public function permissionTabLabels(): array
+    {
+        $labels = [];
+
+        foreach (range(0, count(PermissionEnum::cases())) as $count) {
+            $labels[$count] = trans_choice('[0,*]Permissions · :count', $count);
+        }
+
+        return $labels;
     }
 
     public function warnsAboutAdministration(): bool
@@ -227,6 +259,23 @@ class RolesViewModel
         }
 
         return null;
+    }
+
+    private function grantedCount(): int
+    {
+        return count(array_filter($this->grantedPermissions()));
+    }
+
+    /** @return array<int, string> */
+    private function countLabels(int $total): array
+    {
+        $labels = [];
+
+        foreach (range(0, $total) as $count) {
+            $labels[$count] = trans_choice('[0,*]:count of :total granted', $count, ['total' => $total]);
+        }
+
+        return $labels;
     }
 
     /** @return array<int, Carbon> */

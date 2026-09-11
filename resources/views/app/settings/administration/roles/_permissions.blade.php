@@ -10,9 +10,11 @@
      filter can hide a whole section once nothing under it matches. */
   $search = [];
   $sections = [];
+  $counts = [];
 
   foreach ($groups as $group) {
     $sections[$group['title']] = array_column($group['permissions'], 'value');
+    $counts[$group['title']] = $group['counts'];
 
     foreach ($group['permissions'] as $permission) {
       $search[$permission['value']] = mb_strtolower($permission['value'].' '.$permission['label']);
@@ -32,18 +34,28 @@
     collapsed: {},
     search: @js($search),
     sections: @js($sections),
+    counts: @js($counts),
     term() { return this.query.trim().toLowerCase() },
     matches(value) { return this.term() === '' || this.search[value].includes(this.term()) },
     sectionMatches(title) { return this.sections[title].some((value) => this.matches(value)) },
     open(title) { return this.term() !== '' || ! this.collapsed[title] },
     nothingMatches() { return ! Object.keys(this.search).some((value) => this.matches(value)) },
+    grantedIn(title) { return this.sections[title].filter((value) => this.granted[value]).length },
+    barWidth(title) { return this.grantedIn(title) === 0 ? '9px' : Math.round(this.grantedIn(title) / this.sections[title].length * 100) + '%' },
+    barTone(title) {
+      if (this.grantedIn(title) === 0) {
+        return 'none'
+      }
+
+      return this.grantedIn(title) < this.sections[title].length ? 'partial' : 'full'
+    },
   }"
 >
   <!-- title and the count granted -->
   <div class="mb-3 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
     <h2 class="text-[22px] leading-tight font-bold tracking-tight text-ink">{{ __('Allowed to') }}</h2>
 
-    <p class="text-[15px] text-muted">{{ $viewModel->grantCountLabel() }}</p>
+    <p class="text-[15px] text-muted" x-text="grantCounts[grantedCount()]">{{ $viewModel->grantCountLabel() }}</p>
   </div>
 
   <label for="permission-filter" class="sr-only">{{ __('Filter permissions') }}</label>
@@ -81,14 +93,30 @@
 
           <span class="hidden truncate text-[13px] text-muted-soft lg:block">{{ $group['note'] }}</span>
 
-          <span class="ml-auto block h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-sunken" role="img" aria-label="{{ $group['count'] }}" title="{{ $group['count'] }}">
-            <span class="block h-full rounded-full {{ $bars[$group['tone']] }}" style="width: {{ $group['width'] }}"></span>
+          <span
+            class="ml-auto block h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-sunken"
+            role="img"
+            aria-label="{{ $group['count'] }}"
+            title="{{ $group['count'] }}"
+            :aria-label="counts[@js($group['title'])][grantedIn(@js($group['title']))]"
+            :title="counts[@js($group['title'])][grantedIn(@js($group['title']))]"
+          >
+            <span
+              class="block h-full rounded-full {{ $bars[$group['tone']] }}"
+              style="width: {{ $group['width'] }}"
+              :style="{ width: barWidth(@js($group['title'])) }"
+              :class="{
+                'bg-error': barTone(@js($group['title'])) === 'none',
+                'bg-warning': barTone(@js($group['title'])) === 'partial',
+                'bg-success': barTone(@js($group['title'])) === 'full',
+              }"
+            ></span>
           </span>
         </button>
 
         @foreach ($group['permissions'] as $permission)
           <div
-            x-data="{ granted: @js($permission['granted']), scope: @js($permission['scope']), scopes: @js($permission['scopes']) }"
+            x-data="{ scope: @js($permission['scope']), scopes: @js($permission['scopes']) }"
             x-show="open(@js($group['title'])) && matches(@js($permission['value']))"
             class="grid gap-x-3.5 gap-y-1.5 rounded-xl py-2.5 pr-3 pl-8.5 transition-colors hover:bg-hover sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
           >
@@ -97,7 +125,7 @@
                 type="checkbox"
                 name="permissions[{{ $permission['value'] }}][granted]"
                 value="1"
-                x-model="granted"
+                x-model="granted[@js($permission['value'])]"
                 @checked($permission['granted'])
                 @disabled(! $role['isEditable'])
                 class="peer sr-only"
@@ -119,7 +147,7 @@
               <button
                 type="button"
                 x-cloak
-                x-show="granted"
+                x-show="granted[@js($permission['value'])]"
                 x-on:click="scope = scope === 'self' ? 'company' : 'self'"
                 x-text="scopes[scope]"
                 @disabled(! $role['isEditable'])
@@ -129,7 +157,7 @@
 
               <input type="hidden" name="permissions[{{ $permission['value'] }}][scope]" :value="scope" />
             @else
-              <p x-cloak x-show="granted" class="text-sm font-semibold whitespace-nowrap text-muted-soft max-sm:pl-9">{{ __('Everybody in the company, always') }}</p>
+              <p x-cloak x-show="granted[@js($permission['value'])]" class="text-sm font-semibold whitespace-nowrap text-muted-soft max-sm:pl-9">{{ __('Everybody in the company, always') }}</p>
             @endif
           </div>
         @endforeach
