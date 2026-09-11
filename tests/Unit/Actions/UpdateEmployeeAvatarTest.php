@@ -52,8 +52,6 @@ class UpdateEmployeeAvatarTest extends TestCase
         $this->assertInstanceOf(Employee::class, $result);
         $this->assertStringStartsWith('avatars/'.$employee->id.'/', (string) $result->avatar_path);
 
-        // The name somebody gave the file never reaches the disk, and the base
-        // path carries no extension of its own.
         $this->assertStringNotContainsString('dwight', (string) $result->avatar_path);
         $this->assertStringNotContainsString('.webp', (string) $result->avatar_path);
 

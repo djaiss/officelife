@@ -1,8 +1,5 @@
-{{--
-  The mark of the application: the first letter of its name in a rounded square.
-
-  @var int $size
---}}
+{{-- The mark of the application: the first letter of its name in a rounded square. --}}
+{{-- @var int $size --}}
 @props([
   'size' => 30,
 ])

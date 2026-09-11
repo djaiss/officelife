@@ -12,9 +12,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Delete a role. A role somebody still holds cannot be deleted: taking a set of
- * permissions away from people has to be something somebody meant to do, not
- * something that happens on the way to tidying up a list.
+ * Delete a role. A role somebody still holds cannot be deleted: taking a set
+ * of permissions away from people has to be something somebody meant to do,
+ * not something that happens on the way to tidying up a list.
  */
 class DestroyRole
 {
@@ -52,11 +52,6 @@ class DestroyRole
         }
     }
 
-    /**
-     * The name is kept before the row goes, so the log can still say which role
-     * was deleted. The permissions of the role go with it, through the foreign
-     * key.
-     */
     private function destroy(): void
     {
         $this->name = $this->role->name;

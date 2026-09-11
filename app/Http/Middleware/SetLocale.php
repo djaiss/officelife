@@ -8,17 +8,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Put the interface in the right language. A choice made in this session wins,
- * because it is the most recent thing the visitor asked for, then the language
- * on their account, then the one their company runs in, then the fallback of
- * the application.
- */
+// The session wins over the account, which wins over the browser.
 class SetLocale
 {
-    /**
-     * @param  Closure(Request): (Response)  $next
-     */
+    /** @param  Closure(Request): (Response)  $next */
     public function handle(Request $request, Closure $next): Response
     {
         $locale = $this->preferred($request);

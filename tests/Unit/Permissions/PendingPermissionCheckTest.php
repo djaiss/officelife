@@ -244,8 +244,6 @@ class PendingPermissionCheckTest extends TestCase
             $user->permission(PermissionEnum::EmployeeView)->forEmployee($employee)->allowed();
         }
 
-        // The company and the grants are read on the first check and kept, so
-        // five checks cost no more than one.
         $this->assertEquals(2, $queries);
     }
 

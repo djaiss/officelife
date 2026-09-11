@@ -47,11 +47,6 @@ class CreateEmployee
         return $this->employee;
     }
 
-    /**
-     * An employee record being created is not somebody arriving. The events for
-     * arriving and leaving are published from the lifecycle status, once that
-     * exists, and this one only says that a record was written.
-     */
     private function publish(): void
     {
         new PublishOccurrence(

@@ -173,8 +173,6 @@ class AttemptSignInTest extends TestCase
             }
         }
 
-        // The sixth is refused before the password is even looked at, so even
-        // the right one does not get through.
         try {
             new AttemptSignIn(
                 email: 'michael.scott@dundermifflin.com',

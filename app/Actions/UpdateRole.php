@@ -20,14 +20,10 @@ use InvalidArgumentException;
  * Rename a role and say afresh what it is allowed to do. What is passed in
  * replaces what the role had, so a permission left out is a permission taken
  * away.
- *
- * The slug is left alone, since it is what the role is known by elsewhere.
  */
 class UpdateRole
 {
-    /**
-     * @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants
-     */
+    /** @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants */
     public function __construct(
         private readonly User $author,
         private readonly Role $role,

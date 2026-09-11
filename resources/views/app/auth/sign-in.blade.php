@@ -1,8 +1,5 @@
-{{--
-  Where somebody who already has an account signs back in.
-
-  @var \App\ViewModels\Auth\SignInViewModel $viewModel
---}}
+{{-- Where somebody who already has an account signs back in. --}}
+{{-- @var \App\ViewModels\Auth\SignInViewModel $viewModel --}}
 <x-guest-layout :title="__('Welcome back')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
@@ -58,7 +55,6 @@
           </x-form>
         </x-box>
 
-        {{-- The shortcut that signs the seeded account in, only ever on a machine somebody develops on --}}
         @if($viewModel->localSignInEmail())
           <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
             <x-form method="post" :action="route('auth.localSignIn.create')">

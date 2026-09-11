@@ -1,9 +1,5 @@
-{{-- One area of a screen: a coloured tile saying what kind of thing it is, the title, and the card holding it. --}}
+{{-- One area of a screen: a coloured tile, a title, and the card holding it. --}}
 {{--
-  A card whose whole content is a list takes padding="p-0", and its rows then
-  reach the edges of the card rather than sitting in a second box inside it.
-  Such a card has to clip its corners, since the rows are what draws them.
-
   @var string $title
   @var string $icon
   @var int $hue

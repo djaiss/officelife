@@ -12,8 +12,8 @@ use App\Models\User;
 
 /**
  * Bring a piece of equipment back into the fleet. It returns in whatever state
- * it was archived in, which is left for somebody to correct rather than guessed
- * at here.
+ * it was archived in, which is left for somebody to correct rather than
+ * guessed at here.
  */
 class RestoreAsset
 {

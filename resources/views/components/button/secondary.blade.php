@@ -1,12 +1,5 @@
+{{-- The neutral button, for the action that walks away from the primary one. --}}
 {{--
-  The neutral button, for the action that walks away from the primary one: cancel,
-  back, or the way out of a screen somebody opened by mistake.
-
-  It carries a hairline and a surface one step off the panel it sits on, so it
-  reads as a button without competing with the primary beside it. Its padding is
-  the primary's, and the hairline is what the primary spends on its own
-  transparent border, so the two are the same height side by side.
-
   @var string|null $href
   @var string $type
 --}}

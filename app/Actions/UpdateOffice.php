@@ -60,10 +60,6 @@ class UpdateOffice
         $this->country = $country === null ? null : mb_strtoupper($country);
     }
 
-    /**
-     * The office keeps its own name, so renaming it to what it is already
-     * called is not a clash.
-     */
     private function validate(): void
     {
         if ($this->name === '') {
@@ -85,11 +81,6 @@ class UpdateOffice
         }
     }
 
-    /**
-     * A company keeps one head office, so promoting this one demotes whichever
-     * office held it before. Asking for it not to be the head office is not a
-     * way of leaving the company without one: the flag only ever moves.
-     */
     private function update(): void
     {
         DB::transaction(function (): void {

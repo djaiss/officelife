@@ -13,24 +13,21 @@ use App\Http\Controllers\App\Auth\SignInController;
 use App\Http\Controllers\App\Auth\TwoFactorChallengeController;
 use Illuminate\Support\Facades\Route;
 
-// Creating an account.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('register', [RegistrationController::class, 'new'])->name('auth.register.new');
     Route::post('register', [RegistrationController::class, 'create'])->name('auth.register.create');
 });
 
-// Signing in with an email address and a password.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('sign-in', [SignInController::class, 'new'])->name('auth.signIn.new');
     Route::post('sign-in', [SignInController::class, 'create'])->name('auth.signIn.create');
 });
 
-// Signing in as the seeded account, on a machine somebody develops on.
+// Only ever registered on a machine somebody develops on.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::post('local-sign-in', [LocalSignInController::class, 'create'])->name('auth.localSignIn.create');
 });
 
-// Signing in without a password, through a link sent by email.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('send-magic-link', [MagicLinkController::class, 'new'])->name('auth.magicLink.new');
 
@@ -44,7 +41,6 @@ Route::middleware(['guest', 'set.locale'])->group(function (): void {
         ->name('auth.magicLink.show');
 });
 
-// Asking for a new password, and choosing it.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('forgot-password', [PasswordResetLinkController::class, 'new'])->name('auth.password.new');
 
@@ -59,7 +55,6 @@ Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::post('reset-password', [NewPasswordController::class, 'update'])->name('auth.password.update');
 });
 
-// Answering the two factor challenge, once a password was accepted.
 Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('two-factor-challenge', [TwoFactorChallengeController::class, 'new'])->name('auth.twoFactor.new');
 
@@ -68,7 +63,6 @@ Route::middleware(['guest', 'set.locale'])->group(function (): void {
         ->name('auth.twoFactor.create');
 });
 
-// Confirming the email address of a brand new account.
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('verify-email', [EmailVerificationController::class, 'show'])->name('auth.verification.notice');
 
@@ -83,12 +77,10 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
         ->name('auth.verification.send');
 });
 
-// Signing out.
 Route::post('sign-out', [SignInController::class, 'destroy'])
     ->middleware('auth')
     ->name('auth.signIn.destroy');
 
-// Choosing the language of the interface, signed in or not.
 Route::put('locale', [LocaleController::class, 'update'])
     ->middleware('set.locale')
     ->name('auth.locale.update');

@@ -13,14 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Closing an office and reopening it are the two things that can be done to its
- * archive, which is why they live here rather than beside the fields.
- *
- * Both go back to the list they were asked from rather than to the list of open
- * offices, so reopening an office from the archived list leaves you on the
- * archived list, one office shorter.
- */
 class OfficeArchiveController extends Controller
 {
     public function create(Request $request, int $office): RedirectResponse
@@ -47,9 +39,7 @@ class OfficeArchiveController extends Controller
             ->with('status_description', __('It comes back as an ordinary office. Promote it if it is the head office.'));
     }
 
-    /**
-     * @return HasMany<Office, Company>
-     */
+    /** @return HasMany<Office, Company> */
     private function offices(Request $request): HasMany
     {
         return $request->user()->company->offices();

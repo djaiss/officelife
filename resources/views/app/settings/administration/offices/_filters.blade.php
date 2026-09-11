@@ -1,15 +1,5 @@
-{{-- The bar above the list: which of the three lists to read, what to search for, and the order to read it in. --}}
-{{--
-  The three lists are links rather than buttons, because each one is a path of
-  its own that can be linked to and gone back to. The order is a link for the
-  same reason, and says which order the list is in rather than what clicking it
-  does, so the whole sentence is on it for anybody who cannot see the list.
-
-  The search is a form with one field, so pressing enter is what runs it, and it
-  keeps whichever list is being read by carrying it in the action.
-
-  @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel
---}}
+{{-- The bar above the list: which list to read, what to search for, and the order. --}}
+{{-- @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel --}}
 @php
   $sort = $viewModel->sortToggle();
 @endphp

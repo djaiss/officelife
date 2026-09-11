@@ -1,4 +1,4 @@
-{{-- The bar across the top of a screen: which company you are in, where else you can go, and who you are. --}}
+{{-- The bar across the top of a screen: where you are, where else to go, and who you are. --}}
 {{--
   @var string $companyName
   @var string $name
@@ -119,7 +119,6 @@
     </div>
   </nav>
 
-  {{-- The id is the target of the ajax form on the profile screen, so a saved name lands up here too. --}}
   <div id="top-bar-identity" class="flex items-center gap-2.25">
     <span class="text-sm text-body">{{ $name }}</span>
 

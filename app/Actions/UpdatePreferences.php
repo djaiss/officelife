@@ -11,10 +11,9 @@ use App\Models\User;
 
 /**
  * Change what somebody chose about the way the application reads to them: the
- * language of the interface, and the clock times are written on.
- *
- * These belong to the account rather than to the browser, so they follow the
- * person to every device they sign in from.
+ * language of the interface, and the clock times are written on. These belong
+ * to the account rather than to the browser, so they follow the person to
+ * every device they sign in from.
  */
 class UpdatePreferences
 {

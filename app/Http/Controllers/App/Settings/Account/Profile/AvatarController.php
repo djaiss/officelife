@@ -57,14 +57,6 @@ class AvatarController extends Controller
             ->with('status_description', __('We show your initials again.'));
     }
 
-    /**
-     * Serve one version of an employee's avatar. Avatars are personal, so they
-     * live on the private disk and are read through here rather than from a
-     * public URL, and only by the people allowed to see that employee.
-     *
-     * There is no action behind serving a file, so the check sits here. It is
-     * the one place in the application where it does.
-     */
     public function show(Request $request, Employee $employee, int $size): StreamedResponse
     {
         $request->user()

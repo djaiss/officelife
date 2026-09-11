@@ -1,8 +1,5 @@
-{{--
-  Where somebody creates a company and the account that administers it.
-
-  @var \App\ViewModels\Auth\RegisterViewModel $viewModel
---}}
+{{-- Where somebody creates a company and the account that administers it. --}}
+{{-- @var \App\ViewModels\Auth\RegisterViewModel $viewModel --}}
 @php
   $linkClasses = 'font-medium text-ink underline underline-offset-2 hover:text-brand';
   $terms = '<a href="'.e($viewModel->termsUrl()).'" target="_blank" rel="noopener" class="'.$linkClasses.'">'.e(__('terms of use')).'</a>';
@@ -27,9 +24,6 @@
 
         <x-status :message="session('status')" />
 
-        {{-- The submit button stays greyed out until the terms are ticked. The
-             server refuses the form all the same, so a browser without javascript
-             still gets a working page and a clear error. --}}
         <div x-data="{ terms: @js((bool) old('terms')) }">
           <x-box>
             <x-form method="post" :action="route('auth.register.create')" class="space-y-4">
@@ -83,9 +77,6 @@
                 required
               />
 
-              {{-- new-password on both, and passwordrules stating the floor the server
-                   actually enforces, so a password manager offers to generate one that
-                   will pass rather than filling an existing password in. --}}
               <div class="space-y-1.5">
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <x-input

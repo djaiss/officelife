@@ -11,6 +11,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Nothing a person does makes a piece of equipment late, so the fleet is swept
-// once a day rather than checked as it is used.
+// Nothing a person does makes a piece of equipment late, so it is swept daily.
 Schedule::job(new CheckOverdueAssetReturns, queue: 'low')->dailyAt('07:00');

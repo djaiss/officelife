@@ -1,6 +1,5 @@
-{{--
-  @var string $ip
---}}
+{{-- The email telling somebody their account was signed in to through a link. --}}
+{{-- @var string $ip --}}
 <x-mail::message>
 # {{ __('You signed in without a password') }}
 

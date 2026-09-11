@@ -37,10 +37,6 @@ class DestroyOffice
             ->authorize();
     }
 
-    /**
-     * The name is kept before the row goes, so the log can still say which
-     * office was deleted.
-     */
     private function destroy(): void
     {
         $this->name = $this->office->name;

@@ -19,11 +19,8 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Sign somebody in with their email address and their password.
- *
- * Every refusal reports the same message. Telling an attacker the difference
- * between a wrong password, a suspended account and an address that does not
- * exist hands them a way to find out who has an account here.
+ * Sign somebody in with their email address and their password. Every refusal
+ * reports the same message.
  */
 class AttemptSignIn
 {
@@ -54,10 +51,6 @@ class AttemptSignIn
         $this->email = mb_strtolower($this->email);
     }
 
-    /**
-     * Refuse to even try once too many attempts came from this address and this
-     * place, so a password cannot be guessed one request at a time.
-     */
     private function validate(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), self::MAX_ATTEMPTS)) {
@@ -79,9 +72,8 @@ class AttemptSignIn
     {
         $guard = Auth::guard('web');
 
-        // The screen promises a number of days, so the guard is told to honour
-        // exactly that rather than the five years Laravel defaults to. Only the
-        // session guard knows how to be told, which is the only one we use.
+        // The screen promises a number of days, not the five years Laravel
+        // defaults to.
         if ($guard instanceof SessionGuard) {
             $guard->setRememberDuration((int) config('officelife.remember_duration_days') * 24 * 60);
         }
@@ -101,10 +93,6 @@ class AttemptSignIn
         $this->user = Auth::guard('web')->user();
     }
 
-    /**
-     * Count the attempt, warn the owner of the address when there is one, and
-     * report the same thing whatever went wrong.
-     */
     private function fail(?User $candidate): void
     {
         RateLimiter::hit($this->throttleKey());

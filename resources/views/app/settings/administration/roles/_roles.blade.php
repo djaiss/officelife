@@ -1,14 +1,5 @@
 {{-- Every role of the company, one to a row. --}}
-{{--
-  A row is a link rather than a button, because what it opens is a screen of its
-  own rather than a panel over this one.
-
-  Four columns need a screen wide enough for four. Below md the two figures fold
-  onto a line of their own under the name, and the cells are placed by hand
-  there, since the order they fold into is not the order they are written in.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 @php
   $columns = 'grid-cols-[38px_minmax(0,1fr)_10px] gap-x-4.5 gap-y-2 md:grid-cols-[38px_minmax(0,1fr)_auto_auto_10px] md:gap-y-0';
 @endphp

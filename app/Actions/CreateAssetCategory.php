@@ -15,8 +15,8 @@ use App\Models\User;
 use InvalidArgumentException;
 
 /**
- * Add a category to the catalogue of a company. The category is where the rules
- * that apply to a whole family of equipment live.
+ * Add a category to the catalogue of a company. The category is where the
+ * rules that apply to a whole family of equipment live.
  */
 class CreateAssetCategory
 {
@@ -57,10 +57,6 @@ class CreateAssetCategory
         $this->eulaText = TextSanitizer::nullablePlainText($this->eulaText);
     }
 
-    /**
-     * A category that asks people to accept terms without saying what they are
-     * would put an empty page in front of somebody and ask them to agree to it.
-     */
     private function validate(): void
     {
         if ($this->name === '') {
@@ -71,11 +67,8 @@ class CreateAssetCategory
             throw new InvalidArgumentException('A category that asks for acceptance needs terms to accept');
         }
 
-        // A category we shipped holds a translation key rather than a name, so
-        // the clash has to be looked for against what each one currently reads
-        // as. That makes uniqueness depend on the language: a French company can
-        // call something Laptops, because the one we shipped reads as
-        // "Ordinateurs portables" to them.
+        // A category we shipped holds a translation key, so the clash is looked
+        // for against what it reads as, which makes uniqueness depend on the language.
         $taken = AssetCategory::query()
             ->where('company_id', $this->company->id)
             ->get()

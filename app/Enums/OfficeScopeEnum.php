@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-/**
- * Which offices the screen is showing. It is the last segment of the
- * path rather than a query string, so each of the three lists is a page of its
- * own that can be linked to and gone back to.
- */
 enum OfficeScopeEnum: string
 {
     case Active = 'active';
     case Archived = 'archived';
     case All = 'all';
 
-    /**
-     * What the segment reads as in the path. The open offices are what the
-     * screen shows when nothing is asked for, so they have no segment at all.
-     */
     public function segment(): ?string
     {
         return match ($this) {
@@ -37,10 +28,6 @@ enum OfficeScopeEnum: string
         };
     }
 
-    /**
-     * The scope the segment of the path stands for. Anything else is the list of
-     * open offices, which is what the route constraint already guarantees.
-     */
     public static function fromSegment(?string $segment): self
     {
         return match ($segment) {

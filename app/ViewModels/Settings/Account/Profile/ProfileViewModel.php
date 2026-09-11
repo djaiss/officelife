@@ -8,10 +8,6 @@ use App\Enums\PermissionEnum;
 use App\Models\Employee;
 use App\Models\User;
 
-/**
- * What the profile screen shows: who is signed in, the record they are editing,
- * and the shell around it.
- */
 class ProfileViewModel
 {
     public function __construct(
@@ -19,11 +15,7 @@ class ProfileViewModel
         private readonly ?Employee $employee,
     ) {}
 
-    /**
-     * The fields of the details box.
-     *
-     * @return array{first_name: string|null, last_name: string|null, display_name: string|null, work_email: string|null}
-     */
+    /** @return array{first_name: string|null, last_name: string|null, display_name: string|null, work_email: string|null} */
     public function details(): array
     {
         return [
@@ -34,13 +26,7 @@ class ProfileViewModel
         ];
     }
 
-    /**
-     * The fields of the emergency contact box. They are private, so they only
-     * leave here when whoever is looking is allowed to see them. Somebody who
-     * may see a profile does not thereby get everything on it.
-     *
-     * @return array{name: string|null, phone: string|null, relationship: string|null}
-     */
+    /** @return array{name: string|null, phone: string|null, relationship: string|null} */
     public function emergencyContact(): array
     {
         if (! $this->canSeePrivateInformation()) {
@@ -58,10 +44,6 @@ class ProfileViewModel
         ];
     }
 
-    /**
-     * Get whether the private details of the employee may be shown, so the
-     * screen can leave the box out rather than show it empty.
-     */
     public function canSeePrivateInformation(): bool
     {
         if ($this->employee === null) {
@@ -74,19 +56,11 @@ class ProfileViewModel
             ->allowed();
     }
 
-    /**
-     * The name to show and to draw initials from. Somebody whose account is not
-     * attached to an employee record has only an email address to go by.
-     */
     public function name(): string
     {
         return $this->employee->name ?? $this->user->email;
     }
 
-    /**
-     * The record the avatar draws from, so the screen can show it when
-     * there is one. An account that belongs to nobody who works here has none.
-     */
     public function employee(): ?Employee
     {
         return $this->employee;
@@ -107,10 +81,6 @@ class ProfileViewModel
         return $this->user->company->name;
     }
 
-    /**
-     * How long ago the record was last saved, in words, or null when it never
-     * has been, so the screen can leave the line out entirely.
-     */
     public function lastSavedAt(): ?string
     {
         return $this->employee?->last_saved_at?->diffForHumans();

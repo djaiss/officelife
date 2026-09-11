@@ -1,9 +1,5 @@
-{{--
-  The validation messages of a field. Takes a single message or a list of them,
-  and renders nothing at all when there is none.
-
-  @var string|array<int, string>|null $messages
---}}
+{{-- The validation messages of a field. --}}
+{{-- @var string|array<int, string>|null $messages --}}
 @props([
   'messages',
 ])

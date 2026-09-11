@@ -9,11 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/**
- * Tell somebody that a sign in on their account was attempted and refused. It
- * deliberately says nothing about what was tried, since the person reading it
- * may not be the person who tried.
- */
 class SignInFailedMail extends Mailable implements HasEnvelope
 {
     public function envelope(): Envelope

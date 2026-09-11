@@ -1,11 +1,5 @@
 {{-- Every role of the company as a list, and the dialog that adds one to it. --}}
-{{--
-  `creating` is declared on a div wrapping the whole screen, so it is in scope
-  everywhere it is read: the button that opens the dialog sits beside the title,
-  and the dialog itself is the last thing on the page.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Roles')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />

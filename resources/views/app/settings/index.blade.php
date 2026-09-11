@@ -1,7 +1,5 @@
 {{-- Where somebody goes to change something: their own account first, then the company they work at. --}}
-{{--
-  @var \App\ViewModels\Settings\SettingsViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\SettingsViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Settings')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />

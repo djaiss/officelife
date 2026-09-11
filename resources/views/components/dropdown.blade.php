@@ -1,24 +1,5 @@
+{{-- A menu that picks one value out of a few and saves it there and then. --}}
 {{--
-  A menu that picks one value out of a few and saves it there and then.
-
-  The button shows what is chosen now. Opening it lists the choices, each with a
-  hint on the right that says what picking it would look like, and a tick beside
-  the one already in force.
-
-  Every choice is a submit button carrying the field name and its value, so the
-  menu has to sit inside an <x-form>, and picking one saves without a separate
-  button to press. That also means it still works with javascript switched off:
-  all Alpine does here is open and close the panel.
-
-  The panel is anchored to the right, since these sit at the right hand edge of
-  the rows they belong to. Below sm there is no room to sit beside anything, so
-  the button and the panel take the width they are given instead.
-
-  Usage:
-    <x-form method="put" :action="route('...')">
-      <x-dropdown name="locale" :label="$current" :options="$locales" :title="__('Language')" />
-    </x-form>
-
   @var string $name
   @var string $label
   @var array<int, array{value: string, label: string, hint: string, selected: bool}> $options
@@ -33,13 +14,6 @@
   'monospacedHints' => false,
 ])
 
-{{--
-  A menu inside a form that saves over ajax is morphed back into place rather
-  than replaced, so `open` survives the save and the panel would stay hanging
-  there. Closing it once the request is on its way puts that right. The event
-  is listened for on the window because it is fired on the form, which is a
-  parent of this, and events do not travel downwards.
---}}
 <div x-data="{ open: false }" @ajax:before.window="open = false" {{ $attributes->class(['relative']) }}>
   <button
     type="button"

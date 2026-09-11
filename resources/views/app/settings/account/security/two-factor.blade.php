@@ -1,7 +1,5 @@
-{{-- Setting up two factor authentication: pair an authenticator app with the account, then type back what the app is showing. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel
---}}
+{{-- Setting up two factor authentication, one step at a time. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Two factor authentication')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
@@ -36,7 +34,6 @@
           </div>
         </div>
 
-        {{-- The square has to stay black on white to be readable, so it carries its own background in either theme. --}}
         <div class="mx-auto rounded-xl border border-hairline bg-white p-3">
           {{ $viewModel->qrCode() }}
         </div>
@@ -62,7 +59,6 @@
             autofocus
           />
 
-          {{-- The pair stacks on a narrow screen, primary first, so the thumb lands on the one that goes through. --}}
           <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <x-button.secondary :href="route('settings.security.index')" data-turbo="true">{{ __('Cancel') }}</x-button.secondary>
 

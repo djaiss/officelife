@@ -74,10 +74,6 @@ class UpdateAssetCategory
         }
     }
 
-    /**
-     * Renaming a category we shipped makes it theirs. The translation key goes,
-     * and the name stops moving with the language of whoever is looking.
-     */
     private function update(): void
     {
         $this->category->name = $this->name;

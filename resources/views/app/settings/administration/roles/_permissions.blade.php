@@ -1,17 +1,5 @@
 {{-- The matrix: everything a role can be allowed to do, whether this one is, and over whom. --}}
 {{--
-  A permission that covers the whole company has nothing to narrow down, so its
-  row says so instead of offering a toggle that would mean nothing. The rest
-  carry one scope each, shown as the sentence it stands for and flipped by
-  clicking it.
-
-  Filtering only hides rows. The fields are still in the page and still
-  submitted, so a search left in the box can never quietly drop a grant on the
-  way to saving.
-
-  The bar beside a group title describes what is saved, not what is on screen: it
-  comes back right once the form has been through the server.
-
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
   @var array $role
 --}}
@@ -57,11 +45,6 @@
     <p class="text-[15px] text-muted">{{ $viewModel->grantCountLabel() }}</p>
   </div>
 
-  {{--
-    The filter is not part of the role, so what is typed into it must not reach
-    the form around it: the event is stopped here rather than counted as a
-    change, and enter filters instead of saving.
-  --}}
   <label for="permission-filter" class="sr-only">{{ __('Filter permissions') }}</label>
 
   <input

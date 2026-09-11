@@ -23,16 +23,8 @@ use InvalidArgumentException;
 
 /**
  * Hand a piece of equipment to somebody, an office, or another piece of
- * equipment.
- *
- * This is an operation rather than a field being set, and the two checks at the
- * top of it are the ones that get skipped. Without them the same laptop is
- * handed to two people, or handed out while it is in for repair, and the
- * inventory quietly stops describing reality.
- *
- * The status is not touched. Being held is worked out from this assignment, so
- * a piece of equipment that comes back is in the state it was in before, and
- * nothing has to be restored.
+ * equipment. This is an operation rather than a field being set, and the two
+ * checks at the top of it are the ones that get skipped.
  */
 class CheckoutAsset
 {
@@ -94,12 +86,6 @@ class CheckoutAsset
         }
     }
 
-    /**
-     * The assignee has to be something equipment can be handed to, has to belong
-     * to the same company, and, when it is another piece of equipment, must not
-     * close a loop: a dock inside a laptop inside that dock is an inventory
-     * nobody can draw.
-     */
     private function validateAssignee(): void
     {
         if (AssetAssigneeTypeEnum::forModel($this->assignee) === null) {
@@ -122,10 +108,6 @@ class CheckoutAsset
         }
     }
 
-    /**
-     * Walk up the chain of equipment holding equipment. Meeting the asset being
-     * handed over anywhere in it means the chain closes on itself.
-     */
     private function refuseLoop(): void
     {
         $holder = $this->assignee;
@@ -161,9 +143,8 @@ class CheckoutAsset
                 'checkout_notes' => $this->notes,
             ]);
 
-            // Whoever hands the equipment over says where it is going. There is
-            // nowhere yet to read the office of a colleague from, so a checkout
-            // that says nothing leaves the equipment where it was.
+            // Nowhere yet to read the office of a colleague from, so saying
+            // nothing leaves the equipment where it was.
             if ($this->office !== null) {
                 $this->asset->current_office_id = $this->office->id;
                 $this->asset->save();

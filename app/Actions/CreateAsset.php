@@ -18,12 +18,8 @@ use Carbon\Carbon;
 use InvalidArgumentException;
 
 /**
- * Record a piece of equipment the company owns.
- *
- * The tag is what the company writes on the label and has to be its own. The
- * serial number is what the manufacturer stamped on it, which is not unique:
- * two vendors can stamp the same string, and a machine can arrive with an
- * unreadable one.
+ * Record a piece of equipment the company owns. The tag is what the company
+ * writes on the label and has to be its own.
  */
 class CreateAsset
 {
@@ -102,11 +98,6 @@ class CreateAsset
         }
     }
 
-    /**
-     * A status belongs either to everybody, in which case it has no company, or
-     * to this company. One belonging to somebody else is not a status this
-     * company has.
-     */
     private function validateStatus(): void
     {
         if ($this->status->company_id !== null && $this->status->company_id !== $this->company->id) {

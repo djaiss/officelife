@@ -51,10 +51,6 @@ class ArchiveOffice
             ->authorize();
     }
 
-    /**
-     * A closed office cannot be the head office, so the flag goes with it and
-     * the company is left to promote another one.
-     */
     private function archive(): void
     {
         $this->office->archived_at = now();

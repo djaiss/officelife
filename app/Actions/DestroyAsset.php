@@ -14,10 +14,6 @@ use InvalidArgumentException;
 /**
  * Remove a piece of equipment from the records altogether. Only ever right for
  * something entered by mistake.
- *
- * Refused once anybody has ever held it. Deleting then would erase who had what
- * and when, which is most of what the module is for. Archiving is what to do
- * with equipment that has left the fleet.
  */
 class DestroyAsset
 {

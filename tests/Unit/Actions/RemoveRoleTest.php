@@ -96,11 +96,6 @@ class RemoveRoleTest extends TestCase
         );
     }
 
-    /**
-     * The grants of a user are read once and kept for the rest of the request,
-     * so a role taken away has to say so. Otherwise the person it was taken
-     * from carries on getting through every check until the request ends.
-     */
     #[Test]
     public function it_stops_letting_them_through_straight_away(): void
     {

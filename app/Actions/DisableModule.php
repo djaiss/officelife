@@ -13,8 +13,9 @@ use App\Models\User;
 
 /**
  * Turn a module off for a company. What the module recorded stays in the
- * database, and the roles that grant its permissions keep the grant: turning the
- * module back on picks up where it left off, with nothing to configure again.
+ * database, and the roles that grant its permissions keep the grant: turning
+ * the module back on picks up where it left off, with nothing to configure
+ * again.
  */
 class DisableModule
 {

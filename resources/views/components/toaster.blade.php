@@ -1,11 +1,4 @@
-{{-- What the application says back after a save: a card at the foot of the screen that leaves on its own. --}}
-{{--
-  It is fed by the session, so any controller that redirects with a `status` (or
-  an `error`) gets one for free, whether the form was submitted over ajax or not.
-
-  The region is in the page even when there is nothing to say, so a screen reader
-  is already watching it by the time a message arrives.
---}}
+{{-- What the application says back after a save, at the foot of the screen. --}}
 @php
   $toasts = collect([
       [
@@ -26,12 +19,6 @@
 @endphp
 
 <div class="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center px-4 pb-8.5" role="status" aria-live="polite">
-  {{--
-    Replace instead of morphing: the merge strategy is morph everywhere else, and
-    morphing would patch a toast that has already hidden itself back into place
-    without re-running x-init, so its timer would never start again. Replacing
-    builds a fresh component on every response.
-  --}}
   <div x-sync x-merge="replace" id="notifications" class="pointer-events-auto flex w-full max-w-115 flex-col gap-3">
     @foreach ($toasts as $toast)
       <div

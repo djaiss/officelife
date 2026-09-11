@@ -1,7 +1,5 @@
 {{-- Every email we sent to the person signed in, a page at a time. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Emails sent')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
@@ -23,11 +21,6 @@
   </div>
 
   <x-section :title="__('Every email')" icon="emails" :hue="50" padding="p-0">
-    {{--
-      The list grows in place: the link at the bottom asks for the next page,
-      alpine-ajax appends the rows that come back, and swaps the link for the one
-      that came with them, or drops it on the last page.
-    --}}
     <div id="emails-sent-container" x-merge="append">
       @forelse ($viewModel->emailsSent() as $emailSent)
         @include('app.settings.account.logs._email-sent-row', ['emailSent' => $emailSent])

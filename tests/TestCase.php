@@ -15,12 +15,6 @@ use Illuminate\Support\Str;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * Give somebody a role granting one permission, and nothing else. A user
-     * built by the factory holds no role and may therefore do nothing, so a
-     * test that is not about permissions still has to say what the person it is
-     * about is allowed to do.
-     */
     protected function grant(User $user, PermissionEnum $permission, ScopeEnum $scope = ScopeEnum::Company): User
     {
         $role = Role::query()->create([
@@ -42,11 +36,6 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    /**
-     * Give somebody the role every colleague gets, creating the default roles
-     * of their company when it has none. The screens are built for people who
-     * hold it, so a feature test has to hand it out before it can reach one.
-     */
     protected function makeMember(User $user): User
     {
         $company = $user->company;

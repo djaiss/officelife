@@ -15,9 +15,6 @@ use App\Models\User;
  * Update who to call about an employee when something happens to them. This is
  * private information, so being allowed to edit somebody's profile is not
  * enough on its own to change it.
- *
- * The details themselves are not logged, only that they changed. Who somebody
- * lives with is not something to leave lying in a log.
  */
 class UpdateEmergencyContact
 {

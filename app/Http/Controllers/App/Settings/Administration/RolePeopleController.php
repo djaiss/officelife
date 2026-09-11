@@ -10,10 +10,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Who holds a role. Both the role and the person are looked up on the company of
- * whoever is asking, so neither can be reached from outside it.
- */
 class RolePeopleController extends Controller
 {
     public function create(Request $request, int $role): RedirectResponse

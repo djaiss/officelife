@@ -19,11 +19,6 @@ use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/**
- * The history of who has held what, read from both ends. It is the reason the
- * assignment is a table of its own rather than a column on the asset, so it is
- * worth a test that reads it the way somebody would.
- */
 class AssetHistoryTest extends TestCase
 {
     use RefreshDatabase;

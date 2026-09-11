@@ -11,21 +11,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
 
-/**
- * The employees somebody may do something to, as a query rather than as a
- * question asked one employee at a time.
- *
- *     EmployeeScope::for($user, PermissionEnum::EmployeeView)->get();
- *
- * It reaches the same answer as PendingPermissionCheck::forEmployee(), by the
- * same steps and in the same order, so a list and a check never disagree. The
- * narrowing happens in SQL: nothing is loaded and then thrown away.
- */
 class EmployeeScope
 {
-    /**
-     * @return Builder<Employee>
-     */
+    /** @return Builder<Employee> */
     public static function for(User $user, PermissionEnum $permission): Builder
     {
         if (! $permission->targetsEmployee()) {

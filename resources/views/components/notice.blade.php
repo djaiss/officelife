@@ -1,7 +1,4 @@
-{{--
-  A quiet aside: something worth reading once, that is neither an error nor a
-  confirmation. The dashed border is what tells it apart from a box.
---}}
+{{-- A quiet aside: something worth reading once, that is neither an error nor a confirmation. --}}
 <div {{ $attributes->class(['flex items-start gap-3 rounded-lg border border-dashed border-hairline-strong bg-sunken px-4 py-3.5']) }}>
   <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="mt-0.5 shrink-0 text-muted" aria-hidden="true">
     <circle cx="8" cy="8" r="6"></circle>

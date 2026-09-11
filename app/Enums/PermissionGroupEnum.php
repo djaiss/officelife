@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-/**
- * The sections the permissions are laid out in on the screen where somebody
- * grants them. It is a way of reading a long list, and nothing else: a group
- * grants nothing and is never stored.
- */
 enum PermissionGroupEnum: string
 {
     case People = 'people';
@@ -16,9 +11,6 @@ enum PermissionGroupEnum: string
     case Administration = 'administration';
     case Assets = 'assets';
 
-    /**
-     * What the group is called. The sentence doubles as the translation key.
-     */
     public function label(): string
     {
         return match ($this) {
@@ -29,10 +21,6 @@ enum PermissionGroupEnum: string
         };
     }
 
-    /**
-     * The line beside the group title, saying what the permissions under it
-     * have in common. The sentence doubles as the translation key.
-     */
     public function note(): string
     {
         return match ($this) {

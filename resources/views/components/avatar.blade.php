@@ -1,11 +1,5 @@
+{{-- How somebody is shown: the avatar they uploaded when they have one, and their initials otherwise. --}}
 {{--
-  How somebody is shown: the avatar they uploaded when they have one, and their
-  initials otherwise.
-
-  The avatar is served at the size it is displayed at and at twice it, so a dense
-  screen picks the sharp one out of the srcset. Both of those sizes are written
-  to disk on upload, so nothing here can ask for a size that does not exist.
-
   @var \App\Models\Employee|null $employee
   @var string $name
   @var int $size

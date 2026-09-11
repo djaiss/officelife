@@ -1,21 +1,5 @@
 {{-- The dialog that makes a new role. --}}
-{{--
-  It asks for a name and nothing else. A role that grants nothing is harmless, so
-  there is no reason to make somebody tick boxes before it exists. Starting from
-  what another role grants is what the duplicate button on a role is for.
-
-  Its own errors go in a bag of their own, since the screen behind it has a field
-  called `name` too and the two messages would otherwise be the same message. The
-  bag having anything in it is also what reopens the dialog after a save was
-  turned away.
-
-  Clicking away closes it, which is read off the backdrop itself rather than as a
-  click outside the panel: the click that opens the dialog is still on its way up
-  the document when the dialog appears, and an outside handler would catch that
-  one and close it again straight away.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 <div
   x-cloak
   x-show="creating"

@@ -38,13 +38,11 @@ class PreferenceController extends Controller
             timeFormat: TimeFormatEnum::from($validated['time_format']),
         )->execute();
 
-        // The session holds whatever language was last asked for, and it wins
-        // over the one on the account. Leaving it behind would show the screen
-        // in the old language and make the change look as if it had not saved.
+        // The session wins over the account, so leaving it behind would draw
+        // the screen in the old language.
         $request->session()->put('locale', $validated['locale']);
 
-        // The middleware settled the language before any of this ran, so the
-        // message below would come out in the language being left behind.
+        // The middleware settled the language before this ran.
         app()->setLocale($validated['locale']);
 
         return redirect()->route('settings.preferences.index')

@@ -1,7 +1,5 @@
-{{-- What somebody chose about the way the application reads to them: the language of the interface, and the clock times are written on. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
---}}
+{{-- What somebody chose about the way the application reads to them. --}}
+{{-- @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Preferences')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
@@ -28,11 +26,6 @@
         </x-help>
       </x-slot:help>
 
-      {{--
-        Each row is its own form, and carries the other row's current value along
-        so that saving one never quietly resets the other. The language reloads
-        the page, since every word on it is drawn in it.
-      --}}
       <div class="grid gap-x-10 gap-y-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
           <p class="font-semibold text-ink">{{ __('Language') }}</p>
@@ -57,10 +50,6 @@
           <p class="mt-1 text-[15px] leading-relaxed text-body">{{ __('How every clock time is written. Dates are unaffected.') }}</p>
         </div>
 
-        {{--
-          The language menu is refreshed along with this one, since it carries the
-          time format along and would otherwise send back the value being replaced.
-        --}}
         <x-form
           method="put"
           :action="route('settings.preferences.update')"

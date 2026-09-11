@@ -10,13 +10,6 @@ use App\Models\RolePermission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Copy a role, permissions and all, so a company that wants something close to
- * one of its roles starts from it rather than from an empty matrix.
- *
- * The copy is a role like any other: editable, held by nobody, and given a free
- * slug by the action that creates it.
- */
 class DuplicateRoleController extends Controller
 {
     public function create(Request $request, int $role): RedirectResponse

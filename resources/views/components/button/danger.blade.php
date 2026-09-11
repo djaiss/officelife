@@ -1,13 +1,5 @@
+{{-- The button that goes through with something irreversible: delete, revoke, archive, turn off. --}}
 {{--
-  The button that goes through with something irreversible: delete, revoke, archive,
-  turn off. It renders an anchor when it is given an href, and a button otherwise. The
-  icon slot sits before the label.
-
-  It is the primary button in a different colour, so the two are the same height and
-  the same shape side by side. Being a component rather than a class on <x-button>, it
-  no longer depends on `bg-error` and `bg-accent` landing in the right order in the
-  stylesheet, which is what decided the colour when the two were written together.
-
   @var string|null $href
   @var string $type
 --}}

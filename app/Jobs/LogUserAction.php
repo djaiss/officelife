@@ -15,9 +15,7 @@ class LogUserAction implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @param  array<string, mixed>|null  $parameters
-     */
+    /** @param  array<string, mixed>|null  $parameters */
     public function __construct(
         public Company $company,
         public User $user,
@@ -25,9 +23,6 @@ class LogUserAction implements ShouldQueue
         public ?array $parameters = null,
     ) {}
 
-    /**
-     * Log the user action in the logs table.
-     */
     public function handle(): void
     {
         Log::query()->create([

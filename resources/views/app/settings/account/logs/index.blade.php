@@ -1,7 +1,5 @@
-{{-- Everything that has been written down about an account: what its owner has done, and what we have sent them. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel
---}}
+{{-- Everything written down about an account: what its owner did, and what we sent them. --}}
+{{-- @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Logs')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
@@ -34,10 +32,6 @@
         </x-help>
       </x-slot:help>
 
-      {{--
-        The next page is appended in place, and the link that asked for it is
-        replaced by the one that came back, or removed on the last page.
-      --}}
       <div id="logs-container" x-merge="append">
         @forelse ($viewModel->logs() as $log)
           <x-box.row class="flex items-start gap-x-3 px-4.5 py-3.5">

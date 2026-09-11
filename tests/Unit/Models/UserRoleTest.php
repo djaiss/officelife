@@ -35,10 +35,6 @@ class UserRoleTest extends TestCase
         $this->assertEquals($role->id, $held->role->id);
     }
 
-    /**
-     * The screen that says how long somebody has held a role reads this, so it
-     * has to come back as a date rather than as whatever the database wrote.
-     */
     #[Test]
     public function it_says_when_the_role_was_handed_out(): void
     {

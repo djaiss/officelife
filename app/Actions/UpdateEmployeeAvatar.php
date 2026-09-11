@@ -19,16 +19,9 @@ use InvalidArgumentException;
  * Set the avatar an employee shows their colleagues. Two square versions are
  * written, one at the size the app displays and one at twice it, so a dense
  * screen has a sharp one to pick from.
- *
- * An employee only ever has one avatar, so an earlier one is removed once the
- * new one is in place.
  */
 class UpdateEmployeeAvatar
 {
-    /**
-     * The mime types we accept. Anything else is rejected, whatever the
-     * extension of the uploaded file claims.
-     */
     private const array ALLOWED_MIME_TYPES = [
         'image/jpeg',
         'image/png',
@@ -67,10 +60,6 @@ class UpdateEmployeeAvatar
             ->authorize();
     }
 
-    /**
-     * The file is checked here as well as in the controller, on what it
-     * actually is rather than on what its name claims.
-     */
     private function validate(): void
     {
         if (! in_array($this->file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
@@ -82,10 +71,6 @@ class UpdateEmployeeAvatar
         }
     }
 
-    /**
-     * The name the employee gave the file never reaches the disk: we generate a
-     * random one instead, and the two versions are named after it.
-     */
     private function store(): void
     {
         $this->previousPath = $this->employee->avatar_path;
@@ -114,11 +99,6 @@ class UpdateEmployeeAvatar
         $this->employee->save();
     }
 
-    /**
-     * The files of the earlier avatar are only removed once the new one is
-     * saved, so a failure halfway through leaves the employee with a working
-     * avatar rather than none.
-     */
     private function removePrevious(): void
     {
         if ($this->previousPath === null) {
@@ -130,9 +110,6 @@ class UpdateEmployeeAvatar
         }
     }
 
-    /**
-     * The disk lives here alone so it can be swapped in one place.
-     */
     private function diskName(): string
     {
         return (string) config('filesystems.default');

@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Set a new password for somebody who followed a reset link.
- *
- * The token is checked against the one that was emailed, and thrown away once
- * it works, so a reset link cannot be used twice.
+ * Set a new password for somebody who followed a reset link. The token is
+ * checked against the one that was emailed, and thrown away once it works, so
+ * a reset link cannot be used twice.
  */
 class ResetPassword
 {

@@ -1,28 +1,5 @@
-{{--
-  The API keys somebody has minted, and the two things they can do about them:
-  make another, and revoke one.
-
-  A key is shown exactly once, in the block at the top, because only a hash of
-  it is written down. Somebody who does not copy it there and then has to make
-  another rather than look this one up, which is what the block says.
-
-  Making a key needs a name, which the button alone cannot ask for, so it opens
-  a field in place instead of leading to a screen of its own. A name that comes
-  back rejected reopens it, which is what the `creating` flag reads from the
-  errors rather than starting closed and hiding the message.
-
-  Revoking asks before it acts, in a dialog of its own. `revoking` holds whichever
-  key is being asked about rather than a yes or no, so one dialog per key can sit
-  below the list instead of inside a row.
-
-  Both forms ask for the screen again and swap this block for what comes back,
-  so making a key and revoking one leave the rest of the page where it was. The
-  swap replaces the block rather than morphing it, the way the rest of the app
-  does, because `creating` has to come back from the server: morphing keeps the
-  flag that was set when the field was opened, and the field never closes.
-
-  @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
---}}
+{{-- The API keys somebody has minted, and the way to make another or revoke one. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel --}}
 <div
   id="api-keys"
   x-merge="replace"

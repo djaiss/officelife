@@ -13,13 +13,6 @@ use Illuminate\Foundation\Queue\Queueable;
 /**
  * Flag equipment that was due back and has not come back. Runs once a day, off
  * the schedule, since nothing a person does makes a piece of equipment late.
- *
- * Each assignment is flagged once rather than every day the condition holds,
- * which is what the stamp on the row is for. Without it, a laptop four months
- * late would say so a hundred and twenty times.
- *
- * What happens next is not this job's business. It publishes the event, and
- * chasing whoever has the equipment is a playbook a company configures.
  */
 class CheckOverdueAssetReturns implements ShouldQueue
 {

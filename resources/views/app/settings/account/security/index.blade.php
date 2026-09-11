@@ -1,7 +1,5 @@
-{{-- What somebody can change about the way they sign in: their password, the code asked for on top of it, and the keys that let a machine act as them. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
---}}
+{{-- What somebody can change about the way they sign in. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Security and access')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />

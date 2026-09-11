@@ -10,11 +10,8 @@ use App\Models\User;
 use Stevebauman\Purify\Facades\Purify;
 
 /**
- * Create an Email Sent object.
- * This lets the company know exactly which emails have been sent, to whom, and
- * the content of those emails.
- * Links are purged in each email, since they could contain links that
- * are not valid anymore.
+ * Create an Email Sent object. This lets the company know exactly which emails
+ * have been sent, to whom, and the content of those emails.
  */
 class CreateEmailSent
 {
@@ -40,10 +37,6 @@ class CreateEmailSent
         return $this->emailSent;
     }
 
-    /**
-     * This will remove any links from the body of the email, since they
-     * could contain links that are not valid anymore.
-     */
     private function sanitize(): void
     {
         $config = ['HTML.ForbiddenElements' => 'a'];

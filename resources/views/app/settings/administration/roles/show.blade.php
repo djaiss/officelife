@@ -1,20 +1,5 @@
 {{-- One role: what it is allowed to do under one tab, and who holds it under the other. --}}
-{{--
-  The name is edited in place, as a field dressed as the heading it replaces. It
-  lives outside the form that saves the matrix and points back at it, since the
-  buttons beside it are forms of their own and a form cannot hold another.
-
-  Saving is offered on the permissions tab only. What the form submits is the
-  matrix, and a permission left unticked is a permission taken away, so a save
-  sent from the tab that does not draw the matrix would quietly strip the role of
-  everything. Renaming therefore happens on the permissions tab too.
-
-  `deleting` is declared on a div wrapping the whole screen, so it is in scope
-  everywhere it is read: the entry that asks for the deletion sits in a menu that
-  closes on the same click, and the dialog itself is the last thing on the page.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 @php
   $role = $viewModel->role();
   $onPeopleTab = $viewModel->onPeopleTab();

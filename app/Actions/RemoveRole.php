@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\DB;
 /**
  * Take a role away from somebody. Taking away a role they never held changes
  * nothing.
- *
- * The owner of a company keeps every permission whatever happens here, since
- * that comes from owning the company rather than from a role.
  */
 class RemoveRole
 {
