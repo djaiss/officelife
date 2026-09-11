@@ -179,6 +179,6 @@ class CreateCompanyTest extends TestCase
         )->execute();
 
         $this->assertEquals('dunder-mifflin', $first->slug);
-        $this->assertEquals('dunder-mifflin-2', $second->slug);
+        $this->assertEquals('dunder-mifflin-1', $second->slug);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Enums\OccurrenceTypeEnum;
 use App\Enums\PlanEnum;
 use App\Enums\UserActionEnum;
+use App\Helpers\Slug;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Company;
@@ -14,7 +15,6 @@ use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Create a company, its first user, who becomes the owner of the company, and
@@ -70,15 +70,20 @@ class CreateCompany
 
     private function createCompany(): void
     {
-        $this->company = Company::query()->create([
-            'name' => $this->name,
-            'slug' => $this->slug(),
-            'plan' => $this->plan,
-            'timezone' => 'UTC',
-            'locale' => 'en',
-            'is_self_hosted' => false,
-            'trial_ends_at' => now()->addDays(30),
-        ]);
+        $this->company = Slug::write(
+            name: $this->name,
+            fallback: 'company',
+            taken: fn (string $slug): bool => Company::query()->where('slug', $slug)->exists(),
+            write: fn (string $slug): Company => Company::query()->create([
+                'name' => $this->name,
+                'slug' => $slug,
+                'plan' => $this->plan,
+                'timezone' => 'UTC',
+                'locale' => 'en',
+                'is_self_hosted' => false,
+                'trial_ends_at' => now()->addDays(30),
+            ]),
+        );
     }
 
     private function createOwner(): void
@@ -146,21 +151,5 @@ class CreateCompany
             action: UserActionEnum::CompanyCreated,
             parameters: ['name' => $this->company->name],
         )->onQueue('low');
-    }
-
-    private function slug(): string
-    {
-        $base = Str::slug($this->name);
-        $base = $base === '' ? 'company' : $base;
-
-        $slug = $base;
-        $suffix = 1;
-
-        while (Company::query()->where('slug', $slug)->exists()) {
-            $suffix++;
-            $slug = $base.'-'.$suffix;
-        }
-
-        return $slug;
     }
 }
