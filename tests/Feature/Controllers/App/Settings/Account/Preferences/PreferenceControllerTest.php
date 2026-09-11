@@ -50,6 +50,20 @@ class PreferenceControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_writes_the_email_address_in_the_top_bar_when_there_is_no_employee_record(): void
+    {
+        $user = User::factory()->create([
+            'employee_id' => null,
+            'email' => 'accountant@vancerefrigeration.com',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('settings.preferences.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('accountant@vancerefrigeration.com', escape: false);
+    }
+
+    #[Test]
     public function it_refuses_a_visitor_who_is_not_signed_in(): void
     {
         $response = $this->get(route('settings.preferences.index'));

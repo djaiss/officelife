@@ -28,7 +28,6 @@ class RoleController extends Controller
         return view('app.settings.administration.roles.index', [
             'viewModel' => new RolesViewModel(
                 user: $request->user(),
-                employee: $request->user()->employee,
             ),
         ]);
     }
@@ -40,7 +39,6 @@ class RoleController extends Controller
         return view('app.settings.administration.roles.show', [
             'viewModel' => new RolesViewModel(
                 user: $request->user(),
-                employee: $request->user()->employee,
                 role: $this->roles($request)->findOrFail($role),
                 onPeopleTab: $tab === 'people',
             ),

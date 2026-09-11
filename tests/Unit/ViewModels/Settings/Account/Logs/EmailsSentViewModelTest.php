@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewModels\Settings\Account\Logs;
 
-use App\Models\Company;
 use App\Models\EmailSent;
-use App\Models\Employee;
 use App\Models\User;
 use App\ViewModels\Settings\Account\Logs\EmailsSentViewModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,7 +32,7 @@ class EmailsSentViewModelTest extends TestCase
             'sent_at' => now()->subDay(),
         ]);
 
-        $viewModel = new EmailsSentViewModel(user: $user, employee: null);
+        $viewModel = new EmailsSentViewModel(user: $user);
 
         $this->assertCount(2, $viewModel->emailsSent());
         $this->assertEquals('A sign-in from a new place', $viewModel->emailsSent()->first()->subject);
@@ -50,7 +48,7 @@ class EmailsSentViewModelTest extends TestCase
             'user_id' => $colleague->id,
         ]);
 
-        $viewModel = new EmailsSentViewModel(user: $user, employee: null);
+        $viewModel = new EmailsSentViewModel(user: $user);
 
         $this->assertCount(0, $viewModel->emailsSent());
     }
@@ -64,58 +62,9 @@ class EmailsSentViewModelTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $viewModel = new EmailsSentViewModel(user: $user, employee: null);
+        $viewModel = new EmailsSentViewModel(user: $user);
 
         $this->assertCount(10, $viewModel->emailsSent());
         $this->assertTrue($viewModel->emailsSent()->hasMorePages());
-    }
-
-    #[Test]
-    public function it_gives_the_name_and_the_company_of_the_person_signed_in(): void
-    {
-        $company = Company::factory()->create(['name' => 'Dunder Mifflin']);
-        $employee = Employee::factory()->create([
-            'company_id' => $company->id,
-            'first_name' => 'Kevin',
-            'last_name' => 'Malone',
-        ]);
-        $user = User::factory()->create([
-            'company_id' => $company->id,
-            'employee_id' => $employee->id,
-        ]);
-
-        $viewModel = new EmailsSentViewModel(user: $user, employee: $employee);
-
-        $this->assertEquals('Kevin Malone', $viewModel->name());
-        $this->assertEquals('Dunder Mifflin', $viewModel->companyName());
-    }
-
-    #[Test]
-    public function it_falls_back_to_the_email_when_there_is_no_employee_record(): void
-    {
-        $user = User::factory()->create([
-            'employee_id' => null,
-            'email' => 'accountant@vancerefrigeration.com',
-        ]);
-
-        $viewModel = new EmailsSentViewModel(user: $user, employee: null);
-
-        $this->assertEquals('accountant@vancerefrigeration.com', $viewModel->name());
-        $this->assertNull($viewModel->employee());
-    }
-
-    #[Test]
-    public function it_gives_the_employee_record_the_avatar_draws_from(): void
-    {
-        $company = Company::factory()->create();
-        $employee = Employee::factory()->create(['company_id' => $company->id]);
-        $user = User::factory()->create([
-            'company_id' => $company->id,
-            'employee_id' => $employee->id,
-        ]);
-
-        $viewModel = new EmailsSentViewModel(user: $user, employee: $employee);
-
-        $this->assertTrue($employee->is($viewModel->employee()));
     }
 }

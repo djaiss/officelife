@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\ViewModels\Settings\Account\Preferences;
 
 use App\Enums\TimeFormatEnum;
-use App\Models\Employee;
 use App\Models\User;
 
 class PreferencesViewModel
 {
     public function __construct(
         private readonly User $user,
-        private readonly ?Employee $employee,
     ) {}
 
     /** @return array<int, array{value: string, label: string, hint: string, selected: bool}> */
@@ -57,21 +55,6 @@ class PreferencesViewModel
     public function timePreview(): string
     {
         return $this->timeFormat()->format(now());
-    }
-
-    public function name(): string
-    {
-        return $this->employee->name ?? $this->user->email;
-    }
-
-    public function employee(): ?Employee
-    {
-        return $this->employee;
-    }
-
-    public function companyName(): string
-    {
-        return $this->user->company->name;
     }
 
     public function locale(): string

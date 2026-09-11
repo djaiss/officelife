@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\ViewModels\Settings\Administration;
 
 use App\Enums\OfficeScopeEnum;
-use App\Models\Employee;
 use App\Models\Office;
 use App\Models\User;
 use DateTimeZone;
@@ -18,26 +17,10 @@ class OfficesViewModel
 
     public function __construct(
         private readonly User $user,
-        private readonly ?Employee $employee,
         private readonly OfficeScopeEnum $scope,
         private readonly string $search = '',
         private readonly string $sort = 'name',
     ) {}
-
-    public function companyName(): string
-    {
-        return $this->user->company->name;
-    }
-
-    public function name(): string
-    {
-        return $this->employee->name ?? $this->user->email;
-    }
-
-    public function employee(): ?Employee
-    {
-        return $this->employee;
-    }
 
     /** @return array<int, array{value: int, label: string, icon: string, hue: int}> */
     public function stats(): array

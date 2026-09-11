@@ -6,20 +6,14 @@
 @endphp
 
 <x-top-bar-layout :title="$role['name']">
-  <x-slot:top-bar>
-    <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
-  </x-slot:top-bar>
-
-  <!-- breadcrumb -->
-  <nav class="mt-5.5 mb-6.5 flex flex-wrap items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
-    <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <a href="{{ route('settings.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Settings') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <a href="{{ route('settings.roles.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Roles') }}</a>
-    <span class="text-muted-soft" aria-hidden="true">/</span>
-    <span class="font-medium text-ink" aria-current="page">{{ $role['name'] }}</span>
-  </nav>
+  <x-breadcrumb
+    :trail="[
+      __('Dashboard') => route('home.index'),
+      __('Settings') => route('settings.index'),
+      __('Roles') => route('settings.roles.index'),
+      $role['name'] => null,
+    ]"
+  />
 
   <div
     x-data="{

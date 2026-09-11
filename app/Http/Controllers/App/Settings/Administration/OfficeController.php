@@ -28,7 +28,6 @@ class OfficeController extends Controller
         return view('app.settings.administration.offices.index', [
             'viewModel' => new OfficesViewModel(
                 user: $request->user(),
-                employee: $request->user()->employee,
                 scope: OfficeScopeEnum::fromSegment($scope),
                 search: trim((string) $request->query('q', '')),
                 sort: $request->query('sort') === 'place' ? 'place' : 'name',

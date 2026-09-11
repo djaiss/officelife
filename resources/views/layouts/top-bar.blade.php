@@ -1,7 +1,9 @@
 {{-- The shell of a screen that carries its navigation across the top rather than down the side. --}}
 {{--
   @var string|null $title
-  @var \Illuminate\View\ComponentSlot $topBar
+  @var string $companyName
+  @var string $name
+  @var \App\Models\Employee|null $employee
 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -19,7 +21,7 @@
       class="min-h-screen pb-22.5"
     >
       <div class="mx-auto max-w-265 px-4 sm:px-8">
-        {{ $topBar }}
+        <x-top-bar :company-name="$companyName" :name="$name" :employee="$employee" />
 
         {{ $slot }}
       </div>

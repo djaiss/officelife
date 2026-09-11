@@ -26,25 +26,9 @@ class RolesViewModel
 
     public function __construct(
         private readonly User $user,
-        private readonly ?Employee $employee = null,
         private readonly ?Role $role = null,
         private readonly bool $onPeopleTab = false,
     ) {}
-
-    public function companyName(): string
-    {
-        return $this->user->company->name;
-    }
-
-    public function name(): string
-    {
-        return $this->employee->name ?? $this->user->email;
-    }
-
-    public function employee(): ?Employee
-    {
-        return $this->employee;
-    }
 
     public function createUrl(): string
     {

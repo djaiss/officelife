@@ -48,6 +48,19 @@ class EmailSentControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_shows_the_path_from_the_dashboard_down_to_the_screen(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('settings.emailsSent.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('aria-label="Breadcrumb"', escape: false);
+        $response->assertSee('href="'.route('settings.logs.index').'"', escape: false);
+        $response->assertSee('aria-current="page">Emails sent<', escape: false);
+    }
+
+    #[Test]
     public function it_shows_a_blank_state_when_nothing_was_ever_sent(): void
     {
         $user = User::factory()->create();
