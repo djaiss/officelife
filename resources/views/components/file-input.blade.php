@@ -1,8 +1,5 @@
+{{-- A file field, with its label, its hint and its validation messages. --}}
 {{--
-  A file field, with its label, its hint and its validation messages. It is a
-  sibling of x-input rather than a branch inside it, because a file field has no
-  value to carry and takes an accept list instead.
-
   @var string|null $id
   @var string|null $label
   @var string|null $accept

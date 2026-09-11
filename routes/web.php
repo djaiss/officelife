@@ -21,17 +21,15 @@ use App\Http\Controllers\App\Settings\Administration\RolePeopleController;
 use App\Http\Controllers\App\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
-// The landing page, until there is a dashboard to send people to.
+// Until there is a dashboard to send people to.
 Route::get('/', function () {
     return view('welcome');
 })->name('home.index');
 
-// The way into every setting, which is what the two groups below hold.
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
 });
 
-// The screens where somebody looks after their own account.
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings/account/profile', [ProfileController::class, 'index'])->name('settings.profile.index');
     Route::put('settings/account/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
@@ -60,7 +58,6 @@ Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings/account/profile/avatar/{employee}/{size}', [AvatarController::class, 'show'])->whereNumber(['employee', 'size'])->name('settings.avatar.show');
 });
 
-// The screens where somebody looks after the company itself.
 Route::middleware(['auth', 'set.locale'])->group(function (): void {
     Route::get('settings/administration/roles', [RoleController::class, 'index'])->name('settings.roles.index');
     Route::post('settings/administration/roles', [RoleController::class, 'create'])->name('settings.roles.create');

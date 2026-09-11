@@ -12,11 +12,6 @@ use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
-    /**
-     * The current password is checked by the rule of the same name, which reads
-     * the hash off the signed in account, so a wrong one never reaches the
-     * action.
-     */
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([

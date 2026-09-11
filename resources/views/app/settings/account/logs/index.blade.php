@@ -1,12 +1,11 @@
-{{-- Everything that has been written down about an account: what its owner has done, and what we have sent them. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel
---}}
+{{-- Everything written down about an account: what its owner did, and what we sent them. --}}
+{{-- @var \App\ViewModels\Settings\Account\Logs\LogsViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Logs')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -15,12 +14,15 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Logs') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Logs') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('What we recorded about your account, and what we sent you.') }}</p>
   </div>
 
   <div class="space-y-10">
+
+    <!-- activity list -->
     <x-section
       :title="__('Activity')"
       icon="logs"
@@ -34,10 +36,6 @@
         </x-help>
       </x-slot:help>
 
-      {{--
-        The next page is appended in place, and the link that asked for it is
-        replaced by the one that came back, or removed on the last page.
-      --}}
       <div id="logs-container" x-merge="append">
         @forelse ($viewModel->logs() as $log)
           <x-box.row class="flex items-start gap-x-3 px-4.5 py-3.5">
@@ -85,6 +83,7 @@
       </div>
     </x-section>
 
+    <!-- emails sent list -->
     <x-section
       :title="__('Emails sent')"
       icon="emails"

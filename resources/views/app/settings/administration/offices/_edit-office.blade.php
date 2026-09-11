@@ -1,27 +1,5 @@
 {{-- The panel that edits one office. --}}
-{{--
-  It slides in over the list rather than replacing it, so the list is still there
-  to move along.
-
-  Everything it shows comes from the blob of offices declared on the screen,
-  which is why there is one panel on the page rather than one per row. The form
-  posts to whichever office is open, which is read off that blob too.
-
-  Archiving is a form of its own, which is why the save button sits outside the
-  form it saves and reaches it through the html `form` attribute: a form cannot
-  hold another. The button here only asks the question. The dialog that carries
-  it, and the form that goes through with it, are on the screen rather than in
-  the panel, because a dialog fixed to the window cannot live inside a panel that
-  clips what it holds and slides in on a transform.
-
-  Both forms go over ajax and swap the counts, the list and the block of offices
-  back in, so a save never takes the screen away from underneath the panel.
-  `refresh()` runs on `ajax:after` rather than on `ajax:success`, because
-  the latter is over before the answer has been merged and would read what was
-  on the page a moment ago.
-
-  @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel --}}
 <x-side-modal show="open !== null" close="close()" labelledby="office-panel-title">
   <x-slot:header>
     <p class="text-xs font-bold tracking-[0.08em] text-muted uppercase">{{ __('Edit office') }}</p>
@@ -29,6 +7,7 @@
     <h2 id="office-panel-title" class="mt-1 truncate text-[26px] font-bold tracking-tight text-ink" x-text="form.name"></h2>
   </x-slot:header>
 
+  <!-- the fields of the office -->
   <x-form
     method="put"
     x-bind:action="office?.updateUrl"
@@ -37,12 +16,8 @@
     x-on:ajax:after="refresh()"
     class="space-y-4.5 transition-opacity [&[aria-busy]]:opacity-60"
   >
-    {{-- What the panel was open on, so a save turned away by the validator opens it again on the same office. --}}
     <input type="hidden" name="office_id" x-bind:value="open" />
 
-    {{-- The messages of a save the validator turned away. They are gathered in one
-         place rather than under each field, because this is the block the answer
-         swaps back in and the fields themselves are driven by alpine. --}}
     <div id="office-errors">
       @if ($errors->getBag('default')->any())
         <ul class="space-y-1 rounded-xl bg-error/8 px-3.5 py-3 text-sm text-error ring-[1.5px] ring-error/25">
@@ -136,6 +111,7 @@
     <p class="rounded-[14px] bg-sunken px-4 py-3.25 text-sm leading-relaxed text-muted ring-[1.5px] ring-hairline" x-text="office?.inheritNote"></p>
   </x-form>
 
+  <!-- save, reopen and archive -->
   <div class="mt-5 flex flex-wrap items-center gap-2.5">
     <x-button form="office-form">{{ __('Save changes') }}</x-button>
 

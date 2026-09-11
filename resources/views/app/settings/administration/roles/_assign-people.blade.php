@@ -1,13 +1,5 @@
 {{-- The dialog that hands the role to somebody. --}}
 {{--
-  Every colleague who does not hold it yet is a form of its own, so adding one is
-  a single click rather than a choice made in a list and then confirmed.
-
-  Clicking away closes it, which is read off the backdrop itself rather than as a
-  click outside the panel: the click that opens the dialog is still on its way up
-  the document when the dialog appears, and an outside handler would catch that
-  one and close it again straight away.
-
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
   @var array $role
   @var array $assignable
@@ -49,7 +41,6 @@
             <span class="min-w-0 flex-1">
               <span class="block truncate text-base font-semibold text-ink">{{ $person['name'] }}</span>
 
-              {{-- Somebody with no employee record goes by their email address, and the line under it would repeat it. --}}
               @if ($person['email'] !== $person['name'])
                 <span class="block truncate text-sm text-muted">{{ $person['email'] }}</span>
               @endif

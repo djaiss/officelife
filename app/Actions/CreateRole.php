@@ -25,9 +25,7 @@ class CreateRole
 {
     private Role $role;
 
-    /**
-     * @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants
-     */
+    /** @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants */
     public function __construct(
         private readonly User $author,
         private readonly Company $company,
@@ -59,14 +57,6 @@ class CreateRole
             ->authorize();
     }
 
-    /**
-     * A permission that covers the whole company has nothing to narrow down, so
-     * asking for it at self scope is asking for something that cannot be
-     * evaluated rather than for something narrower.
-     *
-     * A role grants a permission once, at one scope, so the same permission
-     * twice is a question with no answer rather than two grants.
-     */
     private function validate(): void
     {
         $seen = [];
@@ -127,10 +117,6 @@ class CreateRole
         )->onQueue('low');
     }
 
-    /**
-     * Build a slug out of the role name, suffixed with a number when another
-     * role of the same company already took it.
-     */
     private function slug(): string
     {
         $base = Str::slug($this->name);

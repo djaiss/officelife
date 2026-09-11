@@ -1,22 +1,5 @@
+{{-- The shell of a screen that needs the whole window. --}}
 {{--
-  The shell of a screen that needs the whole window: a big feature, or one worth
-  putting a hard focus on. It draws as a layer laid over the screen somebody came
-  from, with that screen peeking out from under its top edge and named on the bar
-  above it, so leaving is one click on something that says where it goes.
-
-  It takes the title of the screen underneath and the way back to it, and nothing
-  about roles or settings, so anything else can be stacked the same way.
-
-  Escape also goes back. It stands down while an overlay is open: the layout
-  looks for `[data-escape-guard]` in the document, and a dialog binds that
-  attribute only while it is showing, so escape closes the dialog first and takes
-  a second press to leave the layer.
-
-  The root `x-data` is the caller's. Declaring state on the component tag puts it
-  in scope for both the `actions` slot, which is drawn in the sticky header, and
-  the page underneath, which is how a save bar in the header can watch a form in
-  the body. The button reaches the form itself through the html `form` attribute.
-
   @var string $backTitle
   @var string $backUrl
   @var string|null $title
@@ -58,6 +41,7 @@
       </a>
 
       <main class="mx-4 min-w-0 flex-1 rounded-t-xl border border-b-0 border-hairline-strong bg-page">
+        <!-- the bar of the layer -->
         <header class="sticky top-0 z-5 flex h-13.5 items-center gap-3.5 rounded-t-xl border-b border-hairline-soft bg-page/90 pr-5.5 pl-4.5 backdrop-blur-md">
           <a
             href="{{ $backUrl }}"

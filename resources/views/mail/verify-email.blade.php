@@ -1,6 +1,5 @@
-{{--
-  @var string $url
---}}
+{{-- The email asking somebody to confirm the address their account is filed under. --}}
+{{-- @var string $url --}}
 <x-mail::message>
 # {{ __('Confirm your email address') }}
 

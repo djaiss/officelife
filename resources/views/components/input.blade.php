@@ -1,7 +1,5 @@
+{{-- A text field, with its label, its hint and its validation messages. --}}
 {{--
-  A text field, with its label, its hint and its validation messages. The id is
-  also the name of the field, so one prop drives both.
-
   @var string $type
   @var string|null $id
   @var string|null $label

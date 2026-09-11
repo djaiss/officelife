@@ -12,11 +12,6 @@
   </head>
 
   <body class="bg-page font-sans text-body antialiased">
-    {{--
-      `menuOpen` is declared here rather than above <body>: alpine is
-      re-initialised from the body after a turbo navigation, so state declared
-      higher up would never be walked again.
-    --}}
     <div
       x-data="{ menuOpen: false }"
       @keydown.escape.window="menuOpen = false"

@@ -19,14 +19,9 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 /**
- * Take a piece of equipment back.
- *
- * The assignment is closed rather than deleted, so who had it and what state it
- * was in each time is still there to read.
- *
- * A status may be given, and only then is one written: something that comes back
- * damaged goes to Awaiting repair. Nothing is set automatically, because
- * checkout never changed the status and there is nothing to put back.
+ * Take a piece of equipment back. The assignment is closed rather than
+ * deleted, so who had it and what state it was in each time is still there to
+ * read.
  */
 class CheckinAsset
 {

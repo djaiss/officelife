@@ -44,9 +44,6 @@ class SendEmailTest extends TestCase
             user: $user,
         )->handle();
 
-        // Sent, not queued. SendEmail is itself the queued unit, so the mailable must
-        // go out inside this job: if it queued itself instead, the row recorded below
-        // would be written before the email had actually left.
         Mail::assertSent(
             MagicLinkSignInMail::class,
             fn (MagicLinkSignInMail $mail): bool => $mail->hasTo('michael.scott@dundermifflin.com'),

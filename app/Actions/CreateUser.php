@@ -11,8 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * Create a user. A user always belongs to a company. The password is null when
- * the user signs in through an SSO provider.
+ * Create a user. A user always belongs to a company.
  */
 class CreateUser
 {
@@ -35,11 +34,6 @@ class CreateUser
         return $this->user;
     }
 
-    /**
-     * Nobody is recorded as the actor. A user is created by registration, where
-     * the person the account is for does not exist yet to be named as having
-     * done it.
-     */
     private function publish(): void
     {
         new PublishOccurrence(

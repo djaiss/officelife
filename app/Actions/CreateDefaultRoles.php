@@ -16,11 +16,6 @@ use Illuminate\Support\Facades\DB;
  * Give a company the four roles it starts life with. Nobody asks for this: it
  * runs when the company is created, so there is never a company without a way
  * of handing out permissions.
- *
- * The roles are editable afterwards. A company that wants something else can
- * change them or add roles of its own. When a later feature brings a new
- * permission with it, the appropriate default roles are given it through a
- * migration.
  */
 class CreateDefaultRoles
 {
@@ -31,9 +26,7 @@ class CreateDefaultRoles
         private readonly Company $company,
     ) {}
 
-    /**
-     * @return Collection<int, Role>
-     */
+    /** @return Collection<int, Role> */
     public function execute(): Collection
     {
         $this->roles = new Collection;
@@ -47,11 +40,7 @@ class CreateDefaultRoles
         return $this->roles;
     }
 
-    /**
-     * What each of the default roles is called and what it may do.
-     *
-     * @return list<array{name: string, slug: string, grants: list<array{permission: PermissionEnum, scope: ScopeEnum}>}>
-     */
+    /** @return list<array{name: string, slug: string, grants: list<array{permission: PermissionEnum, scope: ScopeEnum}>}> */
     private function definitions(): array
     {
         return [
@@ -106,9 +95,7 @@ class CreateDefaultRoles
         ];
     }
 
-    /**
-     * @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants
-     */
+    /** @param  list<array{permission: PermissionEnum, scope: ScopeEnum}>  $grants */
     private function createRole(string $name, string $slug, array $grants): void
     {
         $role = Role::query()->create([

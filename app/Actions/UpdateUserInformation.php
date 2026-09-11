@@ -11,8 +11,8 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Update the information of a user. A user may only be updated by themselves or
- * by the owner of their company.
+ * Update the information of a user. A user may only be updated by themselves
+ * or by the owner of their company.
  */
 class UpdateUserInformation
 {

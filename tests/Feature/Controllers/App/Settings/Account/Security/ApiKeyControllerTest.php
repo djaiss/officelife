@@ -35,10 +35,6 @@ class ApiKeyControllerTest extends TestCase
         ]);
     }
 
-    /**
-     * The key rides back on the session so the screen can print it, and is gone
-     * by the next request.
-     */
     #[Test]
     public function it_hands_the_key_over_once(): void
     {

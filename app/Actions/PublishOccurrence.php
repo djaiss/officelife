@@ -13,24 +13,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Write down that something happened.
- *
- * This is the one way business code says so. Nothing else writes to the
- * occurrences table, and nothing reaches for the Laravel event system for
- * something that belongs in it.
- *
- * Writing the row down is the whole job today. Once playbooks exist, this is
- * also where the triggers that react to an occurrence are resolved and queued,
- * and the order will matter: the row is written first, so the log stays a record
- * of what happened rather than a record of what happened to be listened to.
+ * Write down that something happened. This is the one way business code says
+ * so.
  */
 class PublishOccurrence
 {
     private Occurrence $occurrence;
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
+    /** @param  array<string, mixed>  $payload */
     public function __construct(
         private readonly OccurrenceTypeEnum $type,
         private readonly ?Company $company = null,
@@ -48,10 +38,6 @@ class PublishOccurrence
         return $this->occurrence;
     }
 
-    /**
-     * Nobody named as the actor means the application did it on its own, which
-     * is the case for anything the schedule brings about.
-     */
     private function record(): void
     {
         $this->occurrence = Occurrence::query()->create([

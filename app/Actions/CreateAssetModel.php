@@ -16,9 +16,9 @@ use App\Models\User;
 use InvalidArgumentException;
 
 /**
- * Add a model to the catalogue of a company. Every piece of equipment belongs to
- * one, which is what stops the manufacturer of forty identical laptops being
- * typed forty times.
+ * Add a model to the catalogue of a company. Every piece of equipment belongs
+ * to one, which is what stops the manufacturer of forty identical laptops
+ * being typed forty times.
  */
 class CreateAssetModel
 {
@@ -62,10 +62,6 @@ class CreateAssetModel
         $this->notes = TextSanitizer::nullablePlainText($this->notes);
     }
 
-    /**
-     * The manufacturer and the category have to belong to the same company as
-     * the model, or the catalogue of one company starts referring to another.
-     */
     private function validate(): void
     {
         if ($this->name === '') {

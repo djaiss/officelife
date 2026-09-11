@@ -1,12 +1,11 @@
 {{-- Every email we sent to the person signed in, a page at a time. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Account\Logs\EmailsSentViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Emails sent')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -17,17 +16,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Emails sent') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Emails sent') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('Every email we sent to your account, most recent first.') }}</p>
   </div>
 
+  <!-- list of emails -->
   <x-section :title="__('Every email')" icon="emails" :hue="50" padding="p-0">
-    {{--
-      The list grows in place: the link at the bottom asks for the next page,
-      alpine-ajax appends the rows that come back, and swaps the link for the one
-      that came with them, or drops it on the last page.
-    --}}
     <div id="emails-sent-container" x-merge="append">
       @forelse ($viewModel->emailsSent() as $emailSent)
         @include('app.settings.account.logs._email-sent-row', ['emailSent' => $emailSent])

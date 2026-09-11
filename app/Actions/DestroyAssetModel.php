@@ -13,8 +13,8 @@ use InvalidArgumentException;
 
 /**
  * Remove a model from the catalogue. Refused while the company still owns
- * equipment of that model, archived equipment included: what an asset is has to
- * stay readable for as long as the asset does.
+ * equipment of that model, archived equipment included: what an asset is has
+ * to stay readable for as long as the asset does.
  */
 class DestroyAssetModel
 {

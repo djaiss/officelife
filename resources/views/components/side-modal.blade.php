@@ -1,27 +1,5 @@
 {{-- A panel that slides in from the right of the window, over the screen it was opened from. --}}
 {{--
-  It is for looking after one row of a list without leaving the list behind,
-  which a dialog in the middle of the window would not do: the rows stay visible
-  down the left, so moving from one to the next is one click.
-
-  It sits inside the window rather than against its edges, so the list it came
-  from is still framed around it.
-
-  What opens and closes it is the caller's, passed in as two alpine expressions.
-  The component owns none of that state, so a list can drive the panel with the
-  id of whichever row is open and hand the same expression to `show`.
-
-  It carries `data-escape-guard` while it is open, so escape closes the panel
-  rather than leaving the layer underneath it.
-
-  Clicking away closes it too, which is read off the backdrop itself rather than
-  as a click outside the panel: the click that opens the panel is still on its
-  way up the document when the panel appears, and an outside handler would catch
-  that one and close it again straight away.
-
-  The page behind it stops scrolling while it is open, so a wheel over the
-  backdrop does not quietly move the list under the panel.
-
   @var string $show
   @var string $close
   @var string|null $labelledby
@@ -54,9 +32,6 @@
     {{ $attributes->class('absolute inset-y-3.5 right-3.5 flex w-[calc(100%-1.75rem)] max-w-110 flex-col overflow-hidden rounded-[20px] bg-canvas shadow-2xl ring-[1.5px] ring-hairline') }}
   >
     @isset($header)
-      {{-- The close button is the last thing on the line whatever the header
-           holds, so what the caller puts there wraps under itself on a narrow
-           screen rather than pushing the way out of the panel off the edge. --}}
       <div class="flex shrink-0 items-start gap-4 px-5.5 pt-6 pb-5 sm:px-7">
         <div class="min-w-0 flex-1">
           {{ $header }}

@@ -1,20 +1,5 @@
 {{-- One role: what it is allowed to do under one tab, and who holds it under the other. --}}
-{{--
-  The name is edited in place, as a field dressed as the heading it replaces. It
-  lives outside the form that saves the matrix and points back at it, since the
-  buttons beside it are forms of their own and a form cannot hold another.
-
-  Saving is offered on the permissions tab only. What the form submits is the
-  matrix, and a permission left unticked is a permission taken away, so a save
-  sent from the tab that does not draw the matrix would quietly strip the role of
-  everything. Renaming therefore happens on the permissions tab too.
-
-  `deleting` is declared on a div wrapping the whole screen, so it is in scope
-  everywhere it is read: the entry that asks for the deletion sits in a menu that
-  closes on the same click, and the dialog itself is the last thing on the page.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 @php
   $role = $viewModel->role();
   $onPeopleTab = $viewModel->onPeopleTab();
@@ -25,6 +10,7 @@
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex flex-wrap items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -36,6 +22,7 @@
   </nav>
 
   <div x-data="{ deleting: false }">
+    <!-- role name and its buttons -->
     <div class="mb-6 grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
       <div class="flex min-w-0 items-center gap-4">
         <span class="accent-tile grid size-13 shrink-0 place-items-center rounded-2xl" style="--tile-hue: {{ $role['hue'] }}">
@@ -87,6 +74,7 @@
       </div>
     </div>
 
+    <!-- warning about full access -->
     @if ($viewModel->warnsAboutAdministration())
       <div class="mb-6 flex items-start gap-3 rounded-[14px] bg-error/8 px-4 py-3.5 ring-[1.5px] ring-error/25">
         <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="mt-0.5 shrink-0 text-error" aria-hidden="true">
@@ -101,6 +89,7 @@
       </div>
     @endif
 
+    <!-- permissions or people -->
     <div class="mb-5 flex justify-center">
       <div class="flex gap-0.75 rounded-xl bg-canvas p-1 ring-[1.5px] ring-hairline">
         @foreach ($viewModel->tabs() as $tab)
@@ -116,6 +105,7 @@
       </div>
     </div>
 
+    <!-- the tab being read -->
     <div class="mx-auto max-w-180">
       @if ($onPeopleTab)
         @include('app.settings.administration.roles._people', ['viewModel' => $viewModel, 'role' => $role])

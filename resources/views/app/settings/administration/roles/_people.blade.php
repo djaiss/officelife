@@ -1,14 +1,5 @@
 {{-- Who holds the role, and the two things that can be done about it. --}}
 {{--
-  Handing it out opens a dialog listing the colleagues who do not hold it yet. A
-  company where everybody already holds it has nobody to list, so the button says
-  so instead.
-
-  Taking it back asks first, in a dialog of its own: it withdraws permissions
-  from somebody who is working, and the row it started from is too small to say
-  what that costs them. `removing` holds whoever is being asked about rather than
-  a yes or no, so one dialog per row can sit below the list instead of inside it.
-
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
   @var array $role
 --}}
@@ -18,6 +9,7 @@
 @endphp
 
 <div x-data="{ assigning: false, removing: null }">
+  <!-- title and the assign button -->
   <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
     <h2 class="text-[22px] leading-tight font-bold tracking-tight text-ink">{{ __('Held by') }}</h2>
 
@@ -26,6 +18,7 @@
     </x-button.secondary>
   </div>
 
+  <!-- list of people -->
   <div class="rounded-[18px] bg-canvas px-2.5 py-2 ring-[1.5px] ring-hairline">
     @forelse ($people as $person)
       <div class="flex flex-wrap items-center gap-x-3.5 gap-y-2 rounded-xl px-3 py-2.75">
@@ -57,12 +50,14 @@
     @endforelse
   </div>
 
+  <!-- note about handing roles out -->
   <p class="mt-3 text-sm leading-relaxed text-pretty text-muted">
     {{ __('Handing a role out and taking it back are both written to the logs, on both sides.') }}
   </p>
 
   @include('app.settings.administration.roles._assign-people', ['viewModel' => $viewModel, 'role' => $role, 'assignable' => $assignable])
 
+  <!-- take the role back dialogs -->
   @foreach ($people as $person)
     <x-confirm-dialog
       show="removing === {{ $person['id'] }}"

@@ -136,11 +136,6 @@ class RoleControllerTest extends TestCase
         ]);
     }
 
-    /**
-     * A permission covering the whole company has nothing to narrow down, so a
-     * scope submitted for it is not a narrower grant but an answer to a question
-     * nobody asked.
-     */
     #[Test]
     public function it_ignores_the_scope_of_a_permission_that_covers_the_whole_company(): void
     {

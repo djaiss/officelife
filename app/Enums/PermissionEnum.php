@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-/**
- * Everything a role can be allowed to do. There is no permissions table: this
- * enum is the list, and a role stores the value of the case it grants. Renaming
- * a value therefore needs a data migration.
- *
- * A permission is only added along with the feature that uses it.
- */
 enum PermissionEnum: string
 {
+    // There is no permissions table: a role stores the value of the case it
+    // grants, so renaming one orphans every role that already grants it.
     case EmployeeView = 'employee.view';
     case EmployeeCreate = 'employee.create';
     case EmployeeUpdate = 'employee.update';
@@ -24,11 +19,6 @@ enum PermissionEnum: string
     case AssetManage = 'asset.manage';
     case AssetCheckout = 'asset.checkout';
 
-    /**
-     * Whether the permission is about one employee at a time, and therefore
-     * needs an employee to be checked against. The ones that are not cover the
-     * whole company and are always granted at company scope.
-     */
     public function targetsEmployee(): bool
     {
         return match ($this) {
@@ -45,18 +35,6 @@ enum PermissionEnum: string
         };
     }
 
-    /**
-     * The module the permission belongs to, or null when it belongs to the core.
-     * A permission of a module the company has not turned on is denied, whatever
-     * a role grants, which is the only part of the module boundary somebody can
-     * observe.
-     *
-     * The permissions of every module live in this enum rather than in one of
-     * their own. That is a deliberate simplification while there is a single
-     * module: composing several enums means replacing every match in this file
-     * with an interface, for no gain the user can see. It is revisited when a
-     * second module arrives.
-     */
     public function module(): ?ModuleEnum
     {
         return match ($this) {
@@ -73,13 +51,7 @@ enum PermissionEnum: string
         };
     }
 
-    /**
-     * The scopes a role may grant the permission at. A permission with no
-     * employee target has nothing to narrow down, so it only ever comes at
-     * company scope and no scope is offered for it.
-     *
-     * @return list<ScopeEnum>
-     */
+    /** @return list<ScopeEnum> */
     public function scopes(): array
     {
         if (! $this->targetsEmployee()) {
@@ -89,10 +61,6 @@ enum PermissionEnum: string
         return [ScopeEnum::Self, ScopeEnum::Company];
     }
 
-    /**
-     * The section the permission is listed under on the screen where somebody
-     * grants them. Every permission belongs to exactly one.
-     */
     public function group(): PermissionGroupEnum
     {
         return match ($this) {
@@ -109,10 +77,6 @@ enum PermissionEnum: string
         };
     }
 
-    /**
-     * What the permission is called on the screen where somebody grants it. The
-     * sentence doubles as the translation key.
-     */
     public function label(): string
     {
         return match ($this) {

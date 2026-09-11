@@ -1,8 +1,5 @@
+{{-- A checkbox and the sentence that goes with it. --}}
 {{--
-  A checkbox and the sentence that goes with it. The real input is hidden behind
-  the drawn box, which the peer variants fill in when it is checked, so there is
-  no javascript involved and the keyboard still works.
-
   @var string $id
   @var string $value
   @var bool $checked

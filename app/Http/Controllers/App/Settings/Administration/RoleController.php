@@ -33,11 +33,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * What a role is allowed to do and who holds it are two screens rather than
-     * one screen with a switch on it, so either of them can be linked to and
-     * gone back to. Which one is being read is the last segment of the path.
-     */
     public function show(Request $request, int $role, ?string $tab = null): View
     {
         $this->authorize($request);
@@ -52,13 +47,10 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * The dialog that asks for a new role sits on a screen with a field called
-     * `name` of its own, so its messages go in a bag of their own. That bag
-     * having anything in it is also what reopens the dialog.
-     */
     public function create(Request $request): RedirectResponse
     {
+        // Its own error bag: the dialog and the screen behind it both have a
+        // field called `name`.
         $validated = $request->validateWithBag('createRole', [
             'name' => ['required', 'string', 'min:2', 'max:255'],
         ]);
@@ -75,12 +67,6 @@ class RoleController extends Controller
             ->with('status_description', __('Nothing changes for anybody until you hand it out.'));
     }
 
-    /**
-     * What is submitted replaces what the role had, so a permission left
-     * unticked is a permission taken away. A permission covering the whole
-     * company has nothing to narrow down, so whatever scope the form carried for
-     * it is ignored.
-     */
     public function update(Request $request, int $role): RedirectResponse
     {
         $validated = $request->validate([
@@ -131,10 +117,6 @@ class RoleController extends Controller
             ->with('status_description', __('What it granted is granted by it no longer.'));
     }
 
-    /**
-     * Reading the screen has no action behind it to ask on its behalf, so it
-     * asks here.
-     */
     private function authorize(Request $request): void
     {
         $request->user()
@@ -143,12 +125,7 @@ class RoleController extends Controller
             ->authorize();
     }
 
-    /**
-     * The roles of the company of whoever is asking, which is what keeps a role
-     * of another company out of reach.
-     *
-     * @return HasMany<Role, Company>
-     */
+    /** @return HasMany<Role, Company> */
     private function roles(Request $request): HasMany
     {
         return $request->user()->company->roles();

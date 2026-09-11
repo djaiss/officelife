@@ -1,16 +1,11 @@
 {{-- Every role of the company as a list, and the dialog that adds one to it. --}}
-{{--
-  `creating` is declared on a div wrapping the whole screen, so it is in scope
-  everywhere it is read: the button that opens the dialog sits beside the title,
-  and the dialog itself is the last thing on the page.
-
-  @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Roles')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -20,6 +15,7 @@
   </nav>
 
   <div x-data="{ creating: {{ $errors->createRole->any() ? 'true' : 'false' }} }">
+    <!-- page title and the new role button -->
     <div class="mb-9 grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
       <div>
         <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Roles') }}</h1>
@@ -34,6 +30,7 @@
 
     @include('app.settings.administration.roles._roles', ['viewModel' => $viewModel])
 
+    <!-- note about roles -->
     <p class="mt-4 text-sm leading-relaxed text-pretty text-muted">
       {{ __('Handing a role out and taking it back are both written to the logs. A role somebody holds cannot be deleted.') }}
     </p>

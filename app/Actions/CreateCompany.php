@@ -18,12 +18,10 @@ use Illuminate\Support\Str;
 
 /**
  * Create a company, its first user, who becomes the owner of the company, and
- * the employee that user is.
- *
- * The company also gets the roles it starts life with, and the first user is
- * made an administrator: owning the company is enough to do anything in it, but
- * the person who signed up should show up as an administrator like anybody else
- * holding the role.
+ * the employee that user is. The company also gets the roles it starts life
+ * with, and the first user is made an administrator: owning the company is
+ * enough to do anything in it, but the person who signed up should show up as
+ * an administrator like anybody else holding the role.
  */
 class CreateCompany
 {
@@ -103,10 +101,6 @@ class CreateCompany
         new CreateDefaultRoles(company: $this->company)->execute();
     }
 
-    /**
-     * The role is looked up rather than kept from the step above, so this reads
-     * the same as it would anywhere else in the application.
-     */
     private function makeOwnerAnAdministrator(): void
     {
         $administrator = $this->company->roles()
@@ -133,10 +127,6 @@ class CreateCompany
         $this->owner->save();
     }
 
-    /**
-     * Published outside the transaction, along with the log, so that a company
-     * that failed to be created leaves no record of having happened.
-     */
     private function publish(): void
     {
         new PublishOccurrence(
@@ -158,10 +148,6 @@ class CreateCompany
         )->onQueue('low');
     }
 
-    /**
-     * Build a slug out of the company name, suffixed with a number when another
-     * company already took it.
-     */
     private function slug(): string
     {
         $base = Str::slug($this->name);

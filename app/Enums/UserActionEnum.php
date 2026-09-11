@@ -57,11 +57,6 @@ enum UserActionEnum: string
     case AssetCheckedOut = 'asset_checked_out';
     case AssetCheckedIn = 'asset_checked_in';
 
-    /**
-     * What the action reads as in the logs, written about whoever performed it.
-     * The sentence doubles as the translation key, and its placeholders are
-     * filled with the parameters the action was logged with.
-     */
     public function description(): string
     {
         return match ($this) {

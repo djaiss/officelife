@@ -1,7 +1,5 @@
 {{-- One setting on the hub: what it is, what it holds right now, and the way into it. --}}
-{{--
-  @var array{title: string, description: string, value: string, url: string, hue: int, icon: string} $row
---}}
+{{-- @var array{title: string, description: string, value: string, url: string, hue: int, icon: string} $row --}}
 <a
   href="{{ $row['url'] }}"
   data-turbo="true"
@@ -16,7 +14,6 @@
     <span class="block text-[15px] leading-relaxed text-body">{{ $row['description'] }}</span>
   </span>
 
-  {{-- The value is what the row already holds, not what it is, so a narrow screen does without it. --}}
   <span class="hidden text-right text-[15px] font-semibold whitespace-nowrap text-muted sm:block">{{ $row['value'] }}</span>
 
   <span class="block size-2 -rotate-45 justify-self-end border-r-2 border-b-2 border-muted-soft" aria-hidden="true"></span>

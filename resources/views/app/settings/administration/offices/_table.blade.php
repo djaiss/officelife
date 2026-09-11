@@ -1,23 +1,5 @@
 {{-- Every office of the list, one to a row. --}}
-{{--
-  A row is a button rather than a link, since what it opens is the panel over the
-  same page and not another page.
-
-  The tile at the left of a row is coloured by what the office is: the head
-  office, an archived one, or an ordinary one.
-
-  The whole block is the target of the save in the panel, which is why it has an
-  id: a rename has to show up in the row behind the panel without the screen
-  being drawn again.
-
-  Three columns need a screen wide enough for three columns. Below md the same
-  row folds into two lines instead of squeezing every one of them into nothing:
-  the office and where it is on the first, what time it keeps on the second. The
-  cells are placed by hand there, since the order they fold into is not the order
-  they are written in.
-
-  @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel --}}
 @php
   $columns = 'grid-cols-[38px_minmax(0,1fr)_10px] gap-x-4.5 gap-y-1.5 md:grid-cols-[38px_minmax(0,1fr)_auto_10px] md:gap-y-0';
 @endphp

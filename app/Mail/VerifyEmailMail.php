@@ -9,11 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/**
- * Ask somebody who just signed up to prove the address they gave is theirs. The
- * link is signed and expires, and is built by the caller so this mailable does
- * not have to know how the route is put together.
- */
 class VerifyEmailMail extends Mailable implements HasEnvelope
 {
     public function __construct(

@@ -1,30 +1,5 @@
 {{-- The dialog that asks before something is taken away for good. --}}
 {{--
-  It sits in the middle of the window rather than beside the button that opened
-  it, so what is about to happen is read before anything else can be clicked.
-
-  What opens and closes it is the caller's, passed in as two alpine expressions.
-  The component owns none of that state, so a list can drive one dialog per row
-  with the same pair of expressions.
-
-  It appears at once rather than fading in. `x-transition` on it never completes:
-  the enter transition is queued behind a cascade it never gets out of, and the
-  dialog stays at `display: none` with the state already true. A question about
-  something irreversible is also the wrong place for a hundred milliseconds of
-  fade, so this is left as it is rather than worked around.
-
-  It carries `data-escape-guard` while it is open, so escape closes the dialog
-  rather than leaving the layer underneath it.
-
-  Clicking away closes it too, which is read off the backdrop itself rather than
-  as a click outside the panel: the click that opens the dialog is still on its
-  way up the document when the dialog appears, and an outside handler would catch
-  that one and close it again straight away.
-
-  The way out is the component's own, so every dialog offers one and it is always the
-  expression that closes this one. The caller writes only what goes through with the
-  thing being asked about.
-
   @var string $show
   @var string $close
   @var string $labelledby

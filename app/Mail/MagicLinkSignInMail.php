@@ -9,11 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/**
- * Tell somebody their account was signed in to without a password, through a
- * link they asked for by email. A password sign-in does not send this, since it
- * would arrive every single time.
- */
 class MagicLinkSignInMail extends Mailable implements HasEnvelope
 {
     public function __construct(

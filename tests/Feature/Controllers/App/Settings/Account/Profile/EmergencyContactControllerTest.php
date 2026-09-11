@@ -69,10 +69,6 @@ class EmergencyContactControllerTest extends TestCase
         $response->assertSee('Roy Anderson');
     }
 
-    /**
-     * The form is left out rather than shown empty, since an empty form that
-     * saves is a form that quietly wipes what somebody may not read.
-     */
     #[Test]
     public function it_leaves_the_box_out_for_somebody_who_may_not_read_the_details(): void
     {

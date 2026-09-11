@@ -1,14 +1,5 @@
-{{--
-  One email we sent, as a row in a list. Clicking it opens the copy that was
-  sent, so somebody can tell what an email actually said rather than only that
-  it left. Shown by both the logs screen and the page that holds every email.
-
-  The dot on the left is the delivery: still on its way, delivered, or bounced.
-  Colour alone would say nothing to a screen reader, so the same three words are
-  written out beside it.
-
-  @var \App\Models\EmailSent $emailSent
---}}
+{{-- One email we sent, as a row in a list. --}}
+{{-- @var \App\Models\EmailSent $emailSent --}}
 @php
   [$delivery, $deliveryLabel] = match (true) {
     $emailSent->bounced_at !== null => ['bg-error', __('Bounced')],
@@ -50,11 +41,9 @@
     </span>
   </button>
 
-  {{-- rounded-b-[inherit]: the last row open would otherwise square off the panel. --}}
   <div x-cloak x-show="open" x-transition class="rounded-b-[inherit] border-t border-hairline-soft bg-card px-4.5 py-3.5">
     <p class="text-center text-xs text-muted italic">{{ __('We remove the links from this copy, since they have probably expired.') }}</p>
 
-    {{-- Purify leaves bare paragraphs behind, so the spacing between them is ours to give. --}}
     <div class="mt-3 space-y-2 text-sm leading-relaxed text-body">{!! $emailSent->body !!}</div>
   </div>
 </x-box.row>

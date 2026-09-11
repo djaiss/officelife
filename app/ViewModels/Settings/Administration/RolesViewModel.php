@@ -16,31 +16,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
-/**
- * What the two roles screens show: every role of the company as a list, and one
- * role on a screen of its own, with what it is allowed to do under one tab and
- * who holds it under the other.
- *
- * The list screen is built with no role, so the role is nullable and everything
- * about one role answers with nothing when there is none.
- */
 class RolesViewModel
 {
-    /**
-     * The roles of the company, asked for once and kept. The list reads them and
-     * the counts above it read them again, and the second ask would be another
-     * query.
-     *
-     * @var Collection<int, Role>|null
-     */
+    /** @var Collection<int, Role>|null */
     private ?Collection $roles = null;
 
-    /**
-     * What the selected role grants, keyed by permission, so a row of the matrix
-     * is one array lookup rather than one query.
-     *
-     * @var array<string, ScopeEnum>|null
-     */
+    /** @var array<string, ScopeEnum>|null */
     private ?array $grants = null;
 
     public function __construct(
@@ -55,19 +36,11 @@ class RolesViewModel
         return $this->user->company->name;
     }
 
-    /**
-     * The name to show and to draw initials from. Somebody whose account is not
-     * attached to an employee record has only an email address to go by.
-     */
     public function name(): string
     {
         return $this->employee->name ?? $this->user->email;
     }
 
-    /**
-     * The record the avatar draws from, so the top bar can show it when
-     * there is one. An account that belongs to nobody who works here has none.
-     */
     public function employee(): ?Employee
     {
         return $this->employee;
@@ -78,12 +51,7 @@ class RolesViewModel
         return route('settings.roles.create');
     }
 
-    /**
-     * Every role of the company, one to a row: what it covers, how much of
-     * everything on offer it grants, and how many people hold it.
-     *
-     * @return array<int, array{id: int, name: string, url: string, summary: string, permissions: string, holders: string, badges: array<int, array{label: string, tone: string}>, hue: int}>
-     */
+    /** @return array<int, array{id: int, name: string, url: string, summary: string, permissions: string, holders: string, badges: array<int, array{label: string, tone: string}>, hue: int}> */
     public function rows(): array
     {
         return $this->roles()
@@ -105,11 +73,7 @@ class RolesViewModel
             ->all();
     }
 
-    /**
-     * The role being looked at, or null on the list screen.
-     *
-     * @return array{id: int, name: string, slug: string, isEditable: bool, badges: array<int, array{label: string, tone: string}>, hue: int, updateUrl: string, destroyUrl: string, duplicateUrl: string, assignUrl: string}|null
-     */
+    /** @return array{id: int, name: string, slug: string, isEditable: bool, badges: array<int, array{label: string, tone: string}>, hue: int, updateUrl: string, destroyUrl: string, duplicateUrl: string, assignUrl: string}|null */
     public function role(): ?array
     {
         if ($this->role === null) {
@@ -130,12 +94,7 @@ class RolesViewModel
         ];
     }
 
-    /**
-     * The two halves of a role, each a path of its own so either can be linked
-     * to and gone back to.
-     *
-     * @return array<int, array{label: string, url: string, current: bool}>
-     */
+    /** @return array<int, array{label: string, url: string, current: bool}> */
     public function tabs(): array
     {
         if ($this->role === null) {
@@ -161,16 +120,7 @@ class RolesViewModel
         return $this->onPeopleTab;
     }
 
-    /**
-     * The permission matrix, one section per group. A permission that covers the
-     * whole company has nothing to narrow down, so it comes with no scopes at
-     * all and the row says so instead of showing a toggle leading nowhere.
-     *
-     * What was submitted wins over what is stored, so a save turned away by the
-     * validator gives the ticks back rather than throwing the edit away.
-     *
-     * @return array<int, array{title: string, note: string, count: string, width: string, tone: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}>}>
-     */
+    /** @return array<int, array{title: string, note: string, count: string, width: string, tone: string, permissions: array<int, array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}>}> */
     public function groups(): array
     {
         $groups = [];
@@ -204,10 +154,6 @@ class RolesViewModel
         return $groups;
     }
 
-    /**
-     * The line at the right of the matrix header, saying how much of everything
-     * on offer the role actually grants.
-     */
     public function grantCountLabel(): string
     {
         return trans_choice('[0,*]:count of :total granted', count($this->grants()), [
@@ -215,22 +161,12 @@ class RolesViewModel
         ]);
     }
 
-    /**
-     * Whether the role hands out the administration of the company, in which
-     * case whoever holds it can grant themselves everything else and the screen
-     * says as much.
-     */
     public function warnsAboutAdministration(): bool
     {
         return array_key_exists(PermissionEnum::RoleManage->value, $this->grants());
     }
 
-    /**
-     * Who holds the role, with the month they were given it and the way to take
-     * it back.
-     *
-     * @return array<int, array{id: int, name: string, email: string, employee: Employee|null, since: string, removeUrl: string}>
-     */
+    /** @return array<int, array{id: int, name: string, email: string, employee: Employee|null, since: string, removeUrl: string}> */
     public function people(): array
     {
         if ($this->role === null) {
@@ -253,12 +189,7 @@ class RolesViewModel
             ->all();
     }
 
-    /**
-     * The colleagues who do not hold the role yet, for the dialog that hands it
-     * out.
-     *
-     * @return array<int, array{id: int, name: string, email: string, employee: Employee|null}>
-     */
+    /** @return array<int, array{id: int, name: string, email: string, employee: Employee|null}> */
     public function assignable(): array
     {
         if ($this->role === null) {
@@ -278,19 +209,11 @@ class RolesViewModel
             ->all();
     }
 
-    /**
-     * Whether the role can go. A role somebody still holds cannot, and neither
-     * can one the application looks after itself.
-     */
     public function canBeDeleted(): bool
     {
         return $this->deleteHint() === null;
     }
 
-    /**
-     * Why the role cannot go, to be shown beside the entry that would delete it,
-     * or null when nothing is in the way.
-     */
     public function deleteHint(): ?string
     {
         if ($this->role === null || ! $this->role->is_editable) {
@@ -306,13 +229,7 @@ class RolesViewModel
         return null;
     }
 
-    /**
-     * The day each holder of the role was given it, keyed by who they are. It is
-     * read off the row that joins the two rather than through the relation,
-     * since the day a role was handed out belongs to neither of them.
-     *
-     * @return array<int, Carbon>
-     */
+    /** @return array<int, Carbon> */
     private function heldSince(Role $role): array
     {
         return UserRole::query()
@@ -322,11 +239,7 @@ class RolesViewModel
             ->all();
     }
 
-    /**
-     * One row of the matrix.
-     *
-     * @return array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>}
-     */
+    /** @return array{value: string, label: string, granted: bool, scope: string, targetsEmployee: bool, scopes: array<string, string>} */
     private function permission(PermissionEnum $permission): array
     {
         $submitted = old('permissions');
@@ -356,9 +269,7 @@ class RolesViewModel
         ];
     }
 
-    /**
-     * @return Collection<int, Role>
-     */
+    /** @return Collection<int, Role> */
     private function roles(): Collection
     {
         return $this->roles ??= $this->user->company->roles()
@@ -368,9 +279,7 @@ class RolesViewModel
             ->get();
     }
 
-    /**
-     * @return array<string, ScopeEnum>
-     */
+    /** @return array<string, ScopeEnum> */
     private function grants(): array
     {
         if ($this->grants !== null) {
@@ -386,12 +295,6 @@ class RolesViewModel
             ->all();
     }
 
-    /**
-     * The sentence under the name of a role in the list. Roles carry no
-     * description of their own, so it is read off what they grant: the sections
-     * of the matrix they reach into, which is the shortest true thing that can
-     * be said about a role without listing it out.
-     */
     private function summary(Role $role): string
     {
         if ($role->permissions_count === 0) {
@@ -417,10 +320,6 @@ class RolesViewModel
         return Arr::join(array_values($groups), ', ', ' '.__('and').' ');
     }
 
-    /**
-     * How many people hold a role. Nobody holding it is its own sentence rather
-     * than a count of none, since that is the thing worth noticing about it.
-     */
     private function holderLabel(int $holders): string
     {
         if ($holders === 0) {
@@ -430,12 +329,7 @@ class RolesViewModel
         return trans_choice(':count person|:count people', $holders);
     }
 
-    /**
-     * What is worth saying about a role beside its name: that it amounts to full
-     * access, and that the application looks after it itself.
-     *
-     * @return array<int, array{label: string, tone: string}>
-     */
+    /** @return array<int, array{label: string, tone: string}> */
     private function badges(Role $role): array
     {
         $badges = [];
@@ -451,10 +345,6 @@ class RolesViewModel
         return $badges;
     }
 
-    /**
-     * The colour of the square beside a role, which sets a role granting the
-     * administration of the company apart from the rest at a glance.
-     */
     private function hue(Role $role): int
     {
         return $this->administers($role) ? 30 : 80;

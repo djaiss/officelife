@@ -1,7 +1,5 @@
 {{-- The drawing on the square beside a setting, one per kind of setting. --}}
-{{--
-  @var string $name
---}}
+{{-- @var string $name --}}
 @props([
   'name',
 ])

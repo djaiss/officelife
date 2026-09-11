@@ -1,17 +1,5 @@
 {{-- The matrix: everything a role can be allowed to do, whether this one is, and over whom. --}}
 {{--
-  A permission that covers the whole company has nothing to narrow down, so its
-  row says so instead of offering a toggle that would mean nothing. The rest
-  carry one scope each, shown as the sentence it stands for and flipped by
-  clicking it.
-
-  Filtering only hides rows. The fields are still in the page and still
-  submitted, so a search left in the box can never quietly drop a grant on the
-  way to saving.
-
-  The bar beside a group title describes what is saved, not what is on screen: it
-  comes back right once the form has been through the server.
-
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
   @var array $role
 --}}
@@ -51,17 +39,13 @@
     nothingMatches() { return ! Object.keys(this.search).some((value) => this.matches(value)) },
   }"
 >
+  <!-- title and the count granted -->
   <div class="mb-3 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
     <h2 class="text-[22px] leading-tight font-bold tracking-tight text-ink">{{ __('Allowed to') }}</h2>
 
     <p class="text-[15px] text-muted">{{ $viewModel->grantCountLabel() }}</p>
   </div>
 
-  {{--
-    The filter is not part of the role, so what is typed into it must not reach
-    the form around it: the event is stopped here rather than counted as a
-    change, and enter filters instead of saving.
-  --}}
   <label for="permission-filter" class="sr-only">{{ __('Filter permissions') }}</label>
 
   <input
@@ -74,6 +58,7 @@
     class="mb-3 block w-full appearance-none rounded-xl border-[1.5px] border-hairline-strong bg-input px-3.5 py-2.5 text-base text-ink placeholder-placeholder transition-colors duration-150 hover:border-focus hover:bg-hover focus:border-focus focus:bg-canvas focus:ring-3 focus:ring-focus/15 focus:outline-none"
   />
 
+  <!-- the permission matrix -->
   <div class="rounded-[18px] bg-canvas px-2.5 py-2 ring-[1.5px] ring-hairline">
     @foreach ($groups as $group)
       <div x-show="sectionMatches(@js($group['title']))">
@@ -154,6 +139,7 @@
     <p x-cloak x-show="nothingMatches()" class="px-3 py-6 text-center text-[15px] text-muted">{{ __('No permission matches that.') }}</p>
   </div>
 
+  <!-- note about scopes -->
   <p class="mt-3 text-sm leading-relaxed text-pretty text-muted">
     {{ __('The words on the right say who a permission reaches. Click them to switch. A few permissions cannot be narrowed and always cover the whole company.') }}
   </p>

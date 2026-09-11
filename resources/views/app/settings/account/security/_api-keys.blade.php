@@ -1,28 +1,5 @@
-{{--
-  The API keys somebody has minted, and the two things they can do about them:
-  make another, and revoke one.
-
-  A key is shown exactly once, in the block at the top, because only a hash of
-  it is written down. Somebody who does not copy it there and then has to make
-  another rather than look this one up, which is what the block says.
-
-  Making a key needs a name, which the button alone cannot ask for, so it opens
-  a field in place instead of leading to a screen of its own. A name that comes
-  back rejected reopens it, which is what the `creating` flag reads from the
-  errors rather than starting closed and hiding the message.
-
-  Revoking asks before it acts, in a dialog of its own. `revoking` holds whichever
-  key is being asked about rather than a yes or no, so one dialog per key can sit
-  below the list instead of inside a row.
-
-  Both forms ask for the screen again and swap this block for what comes back,
-  so making a key and revoking one leave the rest of the page where it was. The
-  swap replaces the block rather than morphing it, the way the rest of the app
-  does, because `creating` has to come back from the server: morphing keeps the
-  flag that was set when the field was opened, and the field never closes.
-
-  @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
---}}
+{{-- The API keys somebody has minted, and the way to make another or revoke one. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel --}}
 <div
   id="api-keys"
   x-merge="replace"
@@ -33,6 +10,7 @@
     <p>{{ __('A key lets a script or another system act as you, with exactly the access you have.') }}</p>
   </div>
 
+  <!-- the key just made -->
   @if (session('apiKey'))
     <div class="space-y-2 rounded-xl bg-sunken px-4 py-3.5 ring-[1.5px] ring-hairline">
       <p class="text-[15px] font-semibold text-ink">{{ __('Your new API key') }}</p>
@@ -43,8 +21,10 @@
     </div>
   @endif
 
+  <!-- notice about the api -->
   <x-notice>{{ __('There is nothing to point a key at yet. The API that accepts them is still being built, and a key you make now works the moment it lands.') }}</x-notice>
 
+  <!-- list of keys -->
   <div class="overflow-hidden rounded-xl ring-[1.5px] ring-hairline">
     <x-box.row class="grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <p class="text-sm font-semibold text-ink">{{ $viewModel->apiKeysHeader() }}</p>
@@ -119,6 +99,7 @@
     @endforelse
   </div>
 
+  <!-- revoke dialogs -->
   @foreach ($viewModel->apiKeys() as $apiKey)
     <x-confirm-dialog
       show="revoking === {{ $apiKey['id'] }}"

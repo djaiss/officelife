@@ -39,10 +39,6 @@ class CreateApiKeyTest extends TestCase
         ]);
     }
 
-    /**
-     * The key comes back whole, while only its hash is written down, so a lost
-     * key is replaced rather than read back out of the table.
-     */
     #[Test]
     public function it_returns_the_key_in_plain_text_and_stores_only_its_hash(): void
     {

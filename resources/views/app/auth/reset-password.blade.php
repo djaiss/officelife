@@ -1,12 +1,11 @@
-{{--
-  Where somebody who followed a reset link chooses a new password.
-
-  @var \App\ViewModels\Auth\NewPasswordViewModel $viewModel
---}}
+{{-- Where somebody who followed a reset link chooses a new password. --}}
+{{-- @var \App\ViewModels\Auth\NewPasswordViewModel $viewModel --}}
 <x-guest-layout :title="__('Choose a new password')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
       <div class="mx-auto w-full max-w-md space-y-6">
+
+        <!-- logo -->
         <div class="flex items-center gap-3">
           <x-logo :size="30" />
 
@@ -15,6 +14,7 @@
           <x-theme-toggle class="ml-auto" />
         </div>
 
+        <!-- new password form -->
         <x-box>
           <x-form method="post" :action="route('auth.password.update')" class="space-y-4">
             <input type="hidden" name="token" value="{{ $viewModel->token() }}" />

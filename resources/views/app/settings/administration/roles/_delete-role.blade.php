@@ -1,10 +1,5 @@
 {{-- The dialog that asks before a role is deleted. --}}
-{{--
-  It is the last thing on the screen rather than a child of the menu that opens
-  it, because that menu closes on the same click.
-
-  @var array $role
---}}
+{{-- @var array $role --}}
 <x-confirm-dialog
   show="deleting"
   close="deleting = false"

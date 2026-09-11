@@ -1,12 +1,11 @@
-{{-- Setting up two factor authentication: pair an authenticator app with the account, then type back what the app is showing. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel
---}}
+{{-- Setting up two factor authentication, one step at a time. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\TwoFactorEnrolmentViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Two factor authentication')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -17,12 +16,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Two factor authentication') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Turn on two factor authentication') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('Two steps, and you are done.') }}</p>
   </div>
 
   <div class="space-y-10">
+    <!-- pair the app -->
     <x-section :title="__('Pair your authenticator app')" icon="two-factor" :hue="200">
       <div class="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto]">
         <div class="space-y-2.5 text-[15px] leading-relaxed text-body">
@@ -36,13 +37,13 @@
           </div>
         </div>
 
-        {{-- The square has to stay black on white to be readable, so it carries its own background in either theme. --}}
         <div class="mx-auto rounded-xl border border-hairline bg-white p-3">
           {{ $viewModel->qrCode() }}
         </div>
       </div>
     </x-section>
 
+    <!-- confirm with a code -->
     <x-section :title="__('Prove it worked')" icon="password" :hue="150">
       <div class="grid gap-10 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div class="space-y-2.5 text-[15px] leading-relaxed text-body">
@@ -62,7 +63,6 @@
             autofocus
           />
 
-          {{-- The pair stacks on a narrow screen, primary first, so the thumb lands on the one that goes through. --}}
           <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <x-button.secondary :href="route('settings.security.index')" data-turbo="true">{{ __('Cancel') }}</x-button.secondary>
 

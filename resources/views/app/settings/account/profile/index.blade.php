@@ -1,12 +1,11 @@
-{{-- Where somebody edits their own employee record: how colleagues see them, and who to call if something happens. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Profile\ProfileViewModel $viewModel
---}}
+{{-- Where somebody edits their own employee record. --}}
+{{-- @var \App\ViewModels\Settings\Account\Profile\ProfileViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Profile')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -15,12 +14,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Profile') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Profile') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('Manage your personal details and how colleagues see you.') }}</p>
   </div>
 
   <div class="space-y-10">
+    <!-- avatar -->
     <x-section :title="__('Avatar')" icon="profile" :hue="30">
       <x-slot:help>
         <x-help :title="__('Avatar')">
@@ -38,18 +39,6 @@
         <div class="flex flex-wrap items-center gap-5">
           <x-avatar id="profile-avatar" :employee="$viewModel->employee()" :name="$viewModel->name()" :size="78" />
 
-          {{--
-            These two forms reload the page rather than updating it in place, the
-            way the forms below do. An avatar is not a field: it is read, turned
-            upright, cropped and written twice before there is anything to show,
-            and the screen is better off asking the server for the whole thing
-            once that is done.
-
-            The message lives in the x-data of this div rather than in the change
-            handler, because Blade does not compile a directive written inside an
-            attribute of a component tag: @js() would reach the browser as itself
-            and Alpine would refuse the whole expression.
-          --}}
           <div
             class="space-y-3 max-sm:w-full"
             x-data="{ tooBig: false, tooBigMessage: @js(__('The image must be under 5 MB.')), removingAvatar: false }"
@@ -103,6 +92,7 @@
       </div>
     </x-section>
 
+    <!-- name and email -->
     <x-section :title="__('Details')" icon="details" :hue="250">
       <x-slot:help>
         <x-help :title="__('Details')">
@@ -171,6 +161,7 @@
       </div>
     </x-section>
 
+    <!-- emergency contact -->
     @if($viewModel->canSeePrivateInformation())
       <x-section :title="__('Emergency contact')" icon="emergency-contact" :hue="80">
         <x-slot:help>

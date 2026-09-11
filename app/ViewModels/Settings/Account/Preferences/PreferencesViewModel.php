@@ -8,10 +8,6 @@ use App\Enums\TimeFormatEnum;
 use App\Models\Employee;
 use App\Models\User;
 
-/**
- * What the preferences screen shows: the language the interface is in, the
- * clock times are written on, and the shell around it.
- */
 class PreferencesViewModel
 {
     public function __construct(
@@ -19,12 +15,7 @@ class PreferencesViewModel
         private readonly ?Employee $employee,
     ) {}
 
-    /**
-     * Every language the interface is translated into, ready for the menu that
-     * picks one.
-     *
-     * @return array<int, array{value: string, label: string, hint: string, selected: bool}>
-     */
+    /** @return array<int, array{value: string, label: string, hint: string, selected: bool}> */
     public function locales(): array
     {
         $current = $this->locale();
@@ -40,21 +31,12 @@ class PreferencesViewModel
             ->all();
     }
 
-    /**
-     * The name of the language the interface is in, shown on the button that
-     * opens the menu.
-     */
     public function localeLabel(): string
     {
         return config('officelife.locales')[$this->locale()]['label'];
     }
 
-    /**
-     * Both ways of writing the time, each next to the same afternoon hour so
-     * the difference between them is on the screen rather than in the name.
-     *
-     * @return array<int, array{value: string, label: string, hint: string, selected: bool}>
-     */
+    /** @return array<int, array{value: string, label: string, hint: string, selected: bool}> */
     public function timeFormats(): array
     {
         return collect(TimeFormatEnum::cases())
@@ -72,28 +54,16 @@ class PreferencesViewModel
         return __($this->timeFormat()->label());
     }
 
-    /**
-     * The time it is now, written the way the account asked for, so somebody
-     * can see what they picked before they leave the screen.
-     */
     public function timePreview(): string
     {
         return $this->timeFormat()->format(now());
     }
 
-    /**
-     * The name to show and to draw initials from. Somebody whose account is not
-     * attached to an employee record has only an email address to go by.
-     */
     public function name(): string
     {
         return $this->employee->name ?? $this->user->email;
     }
 
-    /**
-     * The record the avatar draws from, so the sidebar can show it when
-     * there is one. An account that belongs to nobody who works here has none.
-     */
     public function employee(): ?Employee
     {
         return $this->employee;
@@ -104,14 +74,6 @@ class PreferencesViewModel
         return $this->user->company->name;
     }
 
-    /**
-     * The language the screen was drawn in, which is what the middleware
-     * settled on rather than only what the account asks for: somebody who
-     * switched language from a guest screen sees that choice reflected here.
-     *
-     * Each row saves on its own, so the row that does not own this value still
-     * has to send it along, which is why it is readable from the screen.
-     */
     public function locale(): string
     {
         $locale = app()->getLocale();

@@ -1,12 +1,11 @@
-{{-- What somebody chose about the way the application reads to them: the language of the interface, and the clock times are written on. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel
---}}
+{{-- What somebody chose about the way the application reads to them. --}}
+{{-- @var \App\ViewModels\Settings\Account\Preferences\PreferencesViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Preferences')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -15,12 +14,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Preferences') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Preferences') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('How the application reads to you, on every device you sign in from.') }}</p>
   </div>
 
   <div class="space-y-4">
+    <!-- language and clock -->
     <x-section :title="__('General')" icon="preferences" :hue="310">
       <x-slot:help>
         <x-help :title="__('General')">
@@ -28,11 +29,6 @@
         </x-help>
       </x-slot:help>
 
-      {{--
-        Each row is its own form, and carries the other row's current value along
-        so that saving one never quietly resets the other. The language reloads
-        the page, since every word on it is drawn in it.
-      --}}
       <div class="grid gap-x-10 gap-y-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div class="min-w-0">
           <p class="font-semibold text-ink">{{ __('Language') }}</p>
@@ -57,10 +53,6 @@
           <p class="mt-1 text-[15px] leading-relaxed text-body">{{ __('How every clock time is written. Dates are unaffected.') }}</p>
         </div>
 
-        {{--
-          The language menu is refreshed along with this one, since it carries the
-          time format along and would otherwise send back the value being replaced.
-        --}}
         <x-form
           method="put"
           :action="route('settings.preferences.update')"

@@ -63,11 +63,6 @@ class CreateOffice
         $this->country = $country === null ? null : mb_strtoupper($country);
     }
 
-    /**
-     * An office has no slug to tell it apart from another, so the name is what
-     * everybody reads it by. Two offices of the same company sharing one is a
-     * list nobody can use.
-     */
     private function validate(): void
     {
         if ($this->name === '') {

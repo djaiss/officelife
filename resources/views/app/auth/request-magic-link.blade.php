@@ -1,12 +1,10 @@
-{{--
-  Where somebody asks for a link that signs them in without a password.
-
-  @var \App\ViewModels\Auth\MagicLinkViewModel $viewModel
---}}
+{{-- Where somebody asks for a link that signs them in without a password. --}}
+{{-- @var \App\ViewModels\Auth\MagicLinkViewModel $viewModel --}}
 <x-guest-layout :title="__('Get a link to sign in')">
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
       <div class="mx-auto w-full max-w-md space-y-6">
+        <!-- logo -->
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <x-logo :size="30" />
@@ -19,6 +17,7 @@
           <p class="text-sm text-body">{{ __('Give us your email address and we will send you a link that signs you straight in.') }}</p>
         </div>
 
+        <!-- magic link form -->
         <x-box>
           <x-form method="post" :action="route('auth.magicLink.create')" class="space-y-4">
             <x-input
@@ -38,6 +37,7 @@
           </x-form>
         </x-box>
 
+        <!-- link to sign in page -->
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Rather use your password?') }}
           <x-link :href="route('auth.signIn.new')" class="font-semibold text-ink">{{ __('Back to sign in') }}</x-link>

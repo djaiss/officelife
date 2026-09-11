@@ -9,11 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/**
- * Carry the link that signs somebody in without a password. The link is built
- * by the caller, so this mailable does not have to know how it is put together
- * or how long it lasts.
- */
 class MagicLinkCreatedMail extends Mailable implements HasEnvelope
 {
     public function __construct(

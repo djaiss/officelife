@@ -21,11 +21,6 @@ use Illuminate\View\View;
 
 class OfficeController extends Controller
 {
-    /**
-     * Which offices are shown is the last segment of the path, so the open ones,
-     * the closed ones and all of them are three pages rather than one page with
-     * a filter hidden in a query string.
-     */
     public function index(Request $request, ?string $scope = null): View
     {
         $this->authorize($request);
@@ -41,14 +36,10 @@ class OfficeController extends Controller
         ]);
     }
 
-    /**
-     * The dialog that asks for a new office sits on a screen that edits an
-     * office of its own, and both have a field called `name`. Its messages
-     * therefore go in a bag of their own, and that bag having anything in it is
-     * what reopens the dialog.
-     */
     public function create(Request $request): RedirectResponse
     {
+        // Its own error bag: the dialog and the screen behind it both have a
+        // field called `name`.
         $validated = $request->validateWithBag('createOffice', [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
@@ -68,14 +59,6 @@ class OfficeController extends Controller
             ->with('status_description', __('Give it a time zone and an address whenever you have them.'));
     }
 
-    /**
-     * What is submitted replaces what the office had, so a field left empty is a
-     * field emptied. The head office box only ever promotes: unticking it would
-     * leave the company without one, so it is ignored.
-     *
-     * It goes back to the list it was saved from, which is what keeps a save
-     * made while reading the archived offices on the archived offices.
-     */
     public function update(Request $request, int $office): RedirectResponse
     {
         $validated = $request->validate([
@@ -103,10 +86,6 @@ class OfficeController extends Controller
             ->with('status_description', __('Everybody who works there reads the new details from now on.'));
     }
 
-    /**
-     * Reading the screen has no action behind it to ask on its behalf, so it
-     * asks here.
-     */
     private function authorize(Request $request): void
     {
         $request->user()
@@ -115,12 +94,7 @@ class OfficeController extends Controller
             ->authorize();
     }
 
-    /**
-     * The offices of the company of whoever is asking, which is what keeps an
-     * office of another company out of reach.
-     *
-     * @return HasMany<Office, Company>
-     */
+    /** @return HasMany<Office, Company> */
     private function offices(Request $request): HasMany
     {
         return $request->user()->company->offices();

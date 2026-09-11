@@ -1,6 +1,5 @@
+{{-- The initials of somebody, in a circle, for when there is no avatar to show. --}}
 {{--
-  The initials of somebody, in a circle, for when there is no avatar to show.
-
   @var string $name
   @var int $size
   @var string $tone

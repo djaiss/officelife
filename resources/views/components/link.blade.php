@@ -1,11 +1,5 @@
-{{--
-  An inline link, underlined the way the rest of the running text is.
-
-  Turbo is off by default and a link opts in with `turbo`, which is worth doing when it
-  points at another screen built on the same layout: only the body then changes hands.
-
-  @var bool $turbo
---}}
+{{-- An inline link, underlined the way the rest of the running text is. --}}
+{{-- @var bool $turbo --}}
 @props([
   'turbo' => false,
 ])

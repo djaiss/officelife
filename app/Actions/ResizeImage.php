@@ -14,16 +14,9 @@ use RuntimeException;
  * fills the box rather than fitting inside it, so nothing is left off centre
  * when the image is shown in a circle, and the parts that fall outside are
  * cropped away.
- *
- * Anything that needs an image at a given size goes through here, which is why
- * the action knows nothing about employees or avatars.
  */
 class ResizeImage
 {
-    /**
-     * WebP holds up well at 80, and the file stays small enough that two
-     * versions of it cost less than one of the original.
-     */
     private const int QUALITY = 80;
 
     public function __construct(
@@ -49,11 +42,6 @@ class ResizeImage
         }
     }
 
-    /**
-     * orient() first, because an image taken on a phone carries its rotation in
-     * its EXIF data rather than in its pixels, and cropping it before turning
-     * it upright would cut the wrong part away.
-     */
     private function resize(): string
     {
         $path = Image::fromUpload($this->file)

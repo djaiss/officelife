@@ -12,12 +12,9 @@ use App\Models\Company;
 use App\Models\User;
 
 /**
- * Turn a module on for a company. Nothing about the module exists for a company
- * that has not done this: its permissions deny and its screens are not there.
- *
- * The list of what is on lives in the settings of the company rather than in a
- * table of its own, which is enough while turning a module on is the only thing
- * a company can say about it.
+ * Turn a module on for a company. Nothing about the module exists for a
+ * company that has not done this: its permissions deny and its screens are not
+ * there.
  */
 class EnableModule
 {
@@ -37,13 +34,6 @@ class EnableModule
         return $this->company;
     }
 
-    /**
-     * Give the module whatever a company needs before it is worth opening.
-     *
-     * The core knowing which module needs what is the same pragmatic coupling as
-     * PermissionEnum::module(), and is revisited at the same point: the second
-     * module, when a manifest earns its keep.
-     */
     private function seed(): void
     {
         match ($this->module) {
@@ -59,10 +49,6 @@ class EnableModule
             ->authorize();
     }
 
-    /**
-     * Turning on a module that is already on changes nothing, rather than
-     * listing it twice.
-     */
     private function enable(): void
     {
         $settings = $this->company->settings ?? [];

@@ -1,8 +1,5 @@
-{{--
-  The label of a form field.
-
-  @var string|null $value
---}}
+{{-- The label of a form field. --}}
+{{-- @var string|null $value --}}
 @props([
   'value' => null,
 ])

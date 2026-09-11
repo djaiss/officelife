@@ -1,12 +1,11 @@
-{{-- What somebody can change about the way they sign in: their password, the code asked for on top of it, and the keys that let a machine act as them. --}}
-{{--
-  @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel
---}}
+{{-- What somebody can change about the way they sign in. --}}
+{{-- @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel --}}
 <x-top-bar-layout :title="__('Security and access')">
   <x-slot:top-bar>
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -15,12 +14,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Security and access') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Security and access') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('How you sign in to your account, and what else may act as you.') }}</p>
   </div>
 
   <div class="space-y-10">
+    <!-- password -->
     <x-section :title="__('Password')" icon="password" :hue="150">
       <x-slot:help>
         <x-help :title="__('Password')">
@@ -31,6 +32,7 @@
       @include('app.settings.account.security._change-password', ['viewModel' => $viewModel])
     </x-section>
 
+    <!-- two factor authentication -->
     <x-section :title="__('Two factor authentication')" icon="two-factor" :hue="200">
       <x-slot:help>
         <x-help :title="__('Two factor authentication')">
@@ -45,6 +47,7 @@
       @endif
     </x-section>
 
+    <!-- api keys -->
     <x-section :title="__('API keys')" icon="api-keys" :hue="280">
       <x-slot:help>
         <x-help :title="__('API keys')" align="right">

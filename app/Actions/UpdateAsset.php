@@ -18,11 +18,9 @@ use Carbon\Carbon;
 use InvalidArgumentException;
 
 /**
- * Change a piece of equipment the company owns.
- *
- * Moving it into a status that means lost is the one change that says something
- * happened rather than that a field was corrected, so that one publishes an
- * event and the rest do not.
+ * Change a piece of equipment the company owns. Moving it into a status that
+ * means lost is the one change that says something happened rather than that a
+ * field was corrected, so that one publishes an event and the rest do not.
  */
 class UpdateAsset
 {

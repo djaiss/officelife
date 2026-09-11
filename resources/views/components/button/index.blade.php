@@ -1,11 +1,5 @@
+{{-- The primary button. --}}
 {{--
-  The primary button. It renders an anchor when it is given an href, and a button
-  otherwise. The icon slot sits before the label.
-
-  The border is transparent and draws nothing. It is there so the button is the
-  same height as <x-button.secondary>, which spends the same width on a
-  hairline, and the two line up when they sit side by side.
-
   @var string|null $href
   @var string $type
 --}}

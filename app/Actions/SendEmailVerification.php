@@ -11,10 +11,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\URL;
 
 /**
- * Send the email that asks somebody to confirm the address they signed up with.
- * The link is signed and expires. Every email the application sends goes
- * through the SendEmail job, so it is recorded in emails_sent and the company
- * can see what was sent, which is why the framework notification is not used.
+ * Send the email that asks somebody to confirm the address they signed up
+ * with. The link is signed and expires.
  */
 class SendEmailVerification
 {

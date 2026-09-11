@@ -1,3 +1,4 @@
+{{-- The email telling somebody a sign in on their account was refused. --}}
 <x-mail::message>
 # {{ __('Failed sign-in attempt') }}
 

@@ -1,24 +1,5 @@
 {{-- The dialog that adds an office. --}}
-{{--
-  It asks for the little that tells one office from another, and leaves the
-  address and the time zone to the panel, so a company opening a branch is not
-  made to look up a time zone first.
-
-  Its own errors go in a bag of their own, since the panel behind it has a field
-  called `name` too and the two messages would otherwise be the same message. The
-  bag having anything in it is also what reopens the dialog after a save was
-  turned away.
-
-  It carries `data-escape-guard` while it is open, so escape closes the dialog
-  rather than leaving the layer underneath it.
-
-  Clicking away closes it too, which is read off the backdrop itself rather than
-  as a click outside the panel: the click that opens the dialog is still on its
-  way up the document when the dialog appears, and an outside handler would catch
-  that one and close it again straight away.
-
-  @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel
---}}
+{{-- @var \App\ViewModels\Settings\Administration\OfficesViewModel $viewModel --}}
 <div
   x-cloak
   x-show="creating"

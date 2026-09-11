@@ -48,9 +48,6 @@ class DestroyManufacturer
         }
     }
 
-    /**
-     * Logged before the row goes, so the name is still there to write down.
-     */
     private function log(): void
     {
         LogUserAction::dispatch(

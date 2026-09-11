@@ -105,11 +105,6 @@ class EmployeeScopeTest extends TestCase
         EmployeeScope::for($user, PermissionEnum::RoleManage);
     }
 
-    /**
-     * The list and the check have to say the same thing, or an employee that
-     * cannot be opened still shows up on a screen. This walks every employee of
-     * two companies and holds one answer against the other.
-     */
     #[Test]
     public function it_agrees_with_the_check_made_one_employee_at_a_time(): void
     {

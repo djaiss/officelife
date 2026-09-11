@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\DB;
 /**
  * Give somebody a role. A role only ever reaches the people of the company it
  * belongs to, and giving somebody a role they already hold changes nothing.
- *
- * Owner does not go through here. It is derived from who created the company
- * and cannot be handed to anybody.
  */
 class AssignRole
 {

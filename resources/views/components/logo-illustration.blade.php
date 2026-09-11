@@ -57,7 +57,7 @@
   <svg id="logo-artwork" x="-126" y="-355" width="1254" height="1254"
        viewBox="0 0 1254 1254" overflow="visible">
     <g id="buildings">
-      <!-- Left building: dark outer shell and bright front face. -->
+      <!-- left building -->
       <path id="building-left-shell" fill="url(#navy)"
             d="M257 884V598c0-13 8-24 21-28l104-34c13-4 26-2 37 5l42 28v315H257Z"/>
       <path id="building-left-face" fill="#fff"
@@ -67,7 +67,7 @@
       <path id="window-left-lower" fill="url(#navy)"
             d="M311 698l65-16c4-1 7 2 7 6v29c0 4-2 6-6 7l-65 17c-4 1-7-2-7-6v-30c0-4 2-6 6-7Z"/>
 
-      <!-- Tall center tower. -->
+      <!-- centre tower -->
       <path id="building-center-shell" fill="url(#navy)"
             d="M459 884V448c0-18 11-33 28-39l164-51c15-5 29-2 42 7l82 59c10 7 15 17 15 30v430H459Z"/>
       <path id="building-center-face" fill="#fff"
@@ -85,7 +85,7 @@
       <path id="door-right" fill="url(#glass)"
             d="M589 884V764l33-3c2 0 4 2 4 4v119h-37Z"/>
 
-      <!-- Right building, layered in front of the center tower's side wall. -->
+      <!-- right building -->
       <path id="building-right-shell" fill="url(#navy)"
             d="M711 884V652c0-16 10-29 26-33l164-37c13-3 25-1 36 6l45 29c8 5 12 13 12 23v244H711Z"/>
       <path id="building-right-face" fill="#fff"
@@ -98,7 +98,7 @@
             d="M867 654l17-3c4-1 7 2 7 6v122c0 4-2 7-6 7h-18c-4 0-6-2-6-6V661c0-4 2-6 6-7Z"/>
     </g>
 
-    <!-- Shrubs remain still while the trees move. -->
+    <!-- shrubs -->
     <g id="shrubs" fill="url(#green)">
       <path id="shrubs-left" stroke="#fff" stroke-width="9" stroke-linejoin="round"
             d="M239 884c2-17 17-29 38-29h5c5-29 28-50 58-50 28 0 49 16 55 42 7-5 16-8 26-8 25 0 43 18 47 45H239Z"/>
@@ -106,7 +106,7 @@
             d="M762 884c3-23 21-39 45-39 10 0 19 3 26 9 4-24 23-41 50-41 28 0 49 16 55 40 18 1 32 13 37 31H762Z"/>
     </g>
 
-    <!-- Each tree has stable IDs and a rooted transform origin for interaction. -->
+    <!-- trees -->
     <g id="tree-left" class="tree">
       <g class="tree-sway">
         <circle id="tree-left-canopy" cx="219" cy="755" r="88" fill="url(#green)" stroke="#fff" stroke-width="10"/>

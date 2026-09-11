@@ -1,7 +1,4 @@
-{{--
-  The light and dark switch. It writes to the Alpine theme store, which puts the
-  class on <html> and remembers the choice.
---}}
+{{-- The light and dark switch. --}}
 @php
   /* Bigger on a phone, where the two buttons are aimed at with a thumb. */
   $button = 'flex h-6 w-7 cursor-pointer items-center justify-center rounded-sm transition-colors max-sm:h-8 max-sm:w-9';

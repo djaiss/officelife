@@ -12,12 +12,8 @@ use App\Models\User;
 use InvalidArgumentException;
 
 /**
- * Take a piece of equipment out of the fleet, keeping everything recorded about
- * it and everybody who has held it.
- *
- * Refused while somebody still has it. Equipment that is out with a colleague
- * has not left the fleet, it is with somebody, and archiving it would leave an
- * assignment nobody would ever close.
+ * Take a piece of equipment out of the fleet, keeping everything recorded
+ * about it and everybody who has held it. Refused while somebody still has it.
  */
 class ArchiveAsset
 {

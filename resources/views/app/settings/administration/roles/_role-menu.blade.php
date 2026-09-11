@@ -1,17 +1,5 @@
-{{-- The one thing that can be done to a role as a whole and does not belong beside the others: deleting it. --}}
+{{-- The one thing done to a role as a whole that belongs nowhere else: deleting it. --}}
 {{--
-  Deleting takes a set of permissions away from everybody at once, so it asks in
-  a dialog of its own. That dialog is the last thing on the screen rather than
-  anything inside this menu, since the menu closes the moment it opens: what is
-  read here is only `deleting`, which the screen declares.
-
-  A role somebody still holds, or one the application looks after itself, cannot
-  go at all: the entry says why rather than disappearing, so nobody is left
-  wondering where it went.
-
-  The menu carries `data-escape-guard` while it is open, which is what stops the
-  layer around it reading escape as "go back" before the menu has closed.
-
   @var \App\ViewModels\Settings\Administration\RolesViewModel $viewModel
   @var array $role
 --}}

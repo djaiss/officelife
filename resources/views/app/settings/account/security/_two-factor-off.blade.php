@@ -1,9 +1,4 @@
-{{--
-  What somebody sees when a code is not asked for on top of their password.
-
-  The screen it leads to is built on this same layout, so it is handed to turbo
-  and only the body changes hands.
---}}
+{{-- What somebody sees when a code is not asked for on top of their password. --}}
 <div class="grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
   <div class="space-y-2.5">
     <p class="text-[15px] font-semibold text-ink">{{ __('Authenticator app') }}</p>

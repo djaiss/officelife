@@ -26,16 +26,6 @@ class SendEmail implements ShouldQueue
 
     private ?string $uuid = null;
 
-    /**
-     * Send an email on behalf of the given company.
-     * We need to use this abstraction because for our own use case in production,
-     * we use Resend and all its capabilities (including webhooks), so we need
-     * to capture the UUID Resend sends.
-     * In any other context, the default Laravel Mail class is used, allowing
-     * you to send emails the way Laravel Mail does.
-     * The email is not always sent to a user of the company, so the recipient
-     * can be given as a plain address instead.
-     */
     public function __construct(
         public Mailable&HasEnvelope $mailable,
         public Company $company,
@@ -44,9 +34,6 @@ class SendEmail implements ShouldQueue
         public ?string $emailAddress = null,
     ) {}
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         $this->setRecipient();

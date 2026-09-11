@@ -9,11 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/**
- * Tell somebody their account was signed in to from somewhere we have not seen
- * before. Travelling, a VPN or a new browser all cause this, so the wording
- * asks rather than accuses.
- */
 class SignInFromNewAddressMail extends Mailable implements HasEnvelope
 {
     public function __construct(
