@@ -48,6 +48,7 @@
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -57,6 +58,7 @@
   </nav>
 
   <div x-data="{{ $screen }}" x-init="refresh()">
+    <!-- page title and the add button -->
     <div class="mb-9 grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
       <div>
         <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Offices') }}</h1>
@@ -77,6 +79,7 @@
 
     <script type="application/json" id="offices-data">@json($viewModel->drawer())</script>
 
+    <!-- note about archiving -->
     <p class="mt-4 text-sm leading-relaxed text-pretty text-muted">
       {{ __('Archiving an office keeps everything written about it. It leaves the list, so nobody can be sent to a desk that is no longer rented, and comes back whole if the company opens it again.') }}
     </p>

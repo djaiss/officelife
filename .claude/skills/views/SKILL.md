@@ -89,3 +89,40 @@ description: Conventions for defining views. Use when the user wants to create o
   examples are in [code-style.md](../../rules/code-style.md).
 - As soon as you notice that a piece of view is repeated in multiple places, you
   MUST create a component for it.
+
+## Marking the sections of a screen
+
+The `{{-- --}}` block at the top says what the whole file is. Inside the markup,
+a block that draws something a person sees carries one HTML comment naming it,
+on the line above it, with a blank line before that.
+
+```blade
+<!-- login form -->
+<x-box>
+  <x-form method="post" :action="route('auth.signIn.create')" class="space-y-4">
+    ...
+  </x-form>
+</x-box>
+```
+
+- It MUST be an HTML comment, not a Blade one. It is there to be read in the
+  markup and in the page source, beside the thing it names.
+- It MUST be two to four lowercase words naming the thing on the screen:
+  `<!-- logo -->`, `<!-- login form -->`, `<!-- language picker -->`,
+  `<!-- link to register page -->`. Never a sentence, a capital or a full stop.
+- It MUST name what the block is. It MUST NOT say what the markup does, why it
+  is written that way, or how it behaves.
+- One block, one comment. A part of a marked block gets its own only when it is
+  a section in its own right.
+
+Not every block gets one, and the judgement is yours. Mark what somebody looking
+at the screen would point at and name: a form, a card, a list, a picker, a menu,
+a set of filters, a banner, a table, an empty state. Leave alone:
+
+- the scaffolding that only positions those: the grid, the `<main>`, the wrapper
+  `div` holding the lot
+- a single self-explanatory component on a line of its own, such as
+  `<x-status :message="session('status')" />`
+- anything the tag already names, such as a `<footer>` or a lone `<h1>`
+- a component file small enough to be one block, which its opening
+  `{{-- --}}` line already names

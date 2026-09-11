@@ -4,6 +4,8 @@
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
       <div class="mx-auto w-full max-w-md space-y-6">
+
+        <!-- logo -->
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <x-logo :size="30" />
@@ -16,6 +18,7 @@
           <p class="text-sm text-body">{{ __('Open your authenticator app and type the code it is showing.') }}</p>
         </div>
 
+        <!-- six digit code form -->
         <x-box>
           <x-form method="post" :action="route('auth.twoFactor.create')" class="space-y-4">
             <x-input
@@ -33,6 +36,7 @@
           </x-form>
         </x-box>
 
+        <!-- notice about recovery codes -->
         <x-notice>
           {{ __('Lost your phone? Use one of the recovery codes you saved when you set this up. Each one works once.') }}
         </x-notice>

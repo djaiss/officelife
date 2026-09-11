@@ -5,6 +5,7 @@
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -13,12 +14,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Profile') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Profile') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('Manage your personal details and how colleagues see you.') }}</p>
   </div>
 
   <div class="space-y-10">
+    <!-- avatar -->
     <x-section :title="__('Avatar')" icon="profile" :hue="30">
       <x-slot:help>
         <x-help :title="__('Avatar')">
@@ -89,6 +92,7 @@
       </div>
     </x-section>
 
+    <!-- name and email -->
     <x-section :title="__('Details')" icon="details" :hue="250">
       <x-slot:help>
         <x-help :title="__('Details')">
@@ -157,6 +161,7 @@
       </div>
     </x-section>
 
+    <!-- emergency contact -->
     @if($viewModel->canSeePrivateInformation())
       <x-section :title="__('Emergency contact')" icon="emergency-contact" :hue="80">
         <x-slot:help>

@@ -111,6 +111,10 @@ comes the `@var` block: one `@var` per prop for a component, the view model for
 a screen. Nothing else. A second sentence belongs in neither, and a template
 with props but nothing to say about itself is still missing its first line.
 
+Further down the same file, a block drawing something a person sees carries one
+short HTML comment naming it. That is a separate rule, and it lives in the
+[views skill](../skills/views/SKILL.md).
+
 ```blade
 {{-- Where somebody lands after signing in: the compartments their account is divided into. --}}
 {{-- @var \App\ViewModels\Vaults\VaultsViewModel $viewModel --}}

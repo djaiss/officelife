@@ -10,6 +10,7 @@
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
       <div class="mx-auto w-full max-w-md space-y-6">
+        <!-- logo -->
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <x-logo :size="30" />
@@ -24,6 +25,7 @@
 
         <x-status :message="session('status')" />
 
+        <!-- registration form -->
         <div x-data="{ terms: @js((bool) old('terms')) }">
           <x-box>
             <x-form method="post" :action="route('auth.register.create')" class="space-y-4">
@@ -116,15 +118,18 @@
           </x-box>
         </div>
 
+        <!-- link to sign in page -->
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Already have an account?') }}
           <x-link turbo :href="route('auth.signIn.new')" class="font-semibold text-ink">{{ __('Sign in instead') }}</x-link>
         </x-box>
 
+        <!-- notice about joining -->
         <x-notice>
           {{ __('Joining a company that already uses OfficeLife? Ask an administrator to invite you, rather than creating a second account.') }}
         </x-notice>
 
+        <!-- language picker -->
         <div class="flex items-center gap-3">
           <x-language-picker :locales="$viewModel->locales()" :current="$viewModel->currentLocale()" />
 

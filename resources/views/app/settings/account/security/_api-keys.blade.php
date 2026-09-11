@@ -10,6 +10,7 @@
     <p>{{ __('A key lets a script or another system act as you, with exactly the access you have.') }}</p>
   </div>
 
+  <!-- the key just made -->
   @if (session('apiKey'))
     <div class="space-y-2 rounded-xl bg-sunken px-4 py-3.5 ring-[1.5px] ring-hairline">
       <p class="text-[15px] font-semibold text-ink">{{ __('Your new API key') }}</p>
@@ -20,8 +21,10 @@
     </div>
   @endif
 
+  <!-- notice about the api -->
   <x-notice>{{ __('There is nothing to point a key at yet. The API that accepts them is still being built, and a key you make now works the moment it lands.') }}</x-notice>
 
+  <!-- list of keys -->
   <div class="overflow-hidden rounded-xl ring-[1.5px] ring-hairline">
     <x-box.row class="grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <p class="text-sm font-semibold text-ink">{{ $viewModel->apiKeysHeader() }}</p>
@@ -96,6 +99,7 @@
     @endforelse
   </div>
 
+  <!-- revoke dialogs -->
   @foreach ($viewModel->apiKeys() as $apiKey)
     <x-confirm-dialog
       show="revoking === {{ $apiKey['id'] }}"

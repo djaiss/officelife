@@ -39,6 +39,7 @@
     nothingMatches() { return ! Object.keys(this.search).some((value) => this.matches(value)) },
   }"
 >
+  <!-- title and the count granted -->
   <div class="mb-3 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
     <h2 class="text-[22px] leading-tight font-bold tracking-tight text-ink">{{ __('Allowed to') }}</h2>
 
@@ -57,6 +58,7 @@
     class="mb-3 block w-full appearance-none rounded-xl border-[1.5px] border-hairline-strong bg-input px-3.5 py-2.5 text-base text-ink placeholder-placeholder transition-colors duration-150 hover:border-focus hover:bg-hover focus:border-focus focus:bg-canvas focus:ring-3 focus:ring-focus/15 focus:outline-none"
   />
 
+  <!-- the permission matrix -->
   <div class="rounded-[18px] bg-canvas px-2.5 py-2 ring-[1.5px] ring-hairline">
     @foreach ($groups as $group)
       <div x-show="sectionMatches(@js($group['title']))">
@@ -137,6 +139,7 @@
     <p x-cloak x-show="nothingMatches()" class="px-3 py-6 text-center text-[15px] text-muted">{{ __('No permission matches that.') }}</p>
   </div>
 
+  <!-- note about scopes -->
   <p class="mt-3 text-sm leading-relaxed text-pretty text-muted">
     {{ __('The words on the right say who a permission reaches. Click them to switch. A few permissions cannot be narrowed and always cover the whole company.') }}
   </p>

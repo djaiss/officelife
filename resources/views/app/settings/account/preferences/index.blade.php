@@ -5,6 +5,7 @@
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -13,12 +14,14 @@
     <span class="font-medium text-ink" aria-current="page">{{ __('Preferences') }}</span>
   </nav>
 
+  <!-- page title -->
   <div class="mb-11">
     <h1 class="mb-2 text-4xl leading-tight font-bold tracking-tight text-ink">{{ __('Preferences') }}</h1>
     <p class="text-lg leading-normal text-pretty text-body">{{ __('How the application reads to you, on every device you sign in from.') }}</p>
   </div>
 
   <div class="space-y-4">
+    <!-- language and clock -->
     <x-section :title="__('General')" icon="preferences" :hue="310">
       <x-slot:help>
         <x-help :title="__('General')">

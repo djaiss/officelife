@@ -7,6 +7,7 @@
     <h2 id="office-panel-title" class="mt-1 truncate text-[26px] font-bold tracking-tight text-ink" x-text="form.name"></h2>
   </x-slot:header>
 
+  <!-- the fields of the office -->
   <x-form
     method="put"
     x-bind:action="office?.updateUrl"
@@ -110,6 +111,7 @@
     <p class="rounded-[14px] bg-sunken px-4 py-3.25 text-sm leading-relaxed text-muted ring-[1.5px] ring-hairline" x-text="office?.inheritNote"></p>
   </x-form>
 
+  <!-- save, reopen and archive -->
   <div class="mt-5 flex flex-wrap items-center gap-2.5">
     <x-button form="office-form">{{ __('Save changes') }}</x-button>
 

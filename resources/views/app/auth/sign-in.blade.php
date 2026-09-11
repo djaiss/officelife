@@ -4,6 +4,8 @@
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col px-6 pt-10 pb-8 sm:px-15 sm:pt-14">
       <div class="mx-auto w-full max-w-md space-y-6">
+
+        <!-- logo -->
         <div class="flex items-center gap-3">
           <x-logo :size="30" />
 
@@ -14,6 +16,7 @@
 
         <x-status :message="session('status')" />
 
+        <!-- login form -->
         <x-box>
           <x-form method="post" :action="route('auth.signIn.create')" class="space-y-4">
             <x-input
@@ -55,6 +58,7 @@
           </x-form>
         </x-box>
 
+        <!-- local sign in -->
         @if($viewModel->localSignInEmail())
           <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
             <x-form method="post" :action="route('auth.localSignIn.create')">
@@ -68,16 +72,19 @@
           </x-box>
         @endif
 
+        <!-- link to magic link -->
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Prefer to sign in without a password?') }}
           <x-link turbo :href="route('auth.magicLink.new')" class="font-semibold text-ink">{{ __('Send me a link instead') }}</x-link>
         </x-box>
 
+        <!-- link to register page -->
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('New to :app?', ['app' => config('app.name')]) }}
           <x-link turbo :href="route('auth.register.new')" class="font-semibold text-ink">{{ __('Create a company') }}</x-link>
         </x-box>
 
+        <!-- language picker -->
         <div class="flex items-center gap-3">
           <x-language-picker :locales="$viewModel->locales()" :current="$viewModel->currentLocale()" />
 

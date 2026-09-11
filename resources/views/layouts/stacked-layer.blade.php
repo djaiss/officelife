@@ -41,6 +41,7 @@
       </a>
 
       <main class="mx-4 min-w-0 flex-1 rounded-t-xl border border-b-0 border-hairline-strong bg-page">
+        <!-- the bar of the layer -->
         <header class="sticky top-0 z-5 flex h-13.5 items-center gap-3.5 rounded-t-xl border-b border-hairline-soft bg-page/90 pr-5.5 pl-4.5 backdrop-blur-md">
           <a
             href="{{ $backUrl }}"

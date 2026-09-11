@@ -38,6 +38,7 @@
 <header class="flex flex-wrap items-center gap-5 pt-4.5 pb-4">
   <x-logo-illustration class="h-7 w-auto" />
 
+  <!-- where else you can go -->
   <nav class="relative flex min-w-55 flex-1 items-center justify-center">
     <button
       type="button"
@@ -119,6 +120,7 @@
     </div>
   </nav>
 
+  <!-- who you are -->
   <div id="top-bar-identity" class="flex items-center gap-2.25">
     <span class="text-sm text-body">{{ $name }}</span>
 

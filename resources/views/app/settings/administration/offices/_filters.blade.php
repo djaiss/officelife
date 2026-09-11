@@ -5,6 +5,7 @@
 @endphp
 
 <div class="mb-4 flex flex-wrap items-center gap-2.5">
+  <!-- open, archived or all -->
   <div class="flex gap-0.75 rounded-xl bg-canvas p-1 ring-[1.5px] ring-hairline">
     @foreach ($viewModel->scopes() as $scope)
       <a
@@ -18,6 +19,7 @@
     @endforeach
   </div>
 
+  <!-- search box -->
   <form method="get" action="{{ url()->current() }}" class="min-w-55 flex-1">
     <label for="q" class="sr-only">{{ __('Search the offices') }}</label>
 

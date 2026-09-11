@@ -4,6 +4,8 @@
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
       <div class="mx-auto w-full max-w-md space-y-6">
+
+        <!-- logo -->
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <x-logo :size="30" />
@@ -18,10 +20,12 @@
           </p>
         </div>
 
+        <!-- notice about the inbox -->
         <x-notice>
           {{ __('Nothing in your inbox? It can take a minute, and it sometimes lands in the spam folder.') }}
         </x-notice>
 
+        <!-- link to sign in page -->
         <x-box padding="p-4" class="rounded-lg text-center text-sm text-body">
           {{ __('Rather use your password?') }}
           <x-link :href="route('auth.signIn.new')" class="font-semibold text-ink">{{ __('Back to sign in') }}</x-link>

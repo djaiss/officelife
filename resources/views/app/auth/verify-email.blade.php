@@ -4,6 +4,8 @@
   <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
     <main class="flex min-w-0 flex-col justify-center px-6 py-10 sm:px-15">
       <div class="mx-auto w-full max-w-md space-y-6">
+
+        <!-- logo -->
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <x-logo :size="30" />
@@ -20,6 +22,7 @@
 
         <x-status :message="session('status')" />
 
+        <!-- send the email again -->
         <x-box class="space-y-4">
           <p class="text-sm leading-relaxed text-body">
             {{ __('Nothing in your inbox? It can take a minute, and it sometimes lands in the spam folder.') }}
@@ -30,6 +33,7 @@
           </x-form>
         </x-box>
 
+        <!-- notice about closing the page -->
         <x-notice>
           {{ __('You can close this page. The link works from any browser, on any device.') }}
         </x-notice>

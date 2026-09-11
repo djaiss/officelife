@@ -10,6 +10,7 @@
     <x-top-bar :company-name="$viewModel->companyName()" :name="$viewModel->name()" :employee="$viewModel->employee()" />
   </x-slot:top-bar>
 
+  <!-- breadcrumb -->
   <nav class="mt-5.5 mb-6.5 flex flex-wrap items-center gap-2.25 text-sm text-muted" aria-label="{{ __('Breadcrumb') }}">
     <a href="{{ route('home.index') }}" data-turbo="true" class="transition-colors hover:text-ink">{{ __('Dashboard') }}</a>
     <span class="text-muted-soft" aria-hidden="true">/</span>
@@ -21,6 +22,7 @@
   </nav>
 
   <div x-data="{ deleting: false }">
+    <!-- role name and its buttons -->
     <div class="mb-6 grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
       <div class="flex min-w-0 items-center gap-4">
         <span class="accent-tile grid size-13 shrink-0 place-items-center rounded-2xl" style="--tile-hue: {{ $role['hue'] }}">
@@ -72,6 +74,7 @@
       </div>
     </div>
 
+    <!-- warning about full access -->
     @if ($viewModel->warnsAboutAdministration())
       <div class="mb-6 flex items-start gap-3 rounded-[14px] bg-error/8 px-4 py-3.5 ring-[1.5px] ring-error/25">
         <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" class="mt-0.5 shrink-0 text-error" aria-hidden="true">
@@ -86,6 +89,7 @@
       </div>
     @endif
 
+    <!-- permissions or people -->
     <div class="mb-5 flex justify-center">
       <div class="flex gap-0.75 rounded-xl bg-canvas p-1 ring-[1.5px] ring-hairline">
         @foreach ($viewModel->tabs() as $tab)
@@ -101,6 +105,7 @@
       </div>
     </div>
 
+    <!-- the tab being read -->
     <div class="mx-auto max-w-180">
       @if ($onPeopleTab)
         @include('app.settings.administration.roles._people', ['viewModel' => $viewModel, 'role' => $role])

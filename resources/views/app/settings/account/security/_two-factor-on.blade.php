@@ -1,6 +1,7 @@
 {{-- What somebody sees once a code is asked for on top of their password. --}}
 {{-- @var \App\ViewModels\Settings\Account\Security\SecurityViewModel $viewModel --}}
 <div x-data="{ disabling: false, replacingCodes: false }" class="space-y-7">
+  <!-- when it was turned on -->
   <div class="grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
     <div class="space-y-2.5">
       <p class="flex items-center gap-2 text-[15px] font-semibold text-ink">
@@ -14,6 +15,7 @@
     <x-button.secondary type="button" @click="disabling = true" class="max-md:w-full">{{ __('Turn it off') }}</x-button.secondary>
   </div>
 
+  <!-- recovery codes -->
   <div class="space-y-4 border-t border-hairline-soft pt-6">
     <div class="grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
       <div class="space-y-2.5">
@@ -36,6 +38,7 @@
     @endif
   </div>
 
+  <!-- turn off dialog -->
   <x-confirm-dialog
     show="disabling"
     close="disabling = false"
@@ -52,6 +55,7 @@
     </x-slot:actions>
   </x-confirm-dialog>
 
+  <!-- new codes dialog -->
   <x-confirm-dialog
     show="replacingCodes"
     close="replacingCodes = false"
